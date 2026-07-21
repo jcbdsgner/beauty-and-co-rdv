@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Brand tokens — Beauty and Co */
+  --core-brand-color: #fdcfca;
+  --core-brand-color-2: #eddcda;
+  --on-core-brand-color: #2d2d2d;
+  --text-secondary: #344054;
+  --button-2-color: #a27576;
+  --brand-color-1: rgba(216, 184, 180, 0.5);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-cabinet-grotesk);
+  --font-heading: var(--font-prata);
+  --font-nav: var(--font-prata);
+  --font-display: var(--font-benedict);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-cabinet-grotesk), Arial, Helvetica, sans-serif;
+}
+
+/* Browsers paint autofilled inputs with their own blue/yellow tint that ignores
+   background-color — override it with the brand tint instead. The absurdly long
+   transition-delay is the standard trick to stop it flashing back on re-render. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  box-shadow: 0 0 0 1000px rgba(253, 207, 202, 0.15) inset;
+  -webkit-box-shadow: 0 0 0 1000px rgba(253, 207, 202, 0.15) inset;
+  -webkit-text-fill-color: #020817;
+  transition: background-color 5000s ease-in-out 0s;
+}

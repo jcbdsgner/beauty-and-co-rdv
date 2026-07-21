@@ -1,0 +1,57 @@
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import type { BookingStepId } from "@/lib/booking/types";
+
+const steps: { id: BookingStepId; label: string }[] = [
+  { id: "services", label: "Services" },
+  { id: "creneau", label: "Créneau" },
+  { id: "informations", label: "Informations" },
+  { id: "confirmation", label: "Confirmation" },
+];
+
+type BookingProgressProps = {
+  currentStep: BookingStepId;
+};
+
+export function BookingProgress({ currentStep }: BookingProgressProps) {
+  const currentIndex = steps.findIndex((step) => step.id === currentStep);
+
+  return (
+    <ol className="mx-auto flex w-full max-w-3xl items-start">
+      {steps.map((step, index) => {
+        const isDone = index < currentIndex;
+        const isActive = index === currentIndex;
+
+        return (
+          <li key={step.id} className="relative flex flex-1 flex-col items-center px-2">
+            {index < steps.length - 1 && (
+              <span aria-hidden className="absolute left-1/2 top-3 h-px w-full bg-[#eaecf0]" />
+            )}
+            <span
+              className={cn(
+                "relative flex size-6 items-center justify-center rounded-full",
+                isDone || isActive ? "bg-[#fdcfca]" : "border border-[#eaecf0] bg-white",
+              )}
+            >
+              {isDone ? (
+                <Image src="/images/rdv/icon-check.svg" alt="" width={14} height={14} />
+              ) : (
+                <span
+                  className={cn("size-2 rounded-full", isActive ? "bg-white" : "bg-[#eaecf0]")}
+                />
+              )}
+            </span>
+            <span
+              className={cn(
+                "mt-3 text-[17px] font-bold",
+                isActive || isDone ? "text-[#1d2939]" : "text-[#667085]",
+              )}
+            >
+              {step.label}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
