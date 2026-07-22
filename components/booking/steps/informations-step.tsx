@@ -47,7 +47,7 @@ function GenderOption({
       >
         {selected && <span className="size-2 rounded-full bg-white" />}
       </button>
-      <span className="text-[17px] font-medium text-[#344054]">{label}</span>
+      <span className="text-[17px] font-[450] text-[#344054]">{label}</span>
     </label>
   );
 }
@@ -81,7 +81,7 @@ export function InformationsStep({
                 {adults.find((adult) => adult.id === activePersonId)?.label}
               </h3>
               {isPrimaryContact && (
-                <span className="rounded-full bg-[rgba(237,220,218,0.5)] px-3 py-1 text-[13px] font-medium text-[#806562]">
+                <span className="rounded-full bg-[rgba(237,220,218,0.5)] px-3 py-1 text-[13px] font-[450] text-[#806562]">
                   Contact principal
                 </span>
               )}
@@ -98,7 +98,7 @@ export function InformationsStep({
           </div>
           <Link
             href={loginLink.href}
-            className="shrink-0 rounded-full bg-[#fdcfca] px-4 py-3 text-[17px] font-medium text-[#344054] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
+            className="shrink-0 rounded-full bg-[#fdcfca] px-4 py-3 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
           >
             {loginLink.label}
           </Link>
@@ -188,7 +188,7 @@ export function InformationsStep({
                 onChange={(event) => handleChange({ whatsappSameAsPhone: event.target.checked })}
                 className="size-4 accent-[#806562]"
               />
-              <span className="text-[17px] font-medium text-[#020817]">Identique au téléphone</span>
+              <span className="text-[17px] font-[450] text-[#020817]">Identique au téléphone</span>
             </label>
           </div>
           <PhoneInput
@@ -221,7 +221,7 @@ export function InformationsStep({
         <button
           type="button"
           onClick={onBack}
-          className="rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-[17px] font-medium text-[#886666] transition hover:bg-black/[.02]"
+          className="rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-[17px] font-[450] text-[#886666] transition hover:bg-black/[.02]"
         >
           Retourner
         </button>
@@ -230,7 +230,7 @@ export function InformationsStep({
           disabled={!canContinue}
           onClick={onContinue}
           className={cn(
-            "rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-medium text-[#886666] transition disabled:opacity-50 enabled:hover:opacity-90",
+            "rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:opacity-50 enabled:hover:opacity-90",
           )}
         >
           Continuer

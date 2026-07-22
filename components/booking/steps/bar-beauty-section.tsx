@@ -38,7 +38,7 @@ export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautyS
               <div className="flex flex-1 flex-col gap-2 p-4">
                 <p className="text-[17px] font-bold text-[#1d2939]">{drink.name}</p>
                 <p className="flex-1 text-[15px] text-[#667085]">{drink.description}</p>
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-[17px] font-bold whitespace-nowrap text-[#1d2939]">
                     {formatPrice(drink.price)}
                   </span>
@@ -48,8 +48,8 @@ export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautyS
                     aria-pressed={isReserved}
                     className={
                       isReserved
-                        ? "shrink-0 rounded-full border border-[#886666] bg-[#886666] px-4 py-1.5 text-[15px] font-medium whitespace-nowrap text-white transition hover:opacity-90"
-                        : "shrink-0 rounded-full border border-[#806562] bg-white px-4 py-1.5 text-[15px] font-medium whitespace-nowrap text-[#806562] transition hover:bg-[#806562]/5"
+                        ? "w-full rounded-full border border-[#886666] bg-[#886666] px-4 py-1.5 text-[15px] font-[450] whitespace-nowrap text-white transition hover:opacity-90 sm:w-auto sm:shrink-0"
+                        : "w-full rounded-full border border-[#806562] bg-white px-4 py-1.5 text-[15px] font-[450] whitespace-nowrap text-[#806562] transition hover:bg-[#806562]/5 sm:w-auto sm:shrink-0"
                     }
                   >
                     {isReserved ? "Réservé" : "Réserver"}

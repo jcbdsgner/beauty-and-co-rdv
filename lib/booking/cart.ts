@@ -1,5 +1,6 @@
 import { bookingServices } from "@/lib/data/booking-services";
 import type { CartItem, PersonTab } from "@/lib/booking/types";
+import { toSentenceCase } from "@/lib/utils";
 
 /** Maps each person's id to the set of subService ids they've selected. */
 export type Selections = Record<string, Set<string>>;
@@ -22,7 +23,7 @@ export function buildCartItems(people: PersonTab[], selections: Selections): Car
           categoryId: service.id,
           categoryLabel: service.label,
           subServiceId: sub.id,
-          label: sub.label,
+          label: toSentenceCase(sub.label),
           price: sub.price,
           duration: sub.duration,
           durationMinutes: sub.durationMinutes,

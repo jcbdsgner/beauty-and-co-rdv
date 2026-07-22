@@ -25,14 +25,14 @@ export function CategoryQuestions({ questions, answers, onAnswer, showErrors }: 
 
           return (
             <div key={question.id}>
-              <p className="text-[15px] font-medium text-[#1d2939]">
+              <p className="text-[15px] font-[450] text-[#1d2939]">
                 {question.label} <span className="text-[#b42318]">*</span>
               </p>
 
               {question.type === "yesno" ? (
                 <div className="mt-2 flex items-center gap-6">
                   {(["Oui", "Non"] as const).map((option) => (
-                    <label key={option} className="flex items-center gap-2 text-[15px] font-medium text-[#1d2939]">
+                    <label key={option} className="flex items-center gap-2 text-[15px] font-[450] text-[#1d2939]">
                       <input
                         type="radio"
                         name={question.id}

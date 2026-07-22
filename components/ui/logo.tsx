@@ -11,12 +11,14 @@ export function Logo({ size = "header", className }: LogoProps) {
   return (
     <div className={className}>
       <Image
-        src={isFooter ? "/images/accueil/logo-bc-2.png" : "/images/accueil/logo-bc-1.png"}
+        src={isFooter ? "/images/accueil/logo-bc-footer.svg" : "/images/accueil/logo-bc.jpg"}
         alt="Beauty and Co"
-        width={isFooter ? 120 : 232}
-        height={isFooter ? 109 : 211}
+        width={isFooter ? 497 : 1200}
+        height={isFooter ? 230 : 1197}
         className="h-full w-full object-contain"
         priority={!isFooter}
+        loading={isFooter ? "eager" : undefined}
+        unoptimized={isFooter}
       />
     </div>
   );

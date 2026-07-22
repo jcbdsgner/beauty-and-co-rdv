@@ -10,6 +10,7 @@ import { formatPrice } from "@/lib/booking/format";
 import type { Selections } from "@/lib/booking/cart";
 import { answerKey, personHasIncompleteQuestions, type QuestionAnswers } from "@/lib/booking/questions";
 import type { PersonTab } from "@/lib/booking/types";
+import { toSentenceCase } from "@/lib/utils";
 
 type ServicesStepProps = {
   people: PersonTab[];
@@ -76,7 +77,7 @@ export function ServicesStep({
   // specific prestations from categories they haven't picked from yet (one per category, so the
   // suggestions never double up on the same category). Price is shown up front, so adding one
   // is a single explicit click — never a silent add. The list is captured once per person and
-  // never recomputed afterward, so clicking "Ajouter" (which changes categoriesWithSelection)
+  // never recomputed afterward, so clicking "Sélectionner" (which changes categoriesWithSelection)
   // doesn't swap in different suggestions out from under the user.
   const [dismissedUpsellFor, setDismissedUpsellFor] = useState<Set<string>>(new Set());
   const [suggestionsByPerson, setSuggestionsByPerson] = useState<
@@ -153,7 +154,7 @@ export function ServicesStep({
       {showUpsell && (
         <div className="mt-6 rounded-2xl border border-[rgba(136,102,102,0.15)] bg-[rgba(237,220,218,0.25)] px-4 py-3">
           <div className="flex items-center justify-between gap-4">
-            <p className="text-[15px] font-medium text-[#667085]">Beaucoup ajoutent aussi :</p>
+            <p className="text-[15px] font-[450] text-[#667085]">Beaucoup ajoutent aussi :</p>
             <button
               type="button"
               onClick={() => setDismissedUpsellFor((prev) => new Set(prev).add(activePersonId))}
@@ -182,8 +183,8 @@ export function ServicesStep({
                     />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[15px] font-bold text-[#1d2939]" title={sub.label}>
-                      {sub.label}
+                    <p className="truncate text-[15px] font-bold text-[#1d2939]" title={toSentenceCase(sub.label)}>
+                      {toSentenceCase(sub.label)}
                     </p>
                     <p className="text-[13px] text-[#667085]">
                       {sub.duration} · {formatPrice(sub.price)}
@@ -194,11 +195,11 @@ export function ServicesStep({
                     onClick={() => onToggleSubService(activePersonId, sub.id)}
                     className={
                       isAdded
-                        ? "shrink-0 rounded-full border border-[#886666] bg-[#886666] px-3 py-1.5 text-[15px] font-medium text-white transition hover:opacity-90"
-                        : "shrink-0 rounded-full border border-[#806562] bg-white px-3 py-1.5 text-[15px] font-medium text-[#806562] transition hover:bg-[#806562]/5"
+                        ? "shrink-0 rounded-full border border-[#886666] bg-[#886666] px-3 py-1.5 text-[15px] font-[450] text-white transition hover:opacity-90"
+                        : "shrink-0 rounded-full border border-[#806562] bg-white px-3 py-1.5 text-[15px] font-[450] text-[#806562] transition hover:bg-[#806562]/5"
                     }
                   >
-                    {isAdded ? "Ajouté" : "Ajouter"}
+                    {isAdded ? "Sélectionné" : "Sélectionner"}
                   </button>
                 </div>
               );
@@ -209,7 +210,7 @@ export function ServicesStep({
 
       <div className="mt-8">
         {showMissingSelectionWarning && peopleMissingSelection.length > 0 && (
-          <p className="mb-4 rounded-xl bg-[rgba(217,45,32,0.08)] px-4 py-3 text-[15px] font-medium text-[#b42318]">
+          <p className="mb-4 rounded-xl bg-[rgba(217,45,32,0.08)] px-4 py-3 text-[15px] font-[450] text-[#b42318]">
             {peopleMissingSelection.length === people.length
               ? "Choisissez au moins une prestation pour continuer."
               : `${peopleMissingSelection.map((person) => person.label).join(" et ")} ${
@@ -218,7 +219,7 @@ export function ServicesStep({
           </p>
         )}
         {showMissingQuestionsWarning && peopleMissingSelection.length === 0 && peopleMissingQuestions.length > 0 && (
-          <p className="mb-4 rounded-xl bg-[rgba(217,45,32,0.08)] px-4 py-3 text-[15px] font-medium text-[#b42318]">
+          <p className="mb-4 rounded-xl bg-[rgba(217,45,32,0.08)] px-4 py-3 text-[15px] font-[450] text-[#b42318]">
             {peopleMissingQuestions.length === people.length
               ? "Merci de répondre aux informations complémentaires obligatoires pour continuer."
               : `${peopleMissingQuestions.map((person) => person.label).join(" et ")} ${
@@ -230,14 +231,14 @@ export function ServicesStep({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-[17px] font-medium text-[#886666] transition hover:bg-black/[.02]"
+            className="rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-[17px] font-[450] text-[#886666] transition hover:bg-black/[.02]"
           >
             Annuler
           </button>
           <button
             type="button"
             onClick={handleContinue}
-            className="rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-medium text-[#886666] transition hover:opacity-90"
+            className="rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
           >
             Continuer
           </button>

@@ -65,7 +65,7 @@ export default function ConnexionPage() {
         >
           <div className="flex w-full flex-col gap-5">
             <div className="flex w-full flex-col gap-1.5">
-              <label htmlFor="email" className="text-[15px] font-medium text-[#344054]">
+              <label htmlFor="email" className="text-[15px] font-[450] text-[#344054]">
                 Email
               </label>
               <input
@@ -79,7 +79,7 @@ export default function ConnexionPage() {
             </div>
 
             <div className="flex w-full flex-col gap-1.5">
-              <label htmlFor="password" className="text-[15px] font-medium text-[#344054]">
+              <label htmlFor="password" className="text-[15px] font-[450] text-[#344054]">
                 Mot de passe
               </label>
               <input
@@ -99,14 +99,14 @@ export default function ConnexionPage() {
 
           <button
             type="submit"
-            className="w-full rounded-full bg-[#fdcfca] px-4 py-3 text-[17px] font-medium text-[#344054] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
+            className="w-full rounded-full bg-[#fdcfca] px-4 py-3 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
           >
             Se connecter
           </button>
 
           <div className="flex w-full items-center gap-2">
             <span className="h-px flex-1 bg-[#eaecf0]" />
-            <span className="text-[15px] font-medium text-[#475467]">Ou</span>
+            <span className="text-[15px] font-[450] text-[#475467]">Ou</span>
             <span className="h-px flex-1 bg-[#eaecf0]" />
           </div>
 

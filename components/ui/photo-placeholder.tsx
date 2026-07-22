@@ -24,7 +24,7 @@ export function PhotoPlaceholder({ className, label = "Photo à venir" }: PhotoP
           strokeLinejoin="round"
         />
       </svg>
-      <span className="px-2 text-center text-[13px] font-medium">{label}</span>
+      <span className="px-2 text-center text-[13px] font-[450]">{label}</span>
     </div>
   );
 }

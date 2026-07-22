@@ -19,7 +19,7 @@ export function PersonToggle({ people, activePersonId, onChange }: PersonToggleP
           onClick={() => onChange(person.id)}
           aria-pressed={activePersonId === person.id}
           className={cn(
-            "rounded-full px-[17px] py-[9px] text-[15px] font-medium whitespace-nowrap transition",
+            "rounded-full px-[17px] py-[9px] text-[15px] font-[450] whitespace-nowrap transition",
             activePersonId === person.id
               ? "bg-[#886666] text-white"
               : "text-[#475467] hover:text-[#886666]",

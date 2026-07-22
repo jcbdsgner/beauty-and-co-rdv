@@ -43,14 +43,14 @@ export function LeaveBookingDialog({ open, onCancel, onConfirm }: LeaveBookingDi
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-base font-medium text-[#886666] transition hover:bg-black/[.02]"
+            className="rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-base font-[450] text-[#886666] transition hover:bg-black/[.02]"
           >
             Continuer ma réservation
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="rounded-full bg-[#fdcfca] px-6 py-2 text-base font-medium text-[#886666] transition hover:opacity-90"
+            className="rounded-full bg-[#fdcfca] px-6 py-2 text-base font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
           >
             Quitter
           </button>

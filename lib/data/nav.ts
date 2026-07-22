@@ -11,3 +11,4 @@ export const navLinks: NavLink[] = [
 
 export const bookingLink: NavLink = { label: "Prendre rendez-vous", href: "/rdv" };
 export const loginLink: NavLink = { label: "Se connecter", href: "/connexion" };
+export const videoGuideLink: NavLink = { label: "Voir le guide vidéo", href: "https://youtube.com" };

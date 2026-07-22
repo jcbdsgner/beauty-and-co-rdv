@@ -8,12 +8,12 @@ export function GiftCard() {
   return (
     <section className="flex justify-center bg-[#fff1f1] px-6 py-16 sm:py-24">
       <div className="flex max-w-4xl flex-col items-center gap-10 sm:flex-row sm:gap-16">
-        <div className="relative h-[226px] w-[260px] shrink-0 sm:h-[279px] sm:w-[320px]">
+        <div className="relative h-[211px] w-[280px] shrink-0 sm:h-[286px] sm:w-[380px]">
           <Image
-            src="/images/accueil/gift-card.png"
+            src="/images/accueil/carte-cadeau.png"
             alt="Carte cadeau Beauty and Co"
             fill
-            sizes="320px"
+            sizes="380px"
             className="object-contain"
           />
         </div>
@@ -27,7 +27,7 @@ export function GiftCard() {
             prestations.
           </p>
           <Button href={giftCardHref} external>
-            Découvrir la carte cadeau
+            Offrir la carte cadeau
           </Button>
         </div>
       </div>

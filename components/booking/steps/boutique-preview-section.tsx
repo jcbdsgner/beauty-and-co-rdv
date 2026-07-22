@@ -42,7 +42,7 @@ export function BoutiquePreviewSection({
                 <span className="flex items-center gap-2 text-[19px] font-bold text-[#806562]">
                   {formatPrice(product.price)}
                   {product.originalPrice !== undefined && (
-                    <span className="text-[15px] font-medium text-[#98a2b3] line-through">
+                    <span className="text-[15px] font-[450] text-[#98a2b3] line-through">
                       {formatPrice(product.originalPrice)}
                     </span>
                   )}
@@ -54,8 +54,8 @@ export function BoutiquePreviewSection({
                     aria-pressed={isReserved}
                     className={
                       isReserved
-                        ? "mt-auto rounded-full border border-[#886666] bg-[#886666] py-2 text-[17px] font-medium text-white transition hover:opacity-90"
-                        : "mt-auto rounded-full border border-[#806562] bg-white py-2 text-[17px] font-medium text-[#806562] transition hover:bg-[#806562]/5"
+                        ? "mt-auto rounded-full border border-[#886666] bg-[#886666] py-2 text-[17px] font-[450] text-white transition hover:opacity-90"
+                        : "mt-auto rounded-full border border-[#806562] bg-white py-2 text-[17px] font-[450] text-[#806562] transition hover:bg-[#806562]/5"
                     }
                   >
                     {isReserved ? "Réservé" : "Réserver"}
@@ -64,7 +64,7 @@ export function BoutiquePreviewSection({
                   <button
                     type="button"
                     disabled
-                    className="mt-auto cursor-not-allowed rounded-full border border-[#f2f4f7] bg-[#f8f6f9] py-2 text-[17px] font-medium text-[#98a2b3]"
+                    className="mt-auto cursor-not-allowed rounded-full border border-[#f2f4f7] bg-[#f8f6f9] py-2 text-[17px] font-[450] text-[#98a2b3]"
                   >
                     Rupture de stock
                   </button>

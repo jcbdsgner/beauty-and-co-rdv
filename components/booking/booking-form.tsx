@@ -220,7 +220,9 @@ export function BookingForm() {
   return (
     <div className="rounded-3xl border border-[rgba(234,236,240,0.6)] bg-[#f7f8fa] p-6 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)] sm:p-10">
       <div className="relative">
-        <h1 className="text-center text-[27px] font-bold text-[#1d2939]">Prendre rendez-vous</h1>
+        <h1 className="px-12 text-center text-[19px] font-bold text-[#1d2939] sm:px-14 sm:text-[27px]">
+          Prendre rendez-vous
+        </h1>
         <button
           type="button"
           onClick={requestLeave}

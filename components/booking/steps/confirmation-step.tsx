@@ -45,7 +45,7 @@ function DetailRow({
   value: string;
 }) {
   return (
-    <div className="flex min-w-[260px] flex-1 items-center gap-4 rounded-2xl border-[1.5px] border-[#f2f4f7] p-4">
+    <div className="flex min-w-0 basis-full items-center gap-4 rounded-2xl border-[1.5px] border-[#f2f4f7] p-4 sm:basis-auto sm:min-w-[260px] sm:flex-1">
       <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#f8f6f9]">
         <Image src={icon} alt="" width={24} height={24} />
       </span>
@@ -79,25 +79,25 @@ function CategoryGroup({ categoryId, categoryLabel, items }: { categoryId: strin
   const category = bookingServices.find((service) => service.id === categoryId);
 
   return (
-    <div className="flex gap-4 rounded-2xl border border-[#f2f4f7] p-4">
-      <span className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[rgba(237,220,218,0.4)]">
-        {category && (
-          <Image
-            src={category.image}
-            alt=""
-            width={category.iconOnly ? 24 : 44}
-            height={category.iconOnly ? 24 : 44}
-            className={category.iconOnly ? undefined : "size-full object-cover"}
-          />
-        )}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-[19px] font-bold text-[#101828]">{categoryLabel}</p>
-        <div className="mt-2 flex flex-col gap-2">
-          {items.map((item) => (
-            <PrestationOption key={item.id} item={item} />
-          ))}
-        </div>
+    <div className="flex flex-col gap-4 rounded-2xl border border-[#f2f4f7] p-4">
+      <div className="flex min-w-0 items-center gap-4">
+        <span className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[rgba(237,220,218,0.4)]">
+          {category && (
+            <Image
+              src={category.image}
+              alt=""
+              width={category.iconOnly ? 24 : 44}
+              height={category.iconOnly ? 24 : 44}
+              className={category.iconOnly ? undefined : "size-full object-cover"}
+            />
+          )}
+        </span>
+        <p className="min-w-0 text-[19px] font-bold text-[#101828]">{categoryLabel}</p>
+      </div>
+      <div className="flex flex-col gap-2">
+        {items.map((item) => (
+          <PrestationOption key={item.id} item={item} />
+        ))}
       </div>
     </div>
   );
@@ -230,7 +230,7 @@ export function ConfirmationStep({
 
           <div className="mt-4 border-t border-[#f2f4f7] pt-4">
             <p className="text-[19px] font-bold text-[#101828]">
-              Note pour le salon <span className="text-[17px] font-normal text-[#667085]">(optionnel)</span>
+              Note pour le salon <span className="text-[17px] text-[#667085]">(optionnel)</span>
             </p>
             <textarea
               value={note}
@@ -289,11 +289,11 @@ export function ConfirmationStep({
         <p className="text-[17px] text-[#344054]">Veuillez arriver 10 min avant l&apos;heure de votre rendez-vous.</p>
       </div>
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <button
           type="button"
           onClick={onBack}
-          className="rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-[17px] font-medium text-[#886666] transition hover:bg-black/[.02]"
+          className="w-full rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-3 text-[17px] font-[450] text-[#886666] transition hover:bg-black/[.02] sm:w-auto sm:py-2"
         >
           Retourner
         </button>
@@ -301,7 +301,7 @@ export function ConfirmationStep({
           type="button"
           disabled={!canConfirm}
           onClick={onConfirm}
-          className="rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-medium text-[#886666] transition disabled:opacity-50 enabled:hover:opacity-90 sm:min-w-[320px]"
+          className="w-full rounded-full bg-[#fdcfca] px-8 py-3 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:opacity-50 enabled:hover:opacity-90 sm:w-auto sm:min-w-[320px] sm:py-2"
         >
           Payer l&apos;acompte (5 000 FCFA) et confirmer
         </button>

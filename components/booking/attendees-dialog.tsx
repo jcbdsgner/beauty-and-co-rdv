@@ -40,7 +40,7 @@ function Stepper({ label, hint, value, min, max, onChange }: StepperProps) {
           disabled={value <= min}
           aria-label={`Diminuer le nombre — ${label}`}
           className={cn(
-            "flex size-9 items-center justify-center rounded-full border-2 border-[rgba(136,102,102,0.3)] text-[19px] leading-none font-medium text-[#886666] transition",
+            "flex size-9 items-center justify-center rounded-full border-2 border-[rgba(136,102,102,0.3)] text-[19px] leading-none font-[450] text-[#886666] transition",
             "disabled:cursor-not-allowed disabled:opacity-30 enabled:hover:border-[#886666]",
           )}
         >
@@ -53,7 +53,7 @@ function Stepper({ label, hint, value, min, max, onChange }: StepperProps) {
           disabled={value >= max}
           aria-label={`Augmenter le nombre — ${label}`}
           className={cn(
-            "flex size-9 items-center justify-center rounded-full border-2 border-[rgba(136,102,102,0.3)] text-[19px] leading-none font-medium text-[#886666] transition",
+            "flex size-9 items-center justify-center rounded-full border-2 border-[rgba(136,102,102,0.3)] text-[19px] leading-none font-[450] text-[#886666] transition",
             "disabled:cursor-not-allowed disabled:opacity-30 enabled:hover:border-[#886666]",
           )}
         >
@@ -118,7 +118,7 @@ export function AttendeesDialog({ open, onConfirm }: AttendeesDialogProps) {
           type="button"
           disabled={!canConfirm}
           onClick={() => onConfirm({ adults, children })}
-          className="mt-6 w-full rounded-full bg-[#fdcfca] px-8 py-3 text-[17px] font-medium text-[#886666] transition disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-90"
+          className="mt-6 w-full rounded-full bg-[#fdcfca] px-8 py-3 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-90"
         >
           Continuer
         </button>

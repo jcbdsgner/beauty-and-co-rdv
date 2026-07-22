@@ -26,6 +26,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-cabinet-grotesk), Arial, Helvetica, sans-serif;
+  font-weight: 450;
 }
 
 /* Browsers paint autofilled inputs with their own blue/yellow tint that ignores

@@ -4,12 +4,12 @@ import { locations } from "@/lib/data/locations";
 
 export function Localisation() {
   return (
-    <section className="flex flex-col items-center gap-4 px-6 pb-12 pt-6 sm:px-12">
-      <h2 className="text-center font-[family-name:var(--font-prata)] text-[27px] text-[#404040] sm:text-[35px]">
+    <section className="flex flex-col items-center gap-4 pb-12 pt-6 sm:px-12">
+      <h2 className="px-6 text-center font-[family-name:var(--font-prata)] text-[27px] text-[#404040] sm:px-0 sm:text-[35px]">
         Retrouvez-nous dans nos salons
       </h2>
 
-      <div className="relative h-[420px] w-full sm:h-[560px] lg:h-[676px]">
+      <div className="relative flex min-h-[420px] w-full items-center justify-center sm:min-h-[560px] lg:min-h-[676px]">
         <Image
           src="/images/accueil/beauty-co-storefront.jpg"
           alt="Salon Beauty and Co"
@@ -18,7 +18,7 @@ export function Localisation() {
           className="object-cover"
         />
 
-        <div className="absolute inset-0 flex flex-wrap items-center justify-center gap-8 px-4">
+        <div className="relative z-10 flex flex-wrap items-center justify-center gap-8 px-4 py-8">
           {locations.map((location) => (
             <div
               key={location.name}

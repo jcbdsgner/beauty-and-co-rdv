@@ -27,14 +27,14 @@ export function BookingSummarySidebar({
   const hasQuoteOnlyItems = cartItems.some((item) => item.price === undefined);
 
   return (
-    <aside className="h-fit rounded-2xl border border-[rgba(136,102,102,0.2)] bg-white p-6 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)]">
+    <aside className="h-fit rounded-2xl border border-[rgba(136,102,102,0.2)] bg-white p-6 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)] lg:sticky lg:top-10 lg:self-start">
       <div className="flex items-start justify-between gap-4">
         <h3 className="text-[21px] leading-snug font-bold text-[#806562]">
           Résumé de votre
           <br />
           réservation
         </h3>
-        <span className="shrink-0 text-[15px] font-medium whitespace-nowrap text-[#667085]">
+        <span className="shrink-0 text-[15px] font-[450] whitespace-nowrap text-[#667085]">
           {step}/4 étapes
         </span>
       </div>
@@ -60,7 +60,7 @@ export function BookingSummarySidebar({
         {cartItems.length === 0 ? (
           <div className="flex items-center gap-3 px-1 py-2">
             <Image src="/images/rdv/icon-plus.svg" alt="" width={20} height={20} />
-            <span className="text-[17px] font-medium text-[#886666]">Ajoutez des services</span>
+            <span className="text-[17px] font-[450] text-[#886666]">Ajoutez des services</span>
           </div>
         ) : (
           <div className="flex flex-col gap-3 rounded-xl bg-[rgba(237,220,218,0.3)] px-4 py-3">
@@ -83,7 +83,7 @@ export function BookingSummarySidebar({
                       <span className="text-[#98a2b3]"> · {item.personLabel}</span>
                     )}
                   </span>
-                  <span className="shrink-0 font-medium text-[#1d2939]">
+                  <span className="shrink-0 font-[450] text-[#1d2939]">
                     {item.price !== undefined ? formatPrice(item.price) : "Sur devis"}
                   </span>
                 </li>

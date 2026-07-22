@@ -16,10 +16,11 @@ export function CategoryTiles({
   categoriesWithSelection,
 }: CategoryTilesProps) {
   return (
-    <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+    <div className="grid grid-cols-3 gap-3">
       {services.map((service) => {
         const isActive = service.id === activeCategoryId;
         const hasSelection = categoriesWithSelection.has(service.id);
+        const checked = isActive || hasSelection;
 
         return (
           <button
@@ -32,11 +33,14 @@ export function CategoryTiles({
               isActive ? "border-[#886666]" : "border-[#d0d5dd] hover:border-[#886666]/50",
             )}
           >
-            {hasSelection && (
-              <span className="absolute top-1.5 right-1.5 flex size-4 items-center justify-center rounded-full bg-[#886666]">
-                <Image src="/images/rdv/icon-check.svg" alt="" width={10} height={10} />
-              </span>
-            )}
+            <span
+              className={cn(
+                "absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-full border-[1.5px] transition",
+                checked ? "border-[#886666] bg-[#886666]" : "border-[#d0d5dd] bg-white",
+              )}
+            >
+              {checked && <Image src="/images/rdv/icon-check.svg" alt="" width={14} height={14} />}
+            </span>
             <span className="flex size-12 items-center justify-center overflow-hidden rounded-lg bg-[rgba(237,220,218,0.4)]">
               <Image
                 src={service.image}
@@ -46,7 +50,7 @@ export function CategoryTiles({
                 className={service.iconOnly ? undefined : "size-full object-cover"}
               />
             </span>
-            <span className="flex min-h-10 items-center justify-center text-[15px] font-bold text-[#1d2939]">
+            <span className="flex min-h-10 items-center justify-center text-[17px] font-bold text-[#1d2939]">
               {service.label}
             </span>
           </button>

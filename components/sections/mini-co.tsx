@@ -6,7 +6,7 @@ const miniCoHref = externalServices.find((service) => service.key === "mini-and-
 
 export function MiniCo() {
   return (
-    <section className="flex flex-col justify-center gap-3 px-6 pb-10 sm:flex-row">
+    <section className="flex flex-col-reverse justify-center gap-3 px-6 pb-10 sm:flex-row">
       <div className="flex min-h-[280px] flex-1 flex-col items-center justify-center gap-5 bg-[#f6eefe] px-6 py-16 text-center sm:min-h-[350px] sm:max-w-3xl">
         <h2 className="font-[family-name:var(--font-prata)] text-[27px] text-[#2d2d2d] sm:text-[34px]">
           Mini &amp; Co

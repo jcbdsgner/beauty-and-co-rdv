@@ -36,7 +36,7 @@ function ProductPrice({ price, originalPrice }: { price: number; originalPrice?:
 
   return (
     <div className="flex items-center gap-2 text-[22px]">
-      <span className="font-medium text-[#303030]">{priceLabel}</span>
+      <span className="font-[450] text-[#303030]">{priceLabel}</span>
       {originalPriceLabel && <span className="text-[#afafaf] line-through">{originalPriceLabel}</span>}
     </div>
   );
