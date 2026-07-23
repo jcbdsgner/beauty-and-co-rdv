@@ -18,7 +18,7 @@ export function ServicesDropdown() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex cursor-pointer items-center gap-2 font-[family-name:var(--font-nav)] text-[19px] text-[var(--on-core-brand-color,#2d2d2d)]"
+        className="flex cursor-pointer items-center gap-2 font-[family-name:var(--font-nav)] text-[18px] text-[var(--on-core-brand-color,#2d2d2d)]"
       >
         Nos services
         <Image

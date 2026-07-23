@@ -1,5 +1,9 @@
 "use client";
 
+import { externalServices } from "@/lib/data/external-services";
+
+const giftCardHref = externalServices.find((service) => service.key === "carte-cadeau")!.href;
+
 type BookingConfirmedDialogProps = {
   open: boolean;
   email: string;
@@ -16,7 +20,7 @@ export function BookingConfirmedDialog({ open, email, onClose, onGoHome }: Booki
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="booking-confirmed-title"
-        className="w-full max-w-[460px] overflow-hidden rounded-xl border border-[#e4e4e4] bg-white shadow-[0px_20px_24px_-4px_rgba(16,24,40,0.08),0px_8px_8px_-4px_rgba(16,24,40,0.03)]"
+        className="w-full max-w-[500px] overflow-hidden rounded-xl border border-[#e4e4e4] bg-white shadow-[0px_20px_24px_-4px_rgba(16,24,40,0.08),0px_8px_8px_-4px_rgba(16,24,40,0.03)]"
       >
         <div className="relative flex gap-4 border-b border-[#e4e4e4] p-6">
           <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#dcfae6]">
@@ -48,11 +52,19 @@ export function BookingConfirmedDialog({ open, email, onClose, onGoHome }: Booki
           </button>
         </div>
 
-        <div className="flex items-center justify-end p-6">
+        <div className="flex flex-col items-center justify-center gap-3 p-6 sm:flex-row">
+          <a
+            href={giftCardHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-center text-[17px] font-[450] whitespace-nowrap text-[#886666] transition hover:bg-black/[.02] sm:w-auto"
+          >
+            Offrir une carte cadeau
+          </a>
           <button
             type="button"
             onClick={onGoHome}
-            className="rounded-full bg-[#fdcfca] px-6 py-2 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
+            className="w-full rounded-full bg-[#fdcfca] px-6 py-2 text-[17px] font-[450] whitespace-nowrap text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90 sm:w-auto"
           >
             Retourner sur l&apos;accueil
           </button>

@@ -58,6 +58,12 @@ export function BookingForm() {
   const [confirmed, setConfirmed] = useState(false);
   const [showConfirmedModal, setShowConfirmedModal] = useState(false);
 
+  // Each step is a fresh screen — land the user at its top instead of wherever the previous
+  // step happened to be scrolled to.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
+
   // On mount, resume a booking left mid-flow to go through "Se connecter" (see handleClick
   // below) — restored once, then consumed so a plain page refresh doesn't keep reapplying it.
   useEffect(() => {
@@ -218,7 +224,7 @@ export function BookingForm() {
   };
 
   return (
-    <div className="rounded-3xl border border-[rgba(234,236,240,0.6)] bg-[#f7f8fa] p-6 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)] sm:p-10">
+    <div className="rounded-none border border-[rgba(234,236,240,0.6)] bg-[#f7f8fa] p-6 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)] sm:rounded-3xl sm:p-10">
       <div className="relative">
         <h1 className="px-12 text-center text-[19px] font-bold text-[#1d2939] sm:px-14 sm:text-[27px]">
           Prendre rendez-vous

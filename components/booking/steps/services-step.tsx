@@ -300,28 +300,48 @@ export function ServicesStep({
                     </p>
                   </div>
                 </div>
-                <div>
-                  <p className="text-[13px] text-[#667085]">Sélectionner pour :</p>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                    {targetPeople.map((person) => {
-                      const isAdded = Boolean(selections[person.id]?.has(sub.id));
-                      return (
-                        <button
-                          key={person.id}
-                          type="button"
-                          onClick={() => handleSuggestionToggle(person.id, sub.id)}
-                          aria-pressed={isAdded}
-                          className={cn(
-                            "shrink-0 rounded-full border border-[#806562] px-3 py-1.5 text-[15px] font-[450] whitespace-nowrap transition",
-                            isAdded ? "bg-[#806562] text-white" : "bg-white text-[#806562] hover:bg-[#806562]/5",
-                          )}
-                        >
-                          {person.label}
-                        </button>
-                      );
-                    })}
+                {targetPeople.length === 1 ? (
+                  (() => {
+                    const person = targetPeople[0];
+                    const isAdded = Boolean(selections[person.id]?.has(sub.id));
+                    return (
+                      <button
+                        type="button"
+                        onClick={() => handleSuggestionToggle(person.id, sub.id)}
+                        aria-pressed={isAdded}
+                        className={cn(
+                          "shrink-0 self-start rounded-full border border-[#806562] px-3 py-1.5 text-[15px] font-[450] whitespace-nowrap transition",
+                          isAdded ? "bg-[#806562] text-white" : "bg-white text-[#806562] hover:bg-[#806562]/5",
+                        )}
+                      >
+                        {isAdded ? "Sélectionné" : "Sélectionner"}
+                      </button>
+                    );
+                  })()
+                ) : (
+                  <div>
+                    <p className="text-[13px] text-[#667085]">Sélectionner pour :</p>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                      {targetPeople.map((person) => {
+                        const isAdded = Boolean(selections[person.id]?.has(sub.id));
+                        return (
+                          <button
+                            key={person.id}
+                            type="button"
+                            onClick={() => handleSuggestionToggle(person.id, sub.id)}
+                            aria-pressed={isAdded}
+                            className={cn(
+                              "shrink-0 rounded-full border border-[#806562] px-3 py-1.5 text-[15px] font-[450] whitespace-nowrap transition",
+                              isAdded ? "bg-[#806562] text-white" : "bg-white text-[#806562] hover:bg-[#806562]/5",
+                            )}
+                          >
+                            {person.label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>

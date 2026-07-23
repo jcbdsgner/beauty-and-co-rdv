@@ -2,7 +2,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { bookingLink, videoGuideLink } from "@/lib/data/nav";
 import { heroServices, type HeroService } from "@/lib/data/services";
-import { cn } from "@/lib/utils";
 
 function PlayIcon() {
   return (
@@ -14,16 +13,17 @@ function PlayIcon() {
 
 function ServiceChip({ service }: { service: HeroService }) {
   return (
-    <div
-      className={cn("flex w-[105px] flex-col items-center gap-2", service.icons.length > 1 && "sm:w-[140px]")}
+    <button
+      type="button"
+      className="group flex w-[105px] flex-col items-center gap-2 transition-transform duration-200 hover:scale-110"
     >
-      <div className="flex items-center justify-center gap-1.5 rounded-full bg-[#9c7d79] p-3 sm:gap-3 sm:p-4">
+      <div className="flex items-center justify-center gap-1.5 rounded-full bg-[#9c7d79] p-3 transition-colors duration-200 group-hover:bg-[#ab8985] sm:p-4">
         {service.icons.map((icon) => (
-          <Image key={icon} src={icon} alt="" width={48} height={48} className="h-7 w-7 sm:h-12 sm:w-12" />
+          <Image key={icon} src={icon} alt="" width={48} height={48} className="h-7 w-7 sm:h-8 sm:w-8" />
         ))}
       </div>
       <p className="text-center text-[19px] text-[#f2dedc]">{service.label}</p>
-    </div>
+    </button>
   );
 }
 

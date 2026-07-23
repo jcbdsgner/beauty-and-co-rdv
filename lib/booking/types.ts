@@ -32,7 +32,6 @@ export type ContactInfo = {
   whatsapp: string;
   whatsappCountry: string;
   whatsappSameAsPhone: boolean;
-  address: string;
 };
 
 export const emptyContactInfo: ContactInfo = {
@@ -45,7 +44,6 @@ export const emptyContactInfo: ContactInfo = {
   whatsapp: "",
   whatsappCountry: "SN",
   whatsappSameAsPhone: true,
-  address: "",
 };
 
 export function isContactInfoComplete(info: ContactInfo): boolean {

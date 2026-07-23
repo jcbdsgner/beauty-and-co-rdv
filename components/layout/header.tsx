@@ -10,7 +10,7 @@ import { footerServices } from "@/lib/data/services";
 import { bookingLink, loginLink } from "@/lib/data/nav";
 import { cn } from "@/lib/utils";
 
-const navLinkClassName = "font-[family-name:var(--font-nav)] text-[19px] text-[var(--on-core-brand-color,#2d2d2d)]";
+const navLinkClassName = "font-[family-name:var(--font-nav)] text-[18px] text-[var(--on-core-brand-color,#2d2d2d)]";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,7 +30,9 @@ export function Header() {
   return (
     <header className="relative flex h-24 items-center justify-between px-4 py-2 sm:px-8">
       <div className="flex items-center gap-8">
-        <Logo className="relative h-16 w-16 shrink-0" />
+        <Link href="/" aria-label="Retour à l'accueil" className="shrink-0">
+          <Logo className="relative h-16 w-16 shrink-0" />
+        </Link>
 
         <nav className="hidden items-center gap-8 lg:flex">
           <Link href="/" className={navLinkClassName}>
@@ -83,7 +85,9 @@ export function Header() {
         )}
       >
         <div className="flex items-center justify-between">
-          <Logo className="relative h-14 w-14" />
+          <Link href="/" aria-label="Retour à l'accueil" onClick={() => setMenuOpen(false)}>
+            <Logo className="relative h-14 w-14" />
+          </Link>
           <button
             type="button"
             onClick={() => setMenuOpen(false)}

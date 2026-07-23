@@ -53,8 +53,20 @@ function FlatSubServiceRow({
         type="button"
         onClick={onToggle}
         aria-pressed={selected}
+        aria-label={selected ? `${sub.label} — sélectionné` : `${sub.label} — sélectionner`}
         className={cn(
-          "shrink-0 rounded-full border border-[#806562] px-[13px] py-[7px] text-[15px] font-[450] whitespace-nowrap transition",
+          "flex size-6 shrink-0 items-center justify-center rounded border transition sm:hidden",
+          selected ? "border-[#806562] bg-[#806562]" : "border-[#0f172a] bg-white",
+        )}
+      >
+        {selected && <Image src="/images/rdv/icon-check.svg" alt="" width={14} height={14} />}
+      </button>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-pressed={selected}
+        className={cn(
+          "hidden shrink-0 rounded-full border border-[#806562] px-[13px] py-[7px] text-[15px] font-[450] whitespace-nowrap transition sm:block",
           selected ? "bg-[#806562] text-white" : "bg-white text-[#806562] hover:bg-[#806562]/5",
         )}
       >
