@@ -5,6 +5,8 @@ export type BookingSubService = {
   duration: string;
   durationMinutes: number;
   price: number;
+  /** Groups this prestation under a collapsible sub-category header in the prestation list. */
+  subcategory?: string;
 };
 
 export type CategoryQuestion =
@@ -20,6 +22,8 @@ export type BookingService = {
   spotsLeft: number;
   duration: string;
   description?: string;
+  /** True for the categories reserved for child attendees (Mini & Co). */
+  forChildren?: boolean;
   /** Mandatory questions shown above the prestation list before a client can book this category. */
   requiredQuestions?: CategoryQuestion[];
   subServices: BookingSubService[];
@@ -40,6 +44,7 @@ export const bookingServices: BookingService[] = [
     subServices: [
       {
         id: "coiffure-defrisage-professionnel-beauty-and-co-texlax",
+        subcategory: "Défrisage",
         label: "DEFRISAGE PROFESSIONNEL BEAUTY AND CO / TEXLAX",
         description: "Cette prestation inclut une prestation du cuir chevelu , le défrisant avec ou sans soude, le soin et le shampoing neutralisant suivi du coiffage.",
         duration: "150 min",
@@ -48,6 +53,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-hybrid-extensions",
+        subcategory: "Luxury Extensions",
         label: "HYBRID EXTENSIONS",
         duration: "190 min",
         durationMinutes: 190,
@@ -55,6 +61,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-extensions-tapes-2-paquets-de-cheveux-soit-100-g-18-pouces-coiffage",
+        subcategory: "Luxury Extensions",
         label: "EXTENSIONS TAPES (2 paquets de cheveux soit 100 g 18 pouces + coiffage )",
         description: "Ce service inclut la pose la coupe et le coiffage lissage ou boucles. Deux paquets 18'' cheveux soit 150g pose + coiffage.",
         duration: "150 min",
@@ -63,6 +70,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-enlever-anneaux",
+        subcategory: "Luxury Extensions",
         label: "ENLEVER ANNEAUX",
         duration: "40 min",
         durationMinutes: 40,
@@ -70,6 +78,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-pose-perruque",
+        subcategory: "Perruques",
         label: "POSE PERRUQUE",
         duration: "70 min",
         durationMinutes: 70,
@@ -77,6 +86,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-perruque",
+        subcategory: "Perruques",
         label: "SOIN PERRUQUE",
         duration: "120 min",
         durationMinutes: 120,
@@ -84,6 +94,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-supplement-lisseur",
+        subcategory: "Brushing",
         label: "SUPPLEMENT LISSEUR",
         description: "Cette prestation ne peut être pris seule.",
         duration: "20 min",
@@ -92,6 +103,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-keratine",
+        subcategory: "Lissage",
         label: "SOIN KÉRATINE",
         duration: "210 min",
         durationMinutes: 210,
@@ -99,6 +111,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-supplement-coupe-pointes",
+        subcategory: "Coupe",
         label: "SUPPLEMENT COUPE POINTES",
         description: "Cette prestation ne peut être pris seule.",
         duration: "25 min",
@@ -107,6 +120,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-coupe-transformation",
+        subcategory: "Coupe",
         label: "COUPE TRANSFORMATION",
         duration: "40 min",
         durationMinutes: 40,
@@ -114,6 +128,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-tresses-cheveux",
+        subcategory: "Tresses",
         label: "TRESSES CHEVEUX +",
         description: "Ce service inclut les tresses sans les mèches.",
         duration: "60 min",
@@ -122,6 +137,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-shampoing-brushing-sur-extensions-tissages-shampoing-inclus-et-obligatoire",
+        subcategory: "Brushing",
         label: "SHAMPOING BRUSHING SUR EXTENSIONS / TISSAGES ( SHAMPOING INCLUS ET OBLIGATOIRE)",
         description: "Ce service inclut le shampoing suivi du brushing de votre tissage ou extension.",
         duration: "100 min",
@@ -130,6 +146,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-croisiere",
+        subcategory: "Nos Rituels Soins",
         label: "SOIN CROISIÈRE",
         duration: "90 min",
         durationMinutes: 90,
@@ -137,6 +154,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-extension-aux-fils-2-paquets",
+        subcategory: "Luxury Extensions",
         label: "EXTENSION AUX FILS 2 PAQUETS",
         duration: "240 min",
         durationMinutes: 240,
@@ -144,6 +162,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-botox-lissant",
+        subcategory: "Lissage",
         label: "SOIN BOTOX LISSANT",
         duration: "190 min",
         durationMinutes: 190,
@@ -151,6 +170,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-tissage-ouvert",
+        subcategory: "Tissage",
         label: "TISSAGE OUVERT",
         duration: "140 min",
         durationMinutes: 140,
@@ -158,6 +178,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-tissage-rajout",
+        subcategory: "Tissage",
         label: "TISSAGE RAJOUT",
         duration: "75 min",
         durationMinutes: 75,
@@ -165,6 +186,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-half-up-half-down",
+        subcategory: "Coiffure",
         label: "HALF UP HALF DOWN",
         description: "Ce service inclut la coiffure sans les mèches.",
         duration: "120 min",
@@ -173,6 +195,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-shampoing-brushing-shampoing-inclus-et-obligatoire",
+        subcategory: "Brushing",
         label: "SHAMPOING BRUSHING ( SHAMPOING INCLUS ET OBLIGATOIRE )",
         description: "Shampoing, protecteur thermique, brushing.",
         duration: "60 min",
@@ -181,6 +204,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-extensions-aux-fils-1-paquet",
+        subcategory: "Luxury Extensions",
         label: "EXTENSIONS AUX FILS 1 PAQUET",
         duration: "240 min",
         durationMinutes: 240,
@@ -188,6 +212,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-head-spa-ultimate-deep-relaxation",
+        subcategory: "Head Spa",
         label: "HEAD SPA ULTIMATE DEEP RELAXATION",
         duration: "240 min",
         durationMinutes: 240,
@@ -195,6 +220,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-extensions-tapes-3-paquets-de-cheveux-soit-150g-18-pouces-coiffage",
+        subcategory: "Luxury Extensions",
         label: "EXTENSIONS TAPES (3 PAQUETS DE CHEVEUX SOIT 150G 18 POUCES + COIFFAGE)",
         description: "Ce service inclut la pose la coupe et le coiffage lissage ou boucles. Trois paquets 18'' cheveux soit 150g pose + coiffage.",
         duration: "180 min",
@@ -203,6 +229,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-defrisage-professionnel-soin-fortifiant-anti-casse",
+        subcategory: "Défrisage",
         label: "DEFRISAGE PROFESSIONNEL + SOIN FORTIFIANT ANTI CASSE",
         description: "Cette prestation inclut une prestation du cuir chevelu , le défrisant avec ou sans soude, le soin et le shampoing neutralisant suivi du coiffage.",
         duration: "150 min",
@@ -211,6 +238,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-complet",
+        subcategory: "Nos Rituels Soins",
         label: "SOIN COMPLET",
         duration: "130 min",
         durationMinutes: 130,
@@ -218,6 +246,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-detox",
+        subcategory: "Nos Rituels Soins",
         label: "SOIN DETOX",
         duration: "140 min",
         durationMinutes: 140,
@@ -225,6 +254,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-botox-reparateur-non-lissant",
+        subcategory: "Nos Rituels Soins",
         label: "SOIN BOTOX REPARATEUR( NON LISSANT)",
         duration: "150 min",
         durationMinutes: 150,
@@ -232,6 +262,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-lissant-tanin",
+        subcategory: "Lissage",
         label: "SOIN LISSANT TANIN",
         duration: "190 min",
         durationMinutes: 190,
@@ -239,6 +270,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-silk-press",
+        subcategory: "Brushing",
         label: "SILK PRESS",
         duration: "180 min",
         durationMinutes: 180,
@@ -246,6 +278,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-extensions-anneaux-haute-couture-2-paquets",
+        subcategory: "Luxury Extensions",
         label: "EXTENSIONS ANNEAUX HAUTE COUTURE 2 PAQUETS",
         duration: "170 min",
         durationMinutes: 170,
@@ -253,6 +286,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-pose-clips",
+        subcategory: "Luxury Extensions",
         label: "POSE CLIPS",
         duration: "60 min",
         durationMinutes: 60,
@@ -260,6 +294,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-ponytail",
+        subcategory: "Coiffure",
         label: "PONYTAIL",
         description: "Ce service inclut la coiffure sans les mèches.",
         duration: "90 min",
@@ -268,6 +303,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-supplement-hand-feet-massage-massage-pieds-mains",
+        subcategory: "Head Spa",
         label: "SUPPLÉMENT HAND FEET MASSAGE/ MASSAGE PIEDS-MAINS",
         description: "Supplément pour le service Head spa.",
         duration: "15 min",
@@ -276,6 +312,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-croisiere-head-spa",
+        subcategory: "Head Spa",
         label: "SOIN CROISIERE HEAD SPA",
         duration: "120 min",
         durationMinutes: 120,
@@ -283,6 +320,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-pose-u-part-wig",
+        subcategory: "Perruques",
         label: "POSE U-PART WIG",
         duration: "70 min",
         durationMinutes: 70,
@@ -290,6 +328,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-tissage-versatile",
+        subcategory: "Tissage",
         label: "TISSAGE VERSATILE",
         duration: "120 min",
         durationMinutes: 120,
@@ -297,6 +336,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-shampoing-sechage",
+        subcategory: "Brushing",
         label: "SHAMPOING SÉCHAGE",
         duration: "60 min",
         durationMinutes: 60,
@@ -304,6 +344,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-flip-over-sew-in-tissage-ferme",
+        subcategory: "Tissage",
         label: "FLIP OVER SEW IN ( TISSAGE FERMÉ )",
         duration: "150 min",
         durationMinutes: 150,
@@ -311,6 +352,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-tissage-closure-behind-the-hair-line-new",
+        subcategory: "Tissage",
         label: "TISSAGE CLOSURE BEHIND THE HAIR LINE (NEW)",
         duration: "190 min",
         durationMinutes: 190,
@@ -318,6 +360,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-supplement-express-floral-facial-soin-du-visage-relaxant",
+        subcategory: "Nos Rituels Soins",
         label: "SUPPLÉMENT EXPRESS FLORAL FACIAL/ SOIN DU VISAGE RELAXANT",
         duration: "35 min",
         durationMinutes: 35,
@@ -325,6 +368,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-vip",
+        subcategory: "Nos Rituels Soins",
         label: "SOIN VIP",
         duration: "160 min",
         durationMinutes: 160,
@@ -332,6 +376,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-reparateur-olapex-new-in",
+        subcategory: "Nos Rituels Soins",
         label: "SOIN RÉPARATEUR OLAPEX ( NEW IN)",
         duration: "120 min",
         durationMinutes: 120,
@@ -821,30 +866,19 @@ export const bookingServices: BookingService[] = [
     ],
   },
   {
-    id: "mini-co",
-    label: "MINI & CO",
-    image: "/images/rdv/service-mini-co.png",
+    id: "mini-co-hair",
+    label: "HAIR",
+    image: "/images/rdv/service-coiffure.png",
     spotsLeft: 2,
     duration: "25 min – 3h",
-    description: "L'univers des enfants",
+    description: "Soin et coiffure enfants",
+    forChildren: true,
     subServices: [
-      {
-        id: "mini-co-mini-jely-manucure",
-        label: "MINI JELY MANUCURE",
-        duration: "30 min",
-        durationMinutes: 30,
-        price: 12000,
-      },
-      {
-        id: "mini-co-mini-cutie-pedicure",
-        label: "MINI CUTIE PÉDICURE",
-        duration: "35 min",
-        durationMinutes: 35,
-        price: 15000,
-      },
       {
         id: "mini-co-mini-hair-treat-mini-co",
         label: "MINI HAIR TREAT ( Mini&co)",
+        description:
+          "Un instant féerique pour les cheveux de votre princesse. On commence par un démêlage délicat en 4 parties, tout en douceur, pour ne pas faire mal aux petites filles.",
         duration: "90 min",
         durationMinutes: 90,
         price: 28000,
@@ -852,6 +886,8 @@ export const bookingServices: BookingService[] = [
       {
         id: "mini-co-mini-hair-treat-braids-mini-co",
         label: "MINI HAIR TREAT+ BRAIDS ( Mini&co)",
+        description:
+          "Un rituel complet pour des cheveux choyés et un style qui dure. Après le démêlage doux en 4 parties, on offre un shampoing tendre, un masque nourrissant, et un soin protecteur thermique avant un séchage léger.",
         duration: "180 min",
         durationMinutes: 180,
         price: 46000,
@@ -864,10 +900,10 @@ export const bookingServices: BookingService[] = [
         price: 10000,
       },
       {
-        id: "mini-co-supplement-brushing-enfant",
-        label: "SUPPLEMENT BRUSHING ENFANT",
-        duration: "60 min",
-        durationMinutes: 60,
+        id: "mini-co-definition-boucles-enfant",
+        label: "DEFINITION BOUCLES ENFANT",
+        duration: "30 min",
+        durationMinutes: 30,
         price: 9000,
       },
       {
@@ -878,13 +914,6 @@ export const bookingServices: BookingService[] = [
         price: 5000,
       },
       {
-        id: "mini-co-definition-boucles-enfant",
-        label: "DEFINITION BOUCLES ENFANT",
-        duration: "30 min",
-        durationMinutes: 30,
-        price: 9000,
-      },
-      {
         id: "mini-co-coupe-pointes-enfants-mini-co",
         label: "COUPE POINTES ENFANTS (Mini&co)",
         duration: "25 min",
@@ -892,11 +921,47 @@ export const bookingServices: BookingService[] = [
         price: 9000,
       },
       {
+        id: "mini-co-supplement-brushing-enfant",
+        label: "SUPPLEMENT BRUSHING ENFANT",
+        description: "Occasions spéciales uniquement.",
+        duration: "60 min",
+        durationMinutes: 60,
+        price: 9000,
+      },
+      {
         id: "mini-co-supplements-tresses-enfants-mini-and-co",
         label: "SUPPLÉMENTS TRESSES ENFANTS MINI AND CO",
+        description: "Sans mèches, 90 min max.",
         duration: "60 min",
         durationMinutes: 60,
         price: 19000,
+      },
+    ],
+  },
+  {
+    id: "mini-co-spa",
+    label: "MINI SPA",
+    image: "/images/rdv/service-spa.png",
+    spotsLeft: 2,
+    duration: "25 min – 3h",
+    description: "Beauté des mains et bien-être",
+    forChildren: true,
+    subServices: [
+      {
+        id: "mini-co-mini-jely-manucure",
+        label: "MINI JELLY MANUCURE",
+        description:
+          "Un moment ludique et tout doux pour les petites mains. Les doigts plongent dans un bain jelly coloré, à la texture amusante et sans parfum, pour une expérience sûre et agréable.",
+        duration: "30 min",
+        durationMinutes: 30,
+        price: 12000,
+      },
+      {
+        id: "mini-co-mini-cutie-pedicure",
+        label: "MINI CUTIE PÉDICURE",
+        duration: "35 min",
+        durationMinutes: 35,
+        price: 15000,
       },
     ],
   },

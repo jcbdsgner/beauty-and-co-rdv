@@ -101,7 +101,7 @@ export function AttendeesDialog({ open, onConfirm }: AttendeesDialogProps) {
             onChange={setAdults}
           />
           <Stepper
-            label="Enfants"
+            label="Enfants (Mini & Co)"
             hint="Petites filles de 4 à 10 ans"
             value={children}
             min={MIN_CHILDREN}
@@ -118,7 +118,7 @@ export function AttendeesDialog({ open, onConfirm }: AttendeesDialogProps) {
           type="button"
           disabled={!canConfirm}
           onClick={() => onConfirm({ adults, children })}
-          className="mt-6 w-full rounded-full bg-[#fdcfca] px-8 py-3 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-90"
+          className="mt-6 w-full rounded-full bg-[#fdcfca] px-8 py-3 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:cursor-not-allowed disabled:opacity-50 enabled:hover:opacity-90"
         >
           Continuer
         </button>

@@ -99,7 +99,7 @@ export default function ConnexionPage() {
 
           <button
             type="submit"
-            className="w-full rounded-full bg-[#fdcfca] px-4 py-3 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
+            className="w-full rounded-full bg-[#fdcfca] px-4 py-3 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
           >
             Se connecter
           </button>

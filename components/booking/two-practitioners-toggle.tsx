@@ -17,8 +17,8 @@ export function TwoPractitionersToggle({ enabled, onChange, totalMinutes }: TwoP
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-[17px] text-[#1d2939]">
-            Je veux <span className="font-bold text-[#886666]">gagner 2x plus de temps</span> avec 2
-            praticiens, gratuitement.
+            <span className="font-bold text-[#886666]">Terminez 2 fois plus vite</span> avec 2 praticiens,
+            gratuitement.
             {totalMinutes > 0 && (
               <>
                 {" "}

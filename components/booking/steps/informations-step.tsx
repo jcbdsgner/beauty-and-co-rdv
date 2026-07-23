@@ -21,7 +21,6 @@ const inputClassName =
 const genderOptions: { value: ContactInfo["sex"] & string; label: string }[] = [
   { value: "femme", label: "Femme" },
   { value: "homme", label: "Homme" },
-  { value: "autre", label: "Autre" },
 ];
 
 function GenderOption({
@@ -41,11 +40,11 @@ function GenderOption({
         aria-checked={selected}
         onClick={onSelect}
         className={cn(
-          "flex size-5 shrink-0 items-center justify-center rounded-full border transition",
+          "flex size-5 shrink-0 items-center justify-center rounded-lg border transition",
           selected ? "border-[#fdcfca] bg-[#fdcfca]" : "border-[#eaecf0] bg-white",
         )}
       >
-        {selected && <span className="size-2 rounded-full bg-white" />}
+        {selected && <span className="size-2 rounded-sm bg-white" />}
       </button>
       <span className="text-[17px] font-[450] text-[#344054]">{label}</span>
     </label>
@@ -98,7 +97,7 @@ export function InformationsStep({
           </div>
           <Link
             href={loginLink.href}
-            className="shrink-0 rounded-full bg-[#fdcfca] px-4 py-3 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
+            className="shrink-0 rounded-full bg-[#fdcfca] px-4 py-3 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
           >
             {loginLink.label}
           </Link>
@@ -230,7 +229,7 @@ export function InformationsStep({
           disabled={!canContinue}
           onClick={onContinue}
           className={cn(
-            "rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:opacity-50 enabled:hover:opacity-90",
+            "rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:opacity-50 enabled:hover:opacity-90",
           )}
         >
           Continuer

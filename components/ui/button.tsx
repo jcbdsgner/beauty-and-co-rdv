@@ -15,7 +15,7 @@ type ButtonProps = {
 
 const variants = {
   brand:
-    "bg-[var(--core-brand-color,#fdcfca)] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] hover:opacity-90",
+    "bg-[var(--core-brand-color,#fdcfca)] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] hover:opacity-90",
   outline:
     "bg-white border border-[var(--brand-color-1,rgba(216,184,180,0.5))] text-[var(--button-2-color,#a27576)] hover:bg-black/[.02]",
   gradient:
@@ -39,7 +39,7 @@ export function Button({
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full px-4 py-3 text-[17px] font-semibold transition",
+        "inline-flex items-center justify-center gap-2 rounded-full px-4 py-3 text-[17px] font-[450] transition",
         variants[variant],
         className,
       )}

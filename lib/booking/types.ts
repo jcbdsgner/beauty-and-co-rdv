@@ -20,7 +20,7 @@ export type CartItem = {
   durationMinutes: number;
 };
 
-export type Sex = "femme" | "homme" | "autre";
+export type Sex = "femme" | "homme";
 
 export type ContactInfo = {
   firstName: string;

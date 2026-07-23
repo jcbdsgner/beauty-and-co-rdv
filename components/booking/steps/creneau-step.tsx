@@ -67,7 +67,7 @@ export function CreneauStep({
                     className={cn(
                       "rounded-lg px-4 py-2 text-[17px] font-bold transition",
                       selectedLocationId === location.id
-                        ? "bg-[#C29892]/50 text-[#886666] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)]"
+                        ? "bg-[#FDCFCB] text-[#886666] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)]"
                         : "border border-[#eaecf0] bg-white text-[#475467]",
                     )}
                   >
@@ -93,9 +93,9 @@ export function CreneauStep({
                       type="button"
                       onClick={() => onSelectTime(slot)}
                       className={cn(
-                        "rounded-lg px-3 py-2 text-[19px] font-bold transition",
+                        "rounded-lg px-3 py-2 text-[17px] font-bold transition",
                         selectedTime === slot
-                          ? "bg-[#C29892]/50 text-[#886666] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)]"
+                          ? "bg-[#FDCFCB] text-[#886666] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)]"
                           : "border border-[#eaecf0] bg-white text-[#475467]",
                       )}
                     >
@@ -140,7 +140,7 @@ export function CreneauStep({
           type="button"
           disabled={!canContinue}
           onClick={onContinue}
-          className="rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:opacity-50 enabled:hover:opacity-90"
+          className="rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:opacity-50 enabled:hover:opacity-90"
         >
           Continuer
         </button>

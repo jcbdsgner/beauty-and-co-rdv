@@ -3,26 +3,26 @@ import { boutiqueHighlights } from "@/lib/data/boutique-highlights";
 import { formatPrice } from "@/lib/booking/format";
 
 type BoutiquePreviewSectionProps = {
-  reservedProductIds: Set<string>;
-  onToggleProduct: (id: string) => void;
+  productQuantities: Record<string, number>;
+  onQuantityChange: (id: string, quantity: number) => void;
 };
 
 export function BoutiquePreviewSection({
-  reservedProductIds,
-  onToggleProduct,
+  productQuantities,
+  onQuantityChange,
 }: BoutiquePreviewSectionProps) {
   return (
     <div className="rounded-2xl border border-[#f2f4f7] bg-white p-6">
       <h3 className="font-[family-name:var(--font-prata)] text-[25px] font-bold text-[#806562]">
-        Emportez la beauté du salon chez vous
+        Le salon continue chez vous
       </h3>
       <p className="mt-1 text-[17px] text-[#667085]">
-        Nos essentiels capillaires, réservés sur place et prêts à repartir avec vous.
+        Réservez les mêmes extensions et essentiels capillaires que nos coiffeuses utilisent, avant de partir.
       </p>
 
       <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {boutiqueHighlights.map((product) => {
-          const isReserved = reservedProductIds.has(product.id);
+          const quantity = productQuantities[product.id] ?? 0;
           return (
             <div
               key={product.id}
@@ -48,18 +48,37 @@ export function BoutiquePreviewSection({
                   )}
                 </span>
                 {product.inStock ? (
-                  <button
-                    type="button"
-                    onClick={() => onToggleProduct(product.id)}
-                    aria-pressed={isReserved}
-                    className={
-                      isReserved
-                        ? "mt-auto rounded-full border border-[#886666] bg-[#886666] py-2 text-[17px] font-[450] text-white transition hover:opacity-90"
-                        : "mt-auto rounded-full border border-[#806562] bg-white py-2 text-[17px] font-[450] text-[#806562] transition hover:bg-[#806562]/5"
-                    }
-                  >
-                    {isReserved ? "Réservé" : "Réserver"}
-                  </button>
+                  quantity > 0 ? (
+                    <div className="mt-auto flex items-center justify-center gap-1 rounded-full border border-[#f2f4f7] bg-white p-1">
+                      <button
+                        type="button"
+                        onClick={() => onQuantityChange(product.id, quantity - 1)}
+                        aria-label={`Diminuer la quantité — ${product.name}`}
+                        className="flex size-8 shrink-0 items-center justify-center rounded-full transition hover:opacity-70"
+                      >
+                        <Image src="/images/rdv/icon-stepper-minus.svg" alt="" width={26} height={26} />
+                      </button>
+                      <span className="min-w-[44px] rounded-md border border-[#f2f4f7] px-2.5 py-1 text-center text-[19px] font-bold text-[#1d2939]">
+                        {quantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => onQuantityChange(product.id, quantity + 1)}
+                        aria-label={`Augmenter la quantité — ${product.name}`}
+                        className="flex size-8 shrink-0 items-center justify-center rounded-full transition hover:opacity-70"
+                      >
+                        <Image src="/images/rdv/icon-stepper-plus.svg" alt="" width={26} height={26} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => onQuantityChange(product.id, 1)}
+                      className="mt-auto rounded-full border border-[#806562] bg-white py-2 text-[17px] font-[450] text-[#806562] transition hover:bg-[#806562]/5"
+                    >
+                      Réserver
+                    </button>
+                  )
                 ) : (
                   <button
                     type="button"

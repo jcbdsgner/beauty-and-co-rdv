@@ -35,7 +35,7 @@ export function CategoryTiles({
           >
             <span
               className={cn(
-                "absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-full border-[1.5px] transition",
+                "absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-lg border-[1.5px] transition",
                 checked ? "border-[#886666] bg-[#886666]" : "border-[#d0d5dd] bg-white",
               )}
             >
@@ -50,7 +50,7 @@ export function CategoryTiles({
                 className={service.iconOnly ? undefined : "size-full object-cover"}
               />
             </span>
-            <span className="flex min-h-10 items-center justify-center text-[17px] font-bold text-[#1d2939]">
+            <span className="flex min-h-10 items-center justify-center text-[17px] font-bold text-[#1d2939] [text-box-edge:cap_alphabetic] [text-box-trim:trim-both]">
               {service.label}
             </span>
           </button>

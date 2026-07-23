@@ -68,7 +68,7 @@ export function BookingCalendar({ selectedDate, onSelectDate }: BookingCalendarP
                 className={cn(
                   "flex size-10 items-center justify-center rounded-full text-[17px] font-bold transition",
                   isSelected
-                    ? "bg-[#C29892]/50 text-[#886666] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)]"
+                    ? "bg-[#FDCFCB] text-[#886666] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)]"
                     : disabled
                       ? "text-[#64748b] opacity-40"
                       : "text-[#344054] hover:bg-[#f7f8fa]",

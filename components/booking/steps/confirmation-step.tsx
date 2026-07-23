@@ -127,14 +127,28 @@ export function ConfirmationStep({
   const hasQuoteOnlyItems = cartItems.some((item) => item.price === undefined);
 
   const [reservedDrinkIds, setReservedDrinkIds] = useState<Set<string>>(new Set());
-  const [reservedProductIds, setReservedProductIds] = useState<Set<string>>(new Set());
+  const [productQuantities, setProductQuantities] = useState<Record<string, number>>({});
   const drinksTotal = barBeautyDrinks
     .filter((drink) => reservedDrinkIds.has(drink.id))
     .reduce((sum, drink) => sum + drink.price, 0);
-  const productsTotal = boutiqueHighlights
-    .filter((product) => reservedProductIds.has(product.id))
-    .reduce((sum, product) => sum + product.price, 0);
+  const productsTotal = boutiqueHighlights.reduce(
+    (sum, product) => sum + (productQuantities[product.id] ?? 0) * product.price,
+    0,
+  );
   const grandTotal = totalPrice + drinksTotal + productsTotal;
+
+  const handleProductQuantityChange = (id: string, quantity: number) => {
+    setProductQuantities((prev) => {
+      const next = { ...prev };
+      if (quantity <= 0) {
+        delete next[id];
+      } else {
+        next[id] = quantity;
+      }
+      return next;
+    });
+  };
+  const hasCoiffure = cartItems.some((item) => item.categoryId === "coiffure");
 
   return (
     <div>
@@ -227,19 +241,6 @@ export function ConfirmationStep({
               </span>
             </div>
           </div>
-
-          <div className="mt-4 border-t border-[#f2f4f7] pt-4">
-            <p className="text-[19px] font-bold text-[#101828]">
-              Note pour le salon <span className="text-[17px] text-[#667085]">(optionnel)</span>
-            </p>
-            <textarea
-              value={note}
-              onChange={(event) => onNoteChange(event.target.value)}
-              placeholder="Une précision, une demande particulière…"
-              rows={3}
-              className="mt-3 w-full rounded-xl border border-[#e5e7eb] p-4 text-[17px] text-[#1d2939] outline-none focus:border-[#886666]"
-            />
-          </div>
         </div>
       </div>
 
@@ -248,18 +249,28 @@ export function ConfirmationStep({
           reservedDrinkIds={reservedDrinkIds}
           onToggleDrink={(id) => setReservedDrinkIds((prev) => toggleInSet(prev, id))}
         />
-        <BoutiquePreviewSection
-          reservedProductIds={reservedProductIds}
-          onToggleProduct={(id) => setReservedProductIds((prev) => toggleInSet(prev, id))}
-        />
+        {hasCoiffure && (
+          <BoutiquePreviewSection
+            productQuantities={productQuantities}
+            onQuantityChange={handleProductQuantityChange}
+          />
+        )}
+
+        <div className="rounded-2xl border border-[#f2f4f7] bg-white p-6">
+          <p className="text-[19px] font-bold text-[#101828]">
+            Note pour le salon <span className="text-[17px] text-[#667085]">(optionnel)</span>
+          </p>
+          <textarea
+            value={note}
+            onChange={(event) => onNoteChange(event.target.value)}
+            placeholder="Une précision, une demande particulière…"
+            rows={3}
+            className="mt-3 w-full rounded-xl border border-[#e5e7eb] p-4 text-[17px] text-[#1d2939] outline-none focus:border-[#886666]"
+          />
+        </div>
 
         <div className="flex items-center justify-between gap-4 rounded-lg bg-gradient-to-r from-[#806562] to-[rgba(128,101,98,0.9)] p-4">
-          <div className="flex items-baseline gap-2">
-            <span className="text-[21px] font-bold whitespace-nowrap text-white">Total</span>
-            <span className="text-[17px] whitespace-nowrap text-white/80">
-              ({formatDurationMinutes(totalMinutes)})
-            </span>
-          </div>
+          <span className="text-[21px] font-bold whitespace-nowrap text-white">Total</span>
           <span className="text-[23px] font-bold whitespace-nowrap text-white">
             {formatPrice(grandTotal)}
             {hasQuoteOnlyItems && "+"}
@@ -301,7 +312,7 @@ export function ConfirmationStep({
           type="button"
           disabled={!canConfirm}
           onClick={onConfirm}
-          className="w-full rounded-full bg-[#fdcfca] px-8 py-3 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:opacity-50 enabled:hover:opacity-90 sm:w-auto sm:min-w-[320px] sm:py-2"
+          className="w-full rounded-full bg-[#fdcfca] px-8 py-3 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:opacity-50 enabled:hover:opacity-90 sm:w-auto sm:min-w-[320px] sm:py-2"
         >
           Payer l&apos;acompte (5 000 FCFA) et confirmer
         </button>

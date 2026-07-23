@@ -4,6 +4,6 @@ export type BookingLocation = {
 };
 
 export const bookingLocations: BookingLocation[] = [
-  { id: "sea-plaza", label: "SEA PLAZA" },
-  { id: "almadies", label: "ALMADIES" },
+  { id: "sea-plaza", label: "Sea Plaza" },
+  { id: "almadies", label: "Almadies" },
 ];

@@ -52,7 +52,7 @@ export function BookingConfirmedDialog({ open, email, onClose, onGoHome }: Booki
           <button
             type="button"
             onClick={onGoHome}
-            className="rounded-full bg-[#fdcfca] px-6 py-2 text-[17px] font-[450] text-[#886666] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
+            className="rounded-full bg-[#fdcfca] px-6 py-2 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
           >
             Retourner sur l&apos;accueil
           </button>
