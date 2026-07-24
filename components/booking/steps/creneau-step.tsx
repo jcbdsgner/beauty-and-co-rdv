@@ -120,7 +120,7 @@ export function CreneauStep({
         )}
       </div>
 
-      {selectedLocationId && (
+      {selectedTime && (
         <TwoPractitionersToggle
           enabled={twoPractitioners}
           onChange={onToggleTwoPractitioners}

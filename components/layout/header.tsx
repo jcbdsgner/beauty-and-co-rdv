@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
-import { ServicesDropdown } from "@/components/layout/services-dropdown";
+import { ChevronIcon, ServicesDropdown } from "@/components/layout/services-dropdown";
 import { footerServices } from "@/lib/data/services";
 import { bookingLink, loginLink } from "@/lib/data/nav";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,9 @@ import { cn } from "@/lib/utils";
 const navLinkClassName = "font-[family-name:var(--font-nav)] text-[18px] text-[var(--on-core-brand-color,#2d2d2d)]";
 
 export function Header() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const isTarifs = pathname === "/tarifs";
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
 
@@ -35,12 +38,24 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-8 lg:flex">
-          <Link href="/" className={navLinkClassName}>
+          <Link
+            href="/"
+            className={cn(navLinkClassName, "relative", isHome && "text-[var(--core-brand-color,#fdcfca)]")}
+          >
             Accueil
+            {isHome && (
+              <span className="absolute inset-x-0 -bottom-0.5 h-[2px] rounded-full bg-[var(--core-brand-color,#fdcfca)]" />
+            )}
           </Link>
           <ServicesDropdown />
-          <Link href="/tarifs" className={navLinkClassName}>
+          <Link
+            href="/tarifs"
+            className={cn(navLinkClassName, "relative", isTarifs && "text-[var(--core-brand-color,#fdcfca)]")}
+          >
             Grille tarifaire
+            {isTarifs && (
+              <span className="absolute inset-x-0 -bottom-0.5 h-[2px] rounded-full bg-[var(--core-brand-color,#fdcfca)]" />
+            )}
           </Link>
         </nav>
       </div>
@@ -110,14 +125,20 @@ export function Header() {
           <Link
             href="/"
             onClick={() => setMenuOpen(false)}
-            className="rounded-lg px-2 py-3 font-[family-name:var(--font-nav)] text-[19px] text-[#2d2d2d]"
+            className={cn(
+              "rounded-lg px-2 py-3 font-[family-name:var(--font-nav)] text-[19px]",
+              isHome ? "text-[var(--core-brand-color,#fdcfca)]" : "text-[#2d2d2d]",
+            )}
           >
             Accueil
           </Link>
           <Link
             href="/tarifs"
             onClick={() => setMenuOpen(false)}
-            className="rounded-lg px-2 py-3 font-[family-name:var(--font-nav)] text-[19px] text-[#2d2d2d]"
+            className={cn(
+              "rounded-lg px-2 py-3 font-[family-name:var(--font-nav)] text-[19px]",
+              isTarifs ? "text-[var(--core-brand-color,#fdcfca)]" : "text-[#2d2d2d]",
+            )}
           >
             Grille tarifaire
           </Link>
@@ -126,27 +147,24 @@ export function Header() {
             type="button"
             onClick={() => setServicesOpen((v) => !v)}
             aria-expanded={servicesOpen}
-            className="mt-3 flex items-center justify-between rounded-lg px-2 py-3 font-[family-name:var(--font-nav)] text-[19px] text-[#2d2d2d]"
+            className={cn(
+              "mt-3 flex items-center justify-between rounded-lg px-2 py-3 font-[family-name:var(--font-nav)] text-[19px] transition-colors",
+              servicesOpen ? "text-[var(--core-brand-color,#fdcfca)]" : "text-[#2d2d2d]",
+            )}
           >
             Services
-            <Image
-              src="/images/accueil/icon-chevron-left.svg"
-              alt=""
-              width={24}
-              height={24}
-              className={cn("transition-transform", servicesOpen ? "rotate-90" : "-rotate-90")}
-            />
+            <ChevronIcon className={cn("transition-transform", servicesOpen ? "rotate-90" : "-rotate-90")} />
           </button>
           {servicesOpen && (
             <div className="flex flex-col">
               {footerServices.map((service) => (
                 <Link
-                  key={service}
-                  href="/services"
+                  key={service.slug}
+                  href={`/services/${service.slug}`}
                   onClick={() => setMenuOpen(false)}
                   className="rounded-lg px-4 py-2.5 text-[17px] text-[#2d2d2d]"
                 >
-                  {service}
+                  {service.label}
                 </Link>
               ))}
             </div>

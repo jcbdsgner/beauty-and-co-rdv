@@ -13,16 +13,16 @@ export function TwoPractitionersToggle({ enabled, onChange, totalMinutes }: TwoP
   const halvedMinutes = Math.round(totalMinutes / 2);
 
   return (
-    <div className="mt-4 rounded-2xl bg-[rgba(253,207,202,0.35)] p-[18px]">
+    <div className={cn("mt-4 rounded-2xl bg-[rgba(253,207,202,0.35)] p-[18px]", !enabled && "attention-shake-once")}>
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-[17px] text-[#1d2939]">
-            <span className="font-bold text-[#886666]">Terminez 2 fois plus vite</span> avec 2 praticiens,
+            <span className="font-bold text-[#886666]">Gagner 2 fois plus de temps</span> avec 2 praticiens,
             gratuitement.
             {totalMinutes > 0 && (
               <>
                 {" "}
-                Votre rendez-vous passe de {formatDurationMinutes(totalMinutes)} à{" "}
+                Votre rendez-vous passera de {formatDurationMinutes(totalMinutes)} à{" "}
                 <span className="font-bold">{formatDurationMinutes(halvedMinutes)}</span>.
               </>
             )}

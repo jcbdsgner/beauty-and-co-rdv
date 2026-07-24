@@ -18,7 +18,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-cabinet-grotesk);
   --font-heading: var(--font-prata);
-  --font-nav: var(--font-prata);
+  --font-nav: var(--font-cabinet-grotesk);
   --font-display: var(--font-benedict);
 }
 
@@ -90,5 +90,73 @@ input:-webkit-autofill:active {
   }
   50% {
     transform: translate(2.48%, 7.43%) rotate(-2.41deg);
+  }
+}
+
+/* Draws the eye to a booking block the visitor hasn't interacted with yet (note field,
+   two-practitioners toggle, suggestion upsell). The shake is parked at the tail of a longer
+   cycle (rather than looping continuously) so it reads as an occasional nudge instead of a
+   constant distraction. */
+.attention-shake {
+  animation: attention-shake-wiggle 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes attention-shake-wiggle {
+  0%,
+  80%,
+  100% {
+    transform: rotate(0deg) translateX(0);
+  }
+  83% {
+    transform: rotate(-3deg) translateX(-6px);
+  }
+  86% {
+    transform: rotate(3deg) translateX(6px);
+  }
+  89% {
+    transform: rotate(-2.5deg) translateX(-5px);
+  }
+  92% {
+    transform: rotate(2.5deg) translateX(5px);
+  }
+  95% {
+    transform: rotate(-1deg) translateX(-2px);
+  }
+  97% {
+    transform: rotate(1deg) translateX(2px);
+  }
+}
+
+/* Same full amplitude as .attention-shake, but plays once on mount instead of looping —
+   for blocks that appear as the direct result of an action (e.g. picking a time slot),
+   where a repeating shake would be redundant with the moment already drawing the eye. */
+.attention-shake-once {
+  animation: attention-shake-wiggle-once 0.6s ease-in-out 1;
+  transform-origin: center;
+}
+
+@keyframes attention-shake-wiggle-once {
+  0%,
+  100% {
+    transform: rotate(0deg) translateX(0);
+  }
+  15% {
+    transform: rotate(-3deg) translateX(-6px);
+  }
+  30% {
+    transform: rotate(3deg) translateX(6px);
+  }
+  45% {
+    transform: rotate(-2.5deg) translateX(-5px);
+  }
+  60% {
+    transform: rotate(2.5deg) translateX(5px);
+  }
+  75% {
+    transform: rotate(-1deg) translateX(-2px);
+  }
+  90% {
+    transform: rotate(1deg) translateX(2px);
   }
 }

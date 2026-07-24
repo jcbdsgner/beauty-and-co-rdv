@@ -57,7 +57,9 @@ export function Footer() {
           </p>
           <ul className="flex flex-col text-[15px] font-[500] text-[var(--text-secondary,#344054)]">
             {footerServices.map((service) => (
-              <li key={service}>{service}</li>
+              <li key={service.slug}>
+                <Link href={`/services/${service.slug}`}>{service.label}</Link>
+              </li>
             ))}
           </ul>
         </div>

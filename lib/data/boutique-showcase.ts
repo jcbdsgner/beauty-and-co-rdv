@@ -46,4 +46,14 @@ export const boutiqueShowcaseProducts: BoutiqueShowcaseProduct[] = [
     colors: ["#a27576", "#000000", "#b39922"],
     extraColors: 2,
   },
+  {
+    id: "so-b-deep-wave-2",
+    name: "So B Deep Wave",
+    image: "/images/accueil/product-so-b-deep-wave.png",
+    price: 56000,
+    rating: 3.5,
+    reviewCount: 12,
+    colors: ["#a27576", "#000000", "#b39922"],
+    extraColors: 2,
+  },
 ];

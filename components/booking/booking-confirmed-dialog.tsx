@@ -1,9 +1,5 @@
 "use client";
 
-import { externalServices } from "@/lib/data/external-services";
-
-const giftCardHref = externalServices.find((service) => service.key === "carte-cadeau")!.href;
-
 type BookingConfirmedDialogProps = {
   open: boolean;
   email: string;
@@ -36,7 +32,7 @@ export function BookingConfirmedDialog({ open, email, onClose, onGoHome }: Booki
           </span>
           <div className="pr-6">
             <h2 id="booking-confirmed-title" className="text-[21px] font-bold text-[#101828]">
-              Rendez-vous confirmé !
+              Votre rendez-vous confirmé !
             </h2>
             <p className="mt-1 text-[17px] text-[#475467]">
               Merci d&apos;avoir choisi Beauty and Co. Un email de confirmation a été envoyé à {email}.
@@ -52,21 +48,13 @@ export function BookingConfirmedDialog({ open, email, onClose, onGoHome }: Booki
           </button>
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-3 p-6 sm:flex-row">
-          <a
-            href={giftCardHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-center text-[17px] font-[450] whitespace-nowrap text-[#886666] transition hover:bg-black/[.02] sm:w-auto"
-          >
-            Offrir une carte cadeau
-          </a>
+        <div className="flex items-center justify-end p-6">
           <button
             type="button"
             onClick={onGoHome}
-            className="w-full rounded-full bg-[#fdcfca] px-6 py-2 text-[17px] font-[450] whitespace-nowrap text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90 sm:w-auto"
+            className="rounded-full bg-[#fdcfca] px-[30px] py-2 text-[17px] font-[450] whitespace-nowrap text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
           >
-            Retourner sur l&apos;accueil
+            Terminé
           </button>
         </div>
       </div>

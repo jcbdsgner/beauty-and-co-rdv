@@ -1,17 +1,31 @@
 export type HeroService = {
   label: string;
+  slug: string;
   icons: string[];
 };
 
 export const heroServices: HeroService[] = [
-  { label: "Coiffure", icons: ["/images/accueil/service-coiffure.png"] },
-  { label: "SPA", icons: ["/images/accueil/service-spa.png"] },
-  { label: "Épilation", icons: ["/images/accueil/service-epilation.png"] },
-  { label: "Cils", icons: ["/images/accueil/service-cils.png"] },
+  { label: "Coiffure", slug: "coiffure", icons: ["/images/accueil/service-coiffure.png"] },
+  { label: "SPA", slug: "spa", icons: ["/images/accueil/service-spa.png"] },
+  { label: "Épilation", slug: "epilation", icons: ["/images/accueil/service-epilation.png"] },
+  { label: "Cils", slug: "cils", icons: ["/images/accueil/service-cils.png"] },
   {
     label: "Manicure et Pédicure",
+    slug: "manucure-pedicure",
     icons: ["/images/accueil/service-manucure.png", "/images/accueil/service-pedicure.png"],
   },
 ];
 
-export const footerServices = ["Coiffure", "SPA", "Manicure et pédicure", "Visage", "Épilation", "Cils"];
+export type FooterService = {
+  label: string;
+  slug: string;
+};
+
+export const footerServices: FooterService[] = [
+  { label: "Coiffure", slug: "coiffure" },
+  { label: "SPA", slug: "spa" },
+  { label: "Manicure et pédicure", slug: "manucure-pedicure" },
+  { label: "Visage", slug: "visage" },
+  { label: "Épilation", slug: "epilation" },
+  { label: "Cils", slug: "cils" },
+];

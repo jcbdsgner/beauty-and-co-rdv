@@ -17,7 +17,7 @@ const variants = {
   brand:
     "bg-[var(--core-brand-color,#fdcfca)] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] hover:opacity-90",
   outline:
-    "bg-white border border-[var(--brand-color-1,rgba(216,184,180,0.5))] text-[var(--button-2-color,#a27576)] hover:bg-black/[.02]",
+    "bg-white border border-[var(--brand-color-1,rgba(216,184,180,0.5))] text-[var(--button-2-color,#a27576)] hover:bg-[#f5f5f5]",
   gradient:
     "bg-gradient-to-r from-[#fead40] via-[#fe6020] via-[31.5%] to-[#f6017f] to-[89.5%] text-white hover:opacity-90",
   lilac:

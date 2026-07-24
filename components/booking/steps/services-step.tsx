@@ -135,6 +135,7 @@ export function ServicesStep({
 
   // Cross-sell nudge, shared across the whole booking (not per person) — see nextSuggestions.
   const [dismissedUpsell, setDismissedUpsell] = useState(false);
+  const [hasInteractedWithSuggestions, setHasInteractedWithSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   // Adjust state during render (React's documented alternative to an Effect here, using state
   // rather than a ref so it stays render-safe): comparing against the previous `selections`
@@ -159,6 +160,7 @@ export function ServicesStep({
 
   const handleSuggestionToggle = (personId: string, subServiceId: string) => {
     setPendingSelfToggle(true);
+    setHasInteractedWithSuggestions(true);
     onToggleSubService(personId, subServiceId);
   };
 
@@ -263,12 +265,20 @@ export function ServicesStep({
       </div>
 
       {showUpsell && (
-        <div className="mt-6 rounded-2xl border border-[rgba(136,102,102,0.15)] bg-[rgba(237,220,218,0.25)] px-4 py-3">
+        <div
+          className={cn(
+            "mt-6 rounded-2xl border border-[rgba(136,102,102,0.15)] bg-[rgba(237,220,218,0.25)] px-4 py-3",
+            !hasInteractedWithSuggestions && "attention-shake",
+          )}
+        >
           <div className="flex items-center justify-between gap-4">
             <p className="text-[15px] font-[450] text-[#667085]">Beaucoup ajoutent aussi :</p>
             <button
               type="button"
-              onClick={() => setDismissedUpsell(true)}
+              onClick={() => {
+                setDismissedUpsell(true);
+                setHasInteractedWithSuggestions(true);
+              }}
               aria-label="Fermer la suggestion"
               className="shrink-0 text-[19px] leading-none text-[#98a2b3] transition hover:text-[#667085]"
             >

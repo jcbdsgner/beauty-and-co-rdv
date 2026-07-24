@@ -32,7 +32,7 @@ export function GiftCard() {
             prestations.
           </p>
           <Button href={giftCardHref} external>
-            Offrir la carte cadeau
+            Je découvre la carte cadeau
           </Button>
         </div>
       </div>

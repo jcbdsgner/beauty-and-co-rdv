@@ -7,6 +7,7 @@ import { barBeautyDrinks } from "@/lib/data/bar-beauty";
 import { boutiqueHighlights } from "@/lib/data/boutique-highlights";
 import { emptyContactInfo, type CartItem, type ContactInfo, type PersonTab } from "@/lib/booking/types";
 import { addMinutes, formatDurationMinutes, formatPrice } from "@/lib/booking/format";
+import { cn } from "@/lib/utils";
 
 function toggleInSet(set: Set<string>, id: string): Set<string> {
   const next = new Set(set);
@@ -126,15 +127,19 @@ export function ConfirmationStep({
   const totalPrice = cartItems.reduce((sum, item) => sum + (item.price ?? 0), 0);
   const hasQuoteOnlyItems = cartItems.some((item) => item.price === undefined);
 
+  const [hasFocusedNote, setHasFocusedNote] = useState(false);
   const [reservedDrinkIds, setReservedDrinkIds] = useState<Set<string>>(new Set());
   const [productQuantities, setProductQuantities] = useState<Record<string, number>>({});
+  const [selectedSizeByProductId, setSelectedSizeByProductId] = useState<Record<string, string>>({});
   const drinksTotal = barBeautyDrinks
     .filter((drink) => reservedDrinkIds.has(drink.id))
     .reduce((sum, drink) => sum + drink.price, 0);
-  const productsTotal = boutiqueHighlights.reduce(
-    (sum, product) => sum + (productQuantities[product.id] ?? 0) * product.price,
-    0,
-  );
+  const productsTotal = boutiqueHighlights.reduce((sum, product) => {
+    const quantity = productQuantities[product.id] ?? 0;
+    const selectedSize = selectedSizeByProductId[product.id] ?? product.sizes[0].label;
+    const activeSize = product.sizes.find((size) => size.label === selectedSize) ?? product.sizes[0];
+    return sum + quantity * activeSize.price;
+  }, 0);
   const grandTotal = totalPrice + drinksTotal + productsTotal;
 
   const handleProductQuantityChange = (id: string, quantity: number) => {
@@ -148,6 +153,9 @@ export function ConfirmationStep({
       return next;
     });
   };
+  const handleProductSizeChange = (id: string, size: string) => {
+    setSelectedSizeByProductId((prev) => ({ ...prev, [id]: size }));
+  };
   const hasCoiffure = cartItems.some((item) => item.categoryId === "coiffure");
 
   return (
@@ -158,38 +166,59 @@ export function ConfirmationStep({
       <div className="mt-6 h-px bg-[#eaecf0]" />
 
       <div className="mt-6 grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-[#f2f4f7] bg-white p-6">
-          <h3 className="text-[21px] font-bold text-[#101828]">Détails de votre rendez-vous</h3>
-          <div className="mt-4 flex flex-wrap gap-2.5">
-            <DetailRow
-              icon="/images/rdv/icon-calendar.svg"
-              label="Date"
-              value={date ? date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "—"}
+        <div className="flex flex-col gap-4">
+          <div className="rounded-2xl border border-[#f2f4f7] bg-white p-6">
+            <h3 className="text-[21px] font-bold text-[#101828]">Détails de votre rendez-vous</h3>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              <DetailRow
+                icon="/images/rdv/icon-calendar.svg"
+                label="Date"
+                value={date ? date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "—"}
+              />
+              <DetailRow
+                icon="/images/rdv/icon-clock.svg"
+                label="Heure"
+                value={time ? `${time}${totalMinutes > 0 ? ` — ${addMinutes(time, totalMinutes)}` : ""}` : "—"}
+              />
+              <DetailRow icon="/images/rdv/icon-location.svg" label="Lieu" value={locationLabel ?? "—"} />
+              {adults.map((adult, index) => {
+                const info = contactInfoByPerson[adult.id] ?? emptyContactInfo;
+                const suffix = adults.length > 1 ? ` — ${adult.label}${index === 0 ? " (contact principal)" : ""}` : "";
+                return (
+                  <Fragment key={adult.id}>
+                    <DetailRow
+                      icon="/images/rdv/icon-user.svg"
+                      label={`Prénom et nom${suffix}`}
+                      value={`${info.firstName} ${info.lastName}`.trim() || "—"}
+                    />
+                    <DetailRow
+                      icon="/images/rdv/icon-envelope.svg"
+                      label={`Email${suffix}`}
+                      value={info.email || "—"}
+                    />
+                  </Fragment>
+                );
+              })}
+            </div>
+          </div>
+
+          <div
+            className={cn(
+              "rounded-2xl border border-[#f2f4f7] bg-white p-6",
+              !hasFocusedNote && "attention-shake",
+            )}
+          >
+            <p className="text-[19px] font-bold text-[#101828]">
+              Note pour le salon <span className="text-[17px] text-[#667085]">(optionnel)</span>
+            </p>
+            <textarea
+              value={note}
+              onChange={(event) => onNoteChange(event.target.value)}
+              onFocus={() => setHasFocusedNote(true)}
+              placeholder="Une précision, une demande particulière…"
+              rows={3}
+              className="mt-3 w-full rounded-xl border border-[#e5e7eb] p-4 text-[17px] text-[#1d2939] outline-none focus:border-[#886666]"
             />
-            <DetailRow
-              icon="/images/rdv/icon-clock.svg"
-              label="Heure"
-              value={time ? `${time}${totalMinutes > 0 ? ` — ${addMinutes(time, totalMinutes)}` : ""}` : "—"}
-            />
-            <DetailRow icon="/images/rdv/icon-location.svg" label="Lieu" value={locationLabel ?? "—"} />
-            {adults.map((adult, index) => {
-              const info = contactInfoByPerson[adult.id] ?? emptyContactInfo;
-              const suffix = adults.length > 1 ? ` — ${adult.label}${index === 0 ? " (contact principal)" : ""}` : "";
-              return (
-                <Fragment key={adult.id}>
-                  <DetailRow
-                    icon="/images/rdv/icon-user.svg"
-                    label={`Prénom et nom${suffix}`}
-                    value={`${info.firstName} ${info.lastName}`.trim() || "—"}
-                  />
-                  <DetailRow
-                    icon="/images/rdv/icon-envelope.svg"
-                    label={`Email${suffix}`}
-                    value={info.email || "—"}
-                  />
-                </Fragment>
-              );
-            })}
           </div>
         </div>
 
@@ -253,25 +282,14 @@ export function ConfirmationStep({
           <BoutiquePreviewSection
             productQuantities={productQuantities}
             onQuantityChange={handleProductQuantityChange}
+            selectedSizeByProductId={selectedSizeByProductId}
+            onSizeChange={handleProductSizeChange}
           />
         )}
 
-        <div className="rounded-2xl border border-[#f2f4f7] bg-white p-6">
-          <p className="text-[19px] font-bold text-[#101828]">
-            Note pour le salon <span className="text-[17px] text-[#667085]">(optionnel)</span>
-          </p>
-          <textarea
-            value={note}
-            onChange={(event) => onNoteChange(event.target.value)}
-            placeholder="Une précision, une demande particulière…"
-            rows={3}
-            className="mt-3 w-full rounded-xl border border-[#e5e7eb] p-4 text-[17px] text-[#1d2939] outline-none focus:border-[#886666]"
-          />
-        </div>
-
-        <div className="flex items-center justify-between gap-4 rounded-lg bg-gradient-to-r from-[#806562] to-[rgba(128,101,98,0.9)] p-4">
-          <span className="text-[21px] font-bold whitespace-nowrap text-white">Total</span>
-          <span className="text-[23px] font-bold whitespace-nowrap text-white">
+        <div className="flex items-center justify-between gap-4 rounded-lg bg-gradient-to-r from-[#806562] to-[rgba(128,101,98,0.9)] p-3">
+          <span className="text-[19px] font-bold whitespace-nowrap text-white">Total</span>
+          <span className="text-[21px] font-bold whitespace-nowrap text-white">
             {formatPrice(grandTotal)}
             {hasQuoteOnlyItems && "+"}
           </span>

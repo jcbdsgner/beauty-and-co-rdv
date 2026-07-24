@@ -3,6 +3,7 @@ import { Localisation } from "@/components/sections/localisation";
 import { GiftCard } from "@/components/sections/gift-card";
 import { BoutiqueShowcase } from "@/components/sections/boutique-showcase";
 import { InstagramGallery } from "@/components/sections/instagram-gallery";
+import { BookingHelp } from "@/components/sections/booking-help";
 
 export default function HomePage() {
   return (
@@ -12,6 +13,7 @@ export default function HomePage() {
       <GiftCard />
       <BoutiqueShowcase />
       <InstagramGallery />
+      <BookingHelp />
     </>
   );
 }

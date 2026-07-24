@@ -5,24 +5,30 @@ import { formatPrice } from "@/lib/booking/format";
 type BoutiquePreviewSectionProps = {
   productQuantities: Record<string, number>;
   onQuantityChange: (id: string, quantity: number) => void;
+  selectedSizeByProductId: Record<string, string>;
+  onSizeChange: (id: string, size: string) => void;
 };
 
 export function BoutiquePreviewSection({
   productQuantities,
   onQuantityChange,
+  selectedSizeByProductId,
+  onSizeChange,
 }: BoutiquePreviewSectionProps) {
   return (
     <div className="rounded-2xl border border-[#f2f4f7] bg-white p-6">
       <h3 className="font-[family-name:var(--font-prata)] text-[25px] font-bold text-[#806562]">
-        Le salon continue chez vous
+        En plus de la prestation coiffure, souhaitez-vous prendre des extensions ?
       </h3>
       <p className="mt-1 text-[17px] text-[#667085]">
-        Réservez les mêmes extensions et essentiels capillaires que nos coiffeuses utilisent, avant de partir.
+        Réservez les mêmes extensions que nos coiffeuses utilisent, à récupérer le jour de votre rendez-vous.
       </p>
 
       <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {boutiqueHighlights.map((product) => {
           const quantity = productQuantities[product.id] ?? 0;
+          const selectedSize = selectedSizeByProductId[product.id] ?? product.sizes[0].label;
+          const activeSize = product.sizes.find((size) => size.label === selectedSize) ?? product.sizes[0];
           return (
             <div
               key={product.id}
@@ -38,12 +44,30 @@ export function BoutiquePreviewSection({
                 />
               </div>
               <div className="flex flex-1 flex-col gap-3 p-4">
-                <p className="text-[17px] font-bold text-[#1d2939]">{product.name}</p>
+                <p className="truncate text-[17px] font-bold text-[#1d2939]" title={product.name}>
+                  {product.name}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {product.sizes.map((size) => (
+                    <button
+                      key={size.label}
+                      type="button"
+                      onClick={() => onSizeChange(product.id, size.label)}
+                      className={`rounded-full border px-3 py-1 text-[14px] font-[450] transition ${
+                        size.label === activeSize.label
+                          ? "border-[#806562] bg-[#806562] text-white"
+                          : "border-[#f2f4f7] bg-white text-[#667085] hover:border-[#806562]/50"
+                      }`}
+                    >
+                      {size.label}
+                    </button>
+                  ))}
+                </div>
                 <span className="flex items-center gap-2 text-[19px] font-bold text-[#806562]">
-                  {formatPrice(product.price)}
-                  {product.originalPrice !== undefined && (
+                  {formatPrice(activeSize.price)}
+                  {activeSize.originalPrice !== undefined && (
                     <span className="text-[15px] font-[450] text-[#98a2b3] line-through">
-                      {formatPrice(product.originalPrice)}
+                      {formatPrice(activeSize.originalPrice)}
                     </span>
                   )}
                 </span>

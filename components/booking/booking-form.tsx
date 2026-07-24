@@ -195,7 +195,9 @@ export function BookingForm() {
       if (!href || href.startsWith("#")) return;
 
       if (href === loginLink.href) {
-        saveBookingDraft(draftStateRef.current);
+        // Connecting mid-flow means the account already has this person's info, so there's
+        // nothing left to fill in — resume straight at confirmation instead of back at informations.
+        saveBookingDraft({ ...draftStateRef.current, step: "confirmation" });
         return;
       }
 

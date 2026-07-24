@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { bookingLink, videoGuideLink } from "@/lib/data/nav";
 import { heroServices, type HeroService } from "@/lib/data/services";
@@ -13,8 +14,8 @@ function PlayIcon() {
 
 function ServiceChip({ service }: { service: HeroService }) {
   return (
-    <button
-      type="button"
+    <Link
+      href={`/services/${service.slug}`}
       className="group flex w-[105px] flex-col items-center gap-2 transition-transform duration-200 hover:scale-110"
     >
       <div className="flex items-center justify-center gap-1.5 rounded-full bg-[#9c7d79] p-3 transition-colors duration-200 group-hover:bg-[#ab8985] sm:p-4">
@@ -23,7 +24,7 @@ function ServiceChip({ service }: { service: HeroService }) {
         ))}
       </div>
       <p className="text-center text-[19px] text-[#f2dedc]">{service.label}</p>
-    </button>
+    </Link>
   );
 }
 
@@ -79,11 +80,11 @@ export function Hero() {
               external
               hideExternalIcon
               icon={<PlayIcon />}
-              className="h-9 w-full py-0 text-[21px]"
+              className="w-full"
             >
               {videoGuideLink.label}
             </Button>
-            <Button href={bookingLink.href} className="h-9 w-full py-0 text-[21px]">
+            <Button href={bookingLink.href} className="w-full">
               {bookingLink.label}
             </Button>
           </div>
