@@ -4,14 +4,6 @@ import { Button } from "@/components/ui/button";
 import { bookingLink, videoGuideLink } from "@/lib/data/nav";
 import { heroServices, type HeroService } from "@/lib/data/services";
 
-function PlayIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M4 2.5v11l10-5.5-10-5.5Z" fill="currentColor" />
-    </svg>
-  );
-}
-
 function ServiceChip({ service }: { service: HeroService }) {
   return (
     <Link
@@ -79,7 +71,7 @@ export function Hero() {
               href={videoGuideLink.href}
               external
               hideExternalIcon
-              icon={<PlayIcon />}
+              icon={<Image src="/images/accueil/icon-play.svg" alt="" width={16} height={16} />}
               className="w-full"
             >
               {videoGuideLink.label}

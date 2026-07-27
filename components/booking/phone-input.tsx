@@ -11,9 +11,10 @@ type PhoneInputProps = {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  invalid?: boolean;
 };
 
-export function PhoneInput({ id, countryCode, onCountryChange, value, onChange, disabled }: PhoneInputProps) {
+export function PhoneInput({ id, countryCode, onCountryChange, value, onChange, disabled, invalid }: PhoneInputProps) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const country = findCountry(countryCode);
@@ -37,6 +38,7 @@ export function PhoneInput({ id, countryCode, onCountryChange, value, onChange, 
       className={cn(
         "relative mt-2 flex h-12 items-center rounded-full border border-[#e5e7eb] bg-white shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]",
         disabled && "opacity-60",
+        invalid && "border-red-400",
       )}
     >
       <button

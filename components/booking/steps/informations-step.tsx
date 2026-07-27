@@ -1,8 +1,17 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { PhoneInput } from "@/components/booking/phone-input";
 import { loginLink } from "@/lib/data/nav";
 import { cn } from "@/lib/utils";
-import { emptyContactInfo, type ContactInfo, type PersonTab } from "@/lib/booking/types";
+import {
+  emptyContactInfo,
+  getContactInfoErrors,
+  type ContactInfo,
+  type ContactInfoErrors,
+  type PersonTab,
+} from "@/lib/booking/types";
 
 type InformationsStepProps = {
   adults: PersonTab[];
@@ -20,6 +29,15 @@ const genderOptions: { value: ContactInfo["sex"] & string; label: string }[] = [
   { value: "femme", label: "Femme" },
   { value: "homme", label: "Homme" },
 ];
+
+function fieldId(name: string, personId: string) {
+  return `${name}-${personId}`;
+}
+
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null;
+  return <p className="mt-1.5 text-[14px] text-red-600">{message}</p>;
+}
 
 function GenderOption({
   label,
@@ -54,13 +72,15 @@ function PersonInfoBlock({
   isPrimaryContact,
   contactInfo,
   onChange,
+  errors,
 }: {
   person: PersonTab;
   isPrimaryContact: boolean;
   contactInfo: ContactInfo;
   onChange: (patch: Partial<ContactInfo>) => void;
+  errors: ContactInfoErrors;
 }) {
-  const fieldId = (name: string) => `${name}-${person.id}`;
+  const id = (name: string) => fieldId(name, person.id);
 
   return (
     <div>
@@ -75,35 +95,37 @@ function PersonInfoBlock({
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
-          <label htmlFor={fieldId("firstName")} className="text-[17px] font-bold text-[#374151]">
+          <label htmlFor={id("firstName")} className="text-[17px] font-bold text-[#374151]">
             Prénom *
           </label>
           <input
-            id={fieldId("firstName")}
+            id={id("firstName")}
             type="text"
             required
             value={contactInfo.firstName}
             onChange={(event) => onChange({ firstName: event.target.value })}
-            className={cn("mt-2", inputClassName)}
+            className={cn("mt-2", inputClassName, errors.firstName && "border-red-400 focus:border-red-500")}
           />
+          <FieldError message={errors.firstName} />
         </div>
 
         <div>
-          <label htmlFor={fieldId("lastName")} className="text-[17px] font-bold text-[#374151]">
+          <label htmlFor={id("lastName")} className="text-[17px] font-bold text-[#374151]">
             Nom *
           </label>
           <input
-            id={fieldId("lastName")}
+            id={id("lastName")}
             type="text"
             required
             value={contactInfo.lastName}
             onChange={(event) => onChange({ lastName: event.target.value })}
-            className={cn("mt-2", inputClassName)}
+            className={cn("mt-2", inputClassName, errors.lastName && "border-red-400 focus:border-red-500")}
           />
+          <FieldError message={errors.lastName} />
         </div>
       </div>
 
-      <div className="mt-6">
+      <div id={id("sex")} tabIndex={-1} className="mt-6 outline-none">
         <p className="text-[17px] font-bold text-[#374151]">Genre *</p>
         <div className="mt-2 flex items-center gap-5">
           {genderOptions.map((option) => (
@@ -115,36 +137,42 @@ function PersonInfoBlock({
             />
           ))}
         </div>
+        <FieldError message={errors.sex} />
       </div>
 
       <div className="mt-6">
-        <label htmlFor={fieldId("email")} className="text-[17px] font-bold text-[#374151]">
+        <label htmlFor={id("email")} className="text-[17px] font-bold text-[#374151]">
           Adresse email *
         </label>
         <input
-          id={fieldId("email")}
+          id={id("email")}
           type="email"
           required
           value={contactInfo.email}
           onChange={(event) => onChange({ email: event.target.value })}
-          className={cn("mt-2", inputClassName)}
+          className={cn("mt-2", inputClassName, errors.email && "border-red-400 focus:border-red-500")}
         />
-        <p className="mt-2 text-[15px] text-[#64748b]">
-          Nous vous enverrons la confirmation de votre rendez-vous
-        </p>
+        <FieldError message={errors.email} />
+        {!errors.email && (
+          <p className="mt-2 text-[15px] text-[#64748b]">
+            Nous vous enverrons la confirmation de votre rendez-vous
+          </p>
+        )}
       </div>
 
       <div className="mt-6">
-        <label htmlFor={fieldId("phone")} className="text-[17px] font-bold text-[#374151]">
+        <label htmlFor={id("phone")} className="text-[17px] font-bold text-[#374151]">
           Numéro de téléphone *
         </label>
         <PhoneInput
-          id={fieldId("phone")}
+          id={id("phone")}
           countryCode={contactInfo.phoneCountry}
           onCountryChange={(code) => onChange({ phoneCountry: code })}
           value={contactInfo.phone}
           onChange={(phone) => onChange({ phone })}
+          invalid={Boolean(errors.phone)}
         />
+        <FieldError message={errors.phone} />
       </div>
 
       <div className="mt-6">
@@ -183,6 +211,29 @@ export function InformationsStep({
   onContinue,
   onBack,
 }: InformationsStepProps) {
+  const [showErrors, setShowErrors] = useState(false);
+
+  const handleContinueClick = () => {
+    if (canContinue) {
+      onContinue();
+      return;
+    }
+
+    setShowErrors(true);
+
+    for (const person of adults) {
+      const info = contactInfoByPerson[person.id] ?? emptyContactInfo;
+      const errors = getContactInfoErrors(info);
+      const firstInvalidField = Object.keys(errors)[0];
+      if (firstInvalidField) {
+        const element = document.getElementById(fieldId(firstInvalidField, person.id));
+        element?.scrollIntoView({ behavior: "smooth", block: "center" });
+        element?.focus();
+        break;
+      }
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-wrap items-center gap-4 rounded-2xl bg-[rgba(253,207,202,0.15)] py-4 pr-6 pl-4">
@@ -201,16 +252,20 @@ export function InformationsStep({
       </div>
 
       <div className="mt-6 flex flex-col gap-6">
-        {adults.map((person, index) => (
-          <div key={person.id} className="rounded-2xl border border-[#eaecf0] bg-white p-[25px]">
-            <PersonInfoBlock
-              person={person}
-              isPrimaryContact={index === 0}
-              contactInfo={contactInfoByPerson[person.id] ?? emptyContactInfo}
-              onChange={(patch) => onChange(person.id, patch)}
-            />
-          </div>
-        ))}
+        {adults.map((person, index) => {
+          const contactInfo = contactInfoByPerson[person.id] ?? emptyContactInfo;
+          return (
+            <div key={person.id} className="rounded-2xl border border-[#eaecf0] bg-white p-[25px]">
+              <PersonInfoBlock
+                person={person}
+                isPrimaryContact={index === 0}
+                contactInfo={contactInfo}
+                onChange={(patch) => onChange(person.id, patch)}
+                errors={showErrors ? getContactInfoErrors(contactInfo) : {}}
+              />
+            </div>
+          );
+        })}
       </div>
 
       <div className="mt-8 flex items-center justify-between">
@@ -223,11 +278,8 @@ export function InformationsStep({
         </button>
         <button
           type="button"
-          disabled={!canContinue}
-          onClick={onContinue}
-          className={cn(
-            "rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition disabled:opacity-50 enabled:hover:opacity-90",
-          )}
+          onClick={handleContinueClick}
+          className="rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
         >
           Continuer
         </button>

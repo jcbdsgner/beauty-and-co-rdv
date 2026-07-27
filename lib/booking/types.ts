@@ -46,12 +46,34 @@ export const emptyContactInfo: ContactInfo = {
   whatsappSameAsPhone: true,
 };
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_DIGITS_REGEX = /^\d{6,15}$/;
+
+export type ContactInfoField = "firstName" | "lastName" | "sex" | "email" | "phone";
+export type ContactInfoErrors = Partial<Record<ContactInfoField, string>>;
+
+export function getContactInfoErrors(info: ContactInfo): ContactInfoErrors {
+  const errors: ContactInfoErrors = {};
+
+  if (!info.firstName.trim()) errors.firstName = "Le prénom est requis";
+  if (!info.lastName.trim()) errors.lastName = "Le nom est requis";
+  if (!info.sex) errors.sex = "Merci de sélectionner un genre";
+
+  if (!info.email.trim()) {
+    errors.email = "L'adresse email est requise";
+  } else if (!EMAIL_REGEX.test(info.email.trim())) {
+    errors.email = "Adresse email invalide";
+  }
+
+  if (!info.phone.trim()) {
+    errors.phone = "Le numéro de téléphone est requis";
+  } else if (!PHONE_DIGITS_REGEX.test(info.phone.replace(/\D/g, ""))) {
+    errors.phone = "Numéro de téléphone invalide";
+  }
+
+  return errors;
+}
+
 export function isContactInfoComplete(info: ContactInfo): boolean {
-  return (
-    info.firstName.trim() !== "" &&
-    info.lastName.trim() !== "" &&
-    info.sex !== "" &&
-    info.email.trim() !== "" &&
-    info.phone.trim() !== ""
-  );
+  return Object.keys(getContactInfoErrors(info)).length === 0;
 }
