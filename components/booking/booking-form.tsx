@@ -7,12 +7,15 @@ import { BookingConfirmedDialog } from "@/components/booking/booking-confirmed-d
 import { BookingProgress } from "@/components/booking/booking-progress";
 import { BookingSummarySidebar } from "@/components/booking/booking-summary-sidebar";
 import { LeaveBookingDialog } from "@/components/booking/leave-booking-dialog";
+import { PaymentMethodDialog } from "@/components/booking/payment-method-dialog";
 import { ServicesStep } from "@/components/booking/steps/services-step";
 import { CreneauStep } from "@/components/booking/steps/creneau-step";
 import { InformationsStep } from "@/components/booking/steps/informations-step";
 import { ConfirmationStep } from "@/components/booking/steps/confirmation-step";
+import { addBookingHistoryEntry } from "@/lib/account/history";
 import { buildCartItems, type Selections } from "@/lib/booking/cart";
 import { buildPersonTabs } from "@/lib/booking/people";
+import { DEPOSIT_AMOUNT, formatPrice } from "@/lib/booking/format";
 import { answerKey, type QuestionAnswers } from "@/lib/booking/questions";
 import { bookingLocations } from "@/lib/data/booking-locations";
 import { loginLink } from "@/lib/data/nav";
@@ -57,6 +60,7 @@ export function BookingForm() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [showConfirmedModal, setShowConfirmedModal] = useState(false);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
 
   // Each step is a fresh screen — land the user at its top instead of wherever the previous
   // step happened to be scrolled to.
@@ -64,8 +68,10 @@ export function BookingForm() {
     window.scrollTo(0, 0);
   }, [step]);
 
-  // On mount, resume a booking left mid-flow to go through "Se connecter" (see handleClick
-  // below) — restored once, then consumed so a plain page refresh doesn't keep reapplying it.
+  // On mount, resume a booking left mid-flow — either through "Se connecter" (see handleClick
+  // below) or an unexpected full reload (browser refresh, dev Fast Refresh falling back to a
+  // full reload). The draft is kept alive afterward by the autosave effect below rather than
+  // consumed here, so a booking survives more than one such reload in a row.
   useEffect(() => {
     const draft = loadBookingDraft();
     if (!draft) return;
@@ -81,7 +87,6 @@ export function BookingForm() {
     setContactInfoByPerson(draft.contactInfoByPerson);
     setNote(draft.note);
     setAcceptedTerms(draft.acceptedTerms);
-    clearBookingDraft();
   }, []);
 
   // handleClick (below) runs from a listener registered once and reused across renders, so it
@@ -114,6 +119,32 @@ export function BookingForm() {
     acceptedTerms,
   };
 
+  // Mirrors the in-progress booking to sessionStorage on every change, so an unexpected full
+  // reload (browser refresh, dev Fast Refresh falling back to a full reload) resumes right where
+  // the user left off instead of dropping them back to the "how many people" dialog. Once the
+  // booking is confirmed there's nothing left to resume, so the draft is cleared instead.
+  useEffect(() => {
+    if (confirmed) {
+      clearBookingDraft();
+      return;
+    }
+    if (!attendees) return;
+    saveBookingDraft(draftStateRef.current);
+  }, [
+    attendees,
+    step,
+    selections,
+    questionAnswers,
+    selectedDate,
+    selectedLocationId,
+    selectedTime,
+    twoPractitioners,
+    contactInfoByPerson,
+    note,
+    acceptedTerms,
+    confirmed,
+  ]);
+
   const people = buildPersonTabs(attendees);
   const adults = people.filter((person) => person.type === "adult");
   // A booking always needs one contact to fill in the informations step — normally the first
@@ -131,7 +162,19 @@ export function BookingForm() {
       .reduce((sum, item) => sum + item.durationMinutes, 0);
     return Math.max(max, personMinutes);
   }, 0);
-  const effectiveTotalMinutes = twoPractitioners ? Math.round(totalMinutes / 2) : totalMinutes;
+  // Only Prestations marked twoPractitionersEligible actually get faster with a 2nd
+  // practitioner (their zone can be split in half); the rest take just as long regardless.
+  const twoPractitionersMinutes = people.reduce((max, person) => {
+    const personItems = cartItems.filter((item) => item.personId === person.id);
+    const eligibleMinutes = personItems
+      .filter((item) => item.twoPractitionersEligible)
+      .reduce((sum, item) => sum + item.durationMinutes, 0);
+    const soloOnlyMinutes = personItems
+      .filter((item) => !item.twoPractitionersEligible)
+      .reduce((sum, item) => sum + item.durationMinutes, 0);
+    return Math.max(max, Math.round(eligibleMinutes / 2) + soloOnlyMinutes);
+  }, 0);
+  const effectiveTotalMinutes = twoPractitioners ? twoPractitionersMinutes : totalMinutes;
 
   const locationLabel =
     bookingLocations.find((location) => location.id === selectedLocationId)?.label ?? null;
@@ -226,16 +269,16 @@ export function BookingForm() {
   };
 
   return (
-    <div className="rounded-none border border-[rgba(234,236,240,0.6)] bg-[#f7f8fa] p-6 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)] sm:rounded-3xl sm:p-10">
+    <div className="rounded-none border border-[rgba(234,236,240,0.6)] bg-[var(--color-bg-subtle)] p-6 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)] sm:rounded-3xl sm:p-10">
       <div className="relative">
-        <h1 className="px-12 text-center text-[19px] font-bold text-[#1d2939] sm:px-14 sm:text-[27px]">
+        <h1 className="px-12 text-center text-[19px] font-bold text-[var(--color-gray-800)] sm:px-14 sm:text-[27px]">
           Prendre rendez-vous
         </h1>
         <button
           type="button"
           onClick={requestLeave}
           aria-label="Quitter la prise de rendez-vous"
-          className="absolute top-1/2 right-0 flex size-11 -translate-y-1/2 items-center justify-center rounded-lg bg-[#f9fafb] text-[#667085] transition hover:bg-[#f2f4f7] hover:text-[#344054]"
+          className="absolute top-1/2 right-0 flex size-11 -translate-y-1/2 items-center justify-center rounded-lg bg-[var(--color-gray-50)] text-[var(--color-gray-500)] transition hover:bg-[var(--color-gray-100)] hover:text-[var(--text-secondary)]"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path
@@ -276,6 +319,7 @@ export function BookingForm() {
               selectedTime={selectedTime}
               onSelectTime={setSelectedTime}
               totalMinutes={totalMinutes}
+              twoPractitionersMinutes={twoPractitionersMinutes}
               twoPractitioners={twoPractitioners}
               onToggleTwoPractitioners={setTwoPractitioners}
               canContinue={Boolean(selectedDate && selectedLocationId && selectedTime)}
@@ -309,10 +353,7 @@ export function BookingForm() {
               acceptedTerms={acceptedTerms}
               onAcceptedTermsChange={setAcceptedTerms}
               onBack={() => setStep("informations")}
-              onConfirm={() => {
-                setConfirmed(true);
-                setShowConfirmedModal(true);
-              }}
+              onConfirm={() => setShowPaymentDialog(true)}
               canConfirm={acceptedTerms}
             />
           )}
@@ -339,6 +380,24 @@ export function BookingForm() {
           setPendingHref(null);
         }}
         onConfirm={confirmLeave}
+      />
+      <PaymentMethodDialog
+        open={showPaymentDialog}
+        amountLabel={formatPrice(DEPOSIT_AMOUNT)}
+        onClose={() => setShowPaymentDialog(false)}
+        onSelect={() => {
+          setShowPaymentDialog(false);
+          setConfirmed(true);
+          setShowConfirmedModal(true);
+          addBookingHistoryEntry({
+            confirmedAt: new Date().toISOString(),
+            date: selectedDate ? selectedDate.toISOString() : null,
+            time: selectedTime,
+            locationLabel,
+            items: cartItems.map((item) => ({ label: item.label, price: item.price })),
+            totalPrice: cartItems.reduce((sum, item) => sum + item.price, 0),
+          });
+        }}
       />
       <BookingConfirmedDialog
         open={confirmed && showConfirmedModal}

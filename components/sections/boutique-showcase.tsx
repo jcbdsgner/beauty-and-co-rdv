@@ -27,7 +27,7 @@ function ProductPrice({ price, originalPrice }: { price: number; originalPrice?:
 
   return (
     <div className="flex items-center gap-2 text-[19px]">
-      <span className="font-bold text-[#303030]">{priceLabel}</span>
+      <span className="font-bold text-[var(--color-near-black)]">{priceLabel}</span>
       {originalPriceLabel && <span className="font-bold text-[#afafaf] line-through">{originalPriceLabel}</span>}
     </div>
   );
@@ -57,7 +57,7 @@ export function BoutiqueShowcase() {
   return (
     <section className="flex flex-col items-center gap-10 bg-white px-6 py-16 sm:py-20">
       <div className="flex flex-col items-center gap-3 text-center">
-        <h2 className="font-[family-name:var(--font-prata)] text-[27px] text-[#2d2d2d] sm:text-[34px]">
+        <h2 className="font-[family-name:var(--font-prata)] text-[27px] text-[var(--on-core-brand-color)] sm:text-[34px]">
           Notre sélection de produits
         </h2>
       </div>
@@ -71,7 +71,7 @@ export function BoutiqueShowcase() {
                 href={product.href ?? boutiqueHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative aspect-[411/442] w-[75%] shrink-0 overflow-hidden rounded-[1px] bg-[#f7f8fa] shadow-[0px_0px_24px_0px_rgba(16,24,40,0.05)] sm:w-[calc(33.333%-1rem)]"
+                className="group relative aspect-[411/442] w-[75%] shrink-0 overflow-hidden rounded-[1px] bg-[var(--color-bg-subtle)] shadow-[0px_0px_24px_0px_rgba(16,24,40,0.05)] sm:w-[calc(33.333%-1rem)]"
               >
                 <Image
                   src={product.image}
@@ -81,12 +81,12 @@ export function BoutiqueShowcase() {
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 {product.discountBadge && (
-                  <span className="absolute top-[1.5%] left-[2.5%] rounded-full bg-[#a27576] px-3 py-1.5 text-[15px] font-[500] text-white sm:text-[18px]">
+                  <span className="absolute top-[1.5%] left-[2.5%] rounded-full bg-[var(--button-2-color)] px-3 py-1.5 text-[15px] font-[500] text-white sm:text-[18px]">
                     {product.discountBadge}
                   </span>
                 )}
                 <div className="absolute inset-x-0 bottom-0 flex h-[100px] flex-col justify-end gap-1 bg-white px-[10%] pb-[13px]">
-                  <p className="truncate text-[18px] text-[#303030] capitalize sm:text-[21px]">{product.name}</p>
+                  <p className="truncate text-[18px] text-[var(--color-near-black)] capitalize sm:text-[21px]">{product.name}</p>
                   <ProductPrice price={product.price} originalPrice={product.originalPrice} />
                 </div>
               </Link>
@@ -98,7 +98,7 @@ export function BoutiqueShowcase() {
           type="button"
           onClick={scrollPrev}
           aria-label="Produits précédents"
-          className="absolute top-1/2 left-2 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#2d2d2d] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.15)] transition hover:scale-[1.15] sm:flex"
+          className="absolute top-1/2 left-2 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--on-core-brand-color)] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.15)] transition hover:scale-[1.15] sm:flex"
         >
           <ChevronIcon direction="left" />
         </button>
@@ -106,7 +106,7 @@ export function BoutiqueShowcase() {
           type="button"
           onClick={scrollNext}
           aria-label="Produits suivants"
-          className="absolute top-1/2 right-2 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#2d2d2d] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.15)] transition hover:scale-[1.15] sm:flex"
+          className="absolute top-1/2 right-2 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--on-core-brand-color)] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.15)] transition hover:scale-[1.15] sm:flex"
         >
           <ChevronIcon direction="right" />
         </button>

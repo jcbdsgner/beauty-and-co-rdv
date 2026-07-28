@@ -27,6 +27,7 @@ export function buildCartItems(people: PersonTab[], selections: Selections): Car
           price: sub.price,
           duration: sub.duration,
           durationMinutes: sub.durationMinutes,
+          twoPractitionersEligible: sub.twoPractitionersEligible,
         });
       }
     }

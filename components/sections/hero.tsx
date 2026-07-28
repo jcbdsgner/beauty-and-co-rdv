@@ -50,7 +50,7 @@ export function Hero() {
             </h1>
 
             <div className="flex flex-col items-center gap-5">
-              <p className="text-[21px] font-[450] text-[#fef0ee] sm:text-[25px]">Nos services</p>
+              <p className="text-[21px] font-[450] text-[var(--brand-rose-soft)] sm:text-[25px]">Nos services</p>
               <div className="flex flex-col items-center gap-5">
                 <div className="flex items-start justify-center gap-x-3">
                   {firstRow.map((service) => (

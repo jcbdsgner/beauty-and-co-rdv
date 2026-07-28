@@ -37,16 +37,16 @@ function FlatSubServiceRow({
   onToggle: () => void;
 }) {
   return (
-    <li className="flex items-center gap-3 border-b border-[#eaecf0] py-4 last:border-b-0">
+    <li className="flex items-center gap-3 border-b border-[var(--color-gray-200)] py-4 last:border-b-0">
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[19px] font-bold text-[#1d2939]">{toSentenceCase(sub.label)}</p>
-        {sub.description && <p className="mt-1 text-[15px] text-[#667085]">{sub.description}</p>}
+        <p className="truncate text-[19px] font-bold text-[var(--color-gray-800)]">{toSentenceCase(sub.label)}</p>
+        {sub.description && <p className="mt-1 text-[15px] text-[var(--color-gray-500)]">{sub.description}</p>}
         <div className="mt-2 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaecf0] px-[13px] py-[7px] text-[15px] font-[500] text-[#1d2939]">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-gray-200)] px-[13px] py-[7px] text-[15px] font-[500] text-[var(--color-gray-800)]">
             <Image src="/images/rdv/icon-clock-dark.svg" alt="" width={16} height={16} />
             {sub.duration}
           </span>
-          <span className="text-[17px] font-[500] text-[#1d2939]">· {formatPrice(sub.price)}</span>
+          <span className="text-[17px] font-[500] text-[var(--color-gray-800)]">· {formatPrice(sub.price)}</span>
         </div>
       </div>
       <button
@@ -56,7 +56,7 @@ function FlatSubServiceRow({
         aria-label={selected ? `${sub.label} — sélectionné` : `${sub.label} — sélectionner`}
         className={cn(
           "flex size-6 shrink-0 items-center justify-center rounded border transition sm:hidden",
-          selected ? "border-[#806562] bg-[#806562]" : "border-[#0f172a] bg-white",
+          selected ? "border-[var(--brand-taupe-muted)] bg-[var(--brand-taupe-muted)]" : "border-[var(--color-slate-900)] bg-white",
         )}
       >
         {selected && <Image src="/images/rdv/icon-check.svg" alt="" width={14} height={14} />}
@@ -66,8 +66,8 @@ function FlatSubServiceRow({
         onClick={onToggle}
         aria-pressed={selected}
         className={cn(
-          "hidden shrink-0 rounded-full border border-[#806562] px-[13px] py-[7px] text-[15px] font-[450] whitespace-nowrap transition sm:block",
-          selected ? "bg-[#806562] text-white" : "bg-white text-[#806562] hover:bg-[#806562]/5",
+          "hidden shrink-0 rounded-full border border-[var(--brand-taupe-muted)] px-[13px] py-[7px] text-[15px] font-[450] whitespace-nowrap transition sm:block",
+          selected ? "bg-[var(--brand-taupe-muted)] text-white" : "bg-white text-[var(--brand-taupe-muted)] hover:bg-[var(--brand-taupe-muted)]/5",
         )}
       >
         {selected ? "Sélectionné" : "Sélectionner"}
@@ -118,7 +118,7 @@ export function CategoryPrestationList({
                 key={group.name}
                 className={cn(
                   "rounded-xl border-2 transition",
-                  expanded ? "border-[#806562] shadow-lg" : "border-[#e5e7eb]",
+                  expanded ? "border-[var(--brand-taupe-muted)] shadow-lg" : "border-[var(--color-border-light)]",
                 )}
               >
                 <button
@@ -130,12 +130,12 @@ export function CategoryPrestationList({
                   <span
                     className={cn(
                       "flex size-5 shrink-0 items-center justify-center rounded border transition",
-                      checked ? "border-[#806562] bg-[#806562]" : "border-[#0f172a] bg-white",
+                      checked ? "border-[var(--brand-taupe-muted)] bg-[var(--brand-taupe-muted)]" : "border-[var(--color-slate-900)] bg-white",
                     )}
                   >
                     {checked && <Image src="/images/rdv/icon-check.svg" alt="" width={12} height={12} />}
                   </span>
-                  <span className="flex-1 text-[20px] font-bold text-[#1d2939]">{group.name}</span>
+                  <span className="flex-1 text-[20px] font-bold text-[var(--color-gray-800)]">{group.name}</span>
                   <span className="flex size-8 shrink-0 items-center justify-center">
                     <Image
                       src="/images/rdv/icon-chevron-down.svg"
@@ -147,7 +147,7 @@ export function CategoryPrestationList({
                   </span>
                 </button>
                 {expanded && (
-                  <ul className="flex flex-col border-t border-[#eaecf0] px-6">
+                  <ul className="flex flex-col border-t border-[var(--color-gray-200)] px-6">
                     {group.subs.map((sub) => (
                       <FlatSubServiceRow
                         key={sub.id}

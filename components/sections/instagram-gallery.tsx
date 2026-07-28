@@ -4,14 +4,14 @@ import { galleryImages } from "@/lib/data/gallery";
 
 export function InstagramGallery() {
   return (
-    <section className="flex flex-col items-center gap-8 bg-[var(--core-brand-color-2,#eddcda)] px-6 py-12">
-      <h2 className="text-center font-[family-name:var(--font-prata)] text-[27px] text-[#2d2d2d] sm:text-[35px]">
+    <section className="flex flex-col items-center gap-8 bg-[var(--core-brand-color-2,var(--core-brand-color-2))] px-6 py-12">
+      <h2 className="text-center font-[family-name:var(--font-prata)] text-[27px] text-[var(--on-core-brand-color)] sm:text-[35px]">
         Un aperçu de notre univers
       </h2>
 
       <div className="grid w-full max-w-[960px] grid-cols-2 sm:grid-cols-3">
         {galleryImages.map((src) => (
-          <div key={src} className="relative aspect-square border-[0.5px] border-[#f8f6f9]">
+          <div key={src} className="relative aspect-square border-[0.5px] border-[var(--brand-cream)]">
             <Image
               src={src}
               alt=""

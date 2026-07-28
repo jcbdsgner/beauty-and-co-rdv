@@ -1,0 +1,3 @@
+# Le module Abonnement est natif au site, construit d'abord comme une vitrine
+
+Contrairement à toutes les autres offres commerciales du site (boutique, carte cadeau, Mini & Co), qui renvoient vers une URL externe faute de backend, le module Abonnement sera construit nativement dans ce Next.js — car contrairement à ces offres, on veut à terme l'articuler étroitement avec le parcours de réservation existant. Cela dit, aucune infrastructure réelle (comptes, base de données, paiement récurrent) n'existe encore dans ce projet : la première version sera donc une vitrine (présentation des forfaits + parcours de souscription simulé, sans paiement ni persistance réelle), pour valider le concept avant d'investir dans cette infrastructure.

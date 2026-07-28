@@ -1,3 +1,6 @@
+/** Flat deposit required to confirm a booking, regardless of the total price. */
+export const DEPOSIT_AMOUNT = 5000;
+
 const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
   weekday: "long",
   day: "numeric",

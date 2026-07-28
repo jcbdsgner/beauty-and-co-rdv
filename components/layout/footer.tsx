@@ -20,16 +20,16 @@ export function Footer() {
       <div className="flex flex-col flex-wrap gap-10 sm:flex-row sm:justify-between">
         <div className="flex flex-1 flex-col items-start gap-2">
           <Logo size="footer" className="relative h-[68px] w-[147px]" />
-          <p className="text-[13px] font-[500] text-[#2d2d2d]">
+          <p className="text-[13px] font-[500] text-[var(--on-core-brand-color)]">
             Votre partenaire de confiance pour révéler votre beauté naturelle.
           </p>
         </div>
 
         <div className="flex flex-1 flex-col items-start gap-2">
-          <p className="font-[family-name:var(--font-prata)] text-[19px] text-[#2d2d2d]">
+          <p className="font-[family-name:var(--font-prata)] text-[19px] text-[var(--on-core-brand-color)]">
             Beauty and Co
           </p>
-          <ul className="flex flex-col text-[15px] font-[500] text-[var(--text-secondary,#344054)]">
+          <ul className="flex flex-col text-[15px] font-[500] text-[var(--text-secondary,var(--text-secondary))]">
             {footerNav.map((link) => (
               <li key={link.href}>
                 <Link
@@ -52,10 +52,10 @@ export function Footer() {
         </div>
 
         <div className="flex flex-1 flex-col items-start gap-2">
-          <p className="font-[family-name:var(--font-prata)] text-[19px] text-[#2d2d2d]">
+          <p className="font-[family-name:var(--font-prata)] text-[19px] text-[var(--on-core-brand-color)]">
             Nos services
           </p>
-          <ul className="flex flex-col text-[15px] font-[500] text-[var(--text-secondary,#344054)]">
+          <ul className="flex flex-col text-[15px] font-[500] text-[var(--text-secondary,var(--text-secondary))]">
             {footerServices.map((service) => (
               <li key={service.slug}>
                 <Link href={`/services/${service.slug}`}>{service.label}</Link>
@@ -65,21 +65,21 @@ export function Footer() {
         </div>
 
         <div className="flex flex-1 flex-col items-start gap-2">
-          <p className="font-[family-name:var(--font-prata)] text-[19px] text-[#2d2d2d]">
+          <p className="font-[family-name:var(--font-prata)] text-[19px] text-[var(--on-core-brand-color)]">
             Contacts
           </p>
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <Image src="/images/accueil/icon-call-outline.svg" alt="" width={24} height={24} />
-              <p className="text-[15px] font-[500] text-[var(--text-secondary,#344054)]">{contactInfo.phones}</p>
+              <p className="text-[15px] font-[500] text-[var(--text-secondary,var(--text-secondary))]">{contactInfo.phones}</p>
             </div>
             <div className="flex items-center gap-2">
               <Image src="/images/accueil/icon-mail-outline.svg" alt="" width={24} height={24} />
-              <p className="text-[15px] font-[500] text-[var(--text-secondary,#344054)]">{contactInfo.email}</p>
+              <p className="text-[15px] font-[500] text-[var(--text-secondary,var(--text-secondary))]">{contactInfo.email}</p>
             </div>
             <div className="flex items-center gap-2">
               <Image src="/images/accueil/icon-schedule-outline.svg" alt="" width={24} height={24} />
-              <p className="text-[15px] font-[500] whitespace-nowrap text-[var(--text-secondary,#344054)]">
+              <p className="text-[15px] font-[500] whitespace-nowrap text-[var(--text-secondary,var(--text-secondary))]">
                 {contactInfo.hours}
               </p>
             </div>
@@ -88,7 +88,7 @@ export function Footer() {
       </div>
 
       <div className="flex items-center justify-center border-t border-[var(--brand-color-1,rgba(216,184,180,0.5))] py-6">
-        <p className="text-center text-[15px] font-[500] text-[var(--text-secondary,#344054)]">
+        <p className="text-center text-[15px] font-[500] text-[var(--text-secondary,var(--text-secondary))]">
           © {new Date().getFullYear()} BeautyAndCo. Tous droits réservés.
         </p>
       </div>

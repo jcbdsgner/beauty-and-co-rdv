@@ -1,5 +1,8 @@
 export type BookingSubService = {
   id: string;
+  /** Whether 2 practitioners can each work a distinct zone in parallel (halving duration) — a
+   *  single continuous technique or a treatment confined to one small zone can't be split. */
+  twoPractitionersEligible: boolean;
   label: string;
   description?: string;
   duration: string;
@@ -44,6 +47,7 @@ export const bookingServices: BookingService[] = [
     subServices: [
       {
         id: "coiffure-defrisage-professionnel-beauty-and-co-texlax",
+        twoPractitionersEligible: true,
         subcategory: "Défrisage",
         label: "DEFRISAGE PROFESSIONNEL BEAUTY AND CO / TEXLAX",
         description: "Cette prestation inclut une prestation du cuir chevelu , le défrisant avec ou sans soude, le soin et le shampoing neutralisant suivi du coiffage.",
@@ -53,6 +57,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-hybrid-extensions",
+        twoPractitionersEligible: true,
         subcategory: "Luxury Extensions",
         label: "HYBRID EXTENSIONS",
         duration: "190 min",
@@ -61,6 +66,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-extensions-tapes-2-paquets-de-cheveux-soit-100-g-18-pouces-coiffage",
+        twoPractitionersEligible: true,
         subcategory: "Luxury Extensions",
         label: "EXTENSIONS TAPES (2 paquets de cheveux soit 100 g 18 pouces + coiffage )",
         description: "Ce service inclut la pose la coupe et le coiffage lissage ou boucles. Deux paquets 18'' cheveux soit 150g pose + coiffage.",
@@ -70,6 +76,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-enlever-anneaux",
+        twoPractitionersEligible: true,
         subcategory: "Luxury Extensions",
         label: "ENLEVER ANNEAUX",
         duration: "40 min",
@@ -78,6 +85,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-pose-perruque",
+        twoPractitionersEligible: false,
         subcategory: "Perruques",
         label: "POSE PERRUQUE",
         duration: "70 min",
@@ -86,6 +94,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-perruque",
+        twoPractitionersEligible: true,
         subcategory: "Perruques",
         label: "SOIN PERRUQUE",
         duration: "120 min",
@@ -94,6 +103,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-supplement-lisseur",
+        twoPractitionersEligible: false,
         subcategory: "Brushing",
         label: "SUPPLEMENT LISSEUR",
         description: "Cette prestation ne peut être pris seule.",
@@ -103,6 +113,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-keratine",
+        twoPractitionersEligible: true,
         subcategory: "Lissage",
         label: "SOIN KÉRATINE",
         duration: "210 min",
@@ -111,6 +122,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-supplement-coupe-pointes",
+        twoPractitionersEligible: false,
         subcategory: "Coupe",
         label: "SUPPLEMENT COUPE POINTES",
         description: "Cette prestation ne peut être pris seule.",
@@ -120,6 +132,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-coupe-transformation",
+        twoPractitionersEligible: false,
         subcategory: "Coupe",
         label: "COUPE TRANSFORMATION",
         duration: "40 min",
@@ -128,6 +141,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-tresses-cheveux",
+        twoPractitionersEligible: true,
         subcategory: "Tresses",
         label: "TRESSES CHEVEUX +",
         description: "Ce service inclut les tresses sans les mèches.",
@@ -137,6 +151,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-shampoing-brushing-sur-extensions-tissages-shampoing-inclus-et-obligatoire",
+        twoPractitionersEligible: true,
         subcategory: "Brushing",
         label: "SHAMPOING BRUSHING SUR EXTENSIONS / TISSAGES ( SHAMPOING INCLUS ET OBLIGATOIRE)",
         description: "Ce service inclut le shampoing suivi du brushing de votre tissage ou extension.",
@@ -146,6 +161,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-croisiere",
+        twoPractitionersEligible: true,
         subcategory: "Nos Rituels Soins",
         label: "SOIN CROISIÈRE",
         duration: "90 min",
@@ -154,6 +170,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-extension-aux-fils-2-paquets",
+        twoPractitionersEligible: true,
         subcategory: "Luxury Extensions",
         label: "EXTENSION AUX FILS 2 PAQUETS",
         duration: "240 min",
@@ -162,6 +179,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-botox-lissant",
+        twoPractitionersEligible: true,
         subcategory: "Lissage",
         label: "SOIN BOTOX LISSANT",
         duration: "190 min",
@@ -170,6 +188,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-tissage-ouvert",
+        twoPractitionersEligible: true,
         subcategory: "Tissage",
         label: "TISSAGE OUVERT",
         duration: "140 min",
@@ -178,6 +197,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-tissage-rajout",
+        twoPractitionersEligible: true,
         subcategory: "Tissage",
         label: "TISSAGE RAJOUT",
         duration: "75 min",
@@ -186,6 +206,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-half-up-half-down",
+        twoPractitionersEligible: false,
         subcategory: "Coiffure",
         label: "HALF UP HALF DOWN",
         description: "Ce service inclut la coiffure sans les mèches.",
@@ -195,6 +216,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-shampoing-brushing-shampoing-inclus-et-obligatoire",
+        twoPractitionersEligible: false,
         subcategory: "Brushing",
         label: "SHAMPOING BRUSHING ( SHAMPOING INCLUS ET OBLIGATOIRE )",
         description: "Shampoing, protecteur thermique, brushing.",
@@ -204,6 +226,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-extensions-aux-fils-1-paquet",
+        twoPractitionersEligible: true,
         subcategory: "Luxury Extensions",
         label: "EXTENSIONS AUX FILS 1 PAQUET",
         duration: "240 min",
@@ -212,6 +235,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-head-spa-ultimate-deep-relaxation",
+        twoPractitionersEligible: true,
         subcategory: "Head Spa",
         label: "HEAD SPA ULTIMATE DEEP RELAXATION",
         duration: "240 min",
@@ -220,6 +244,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-extensions-tapes-3-paquets-de-cheveux-soit-150g-18-pouces-coiffage",
+        twoPractitionersEligible: true,
         subcategory: "Luxury Extensions",
         label: "EXTENSIONS TAPES (3 PAQUETS DE CHEVEUX SOIT 150G 18 POUCES + COIFFAGE)",
         description: "Ce service inclut la pose la coupe et le coiffage lissage ou boucles. Trois paquets 18'' cheveux soit 150g pose + coiffage.",
@@ -229,6 +254,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-defrisage-professionnel-soin-fortifiant-anti-casse",
+        twoPractitionersEligible: true,
         subcategory: "Défrisage",
         label: "DEFRISAGE PROFESSIONNEL + SOIN FORTIFIANT ANTI CASSE",
         description: "Cette prestation inclut une prestation du cuir chevelu , le défrisant avec ou sans soude, le soin et le shampoing neutralisant suivi du coiffage.",
@@ -238,6 +264,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-complet",
+        twoPractitionersEligible: true,
         subcategory: "Nos Rituels Soins",
         label: "SOIN COMPLET",
         duration: "130 min",
@@ -246,6 +273,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-detox",
+        twoPractitionersEligible: true,
         subcategory: "Nos Rituels Soins",
         label: "SOIN DETOX",
         duration: "140 min",
@@ -254,6 +282,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-botox-reparateur-non-lissant",
+        twoPractitionersEligible: true,
         subcategory: "Nos Rituels Soins",
         label: "SOIN BOTOX REPARATEUR( NON LISSANT)",
         duration: "150 min",
@@ -262,6 +291,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-lissant-tanin",
+        twoPractitionersEligible: true,
         subcategory: "Lissage",
         label: "SOIN LISSANT TANIN",
         duration: "190 min",
@@ -270,6 +300,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-silk-press",
+        twoPractitionersEligible: true,
         subcategory: "Brushing",
         label: "SILK PRESS",
         duration: "180 min",
@@ -278,6 +309,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-extensions-anneaux-haute-couture-2-paquets",
+        twoPractitionersEligible: true,
         subcategory: "Luxury Extensions",
         label: "EXTENSIONS ANNEAUX HAUTE COUTURE 2 PAQUETS",
         duration: "170 min",
@@ -286,6 +318,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-pose-clips",
+        twoPractitionersEligible: true,
         subcategory: "Luxury Extensions",
         label: "POSE CLIPS",
         duration: "60 min",
@@ -294,6 +327,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-ponytail",
+        twoPractitionersEligible: false,
         subcategory: "Coiffure",
         label: "PONYTAIL",
         description: "Ce service inclut la coiffure sans les mèches.",
@@ -303,6 +337,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-supplement-hand-feet-massage-massage-pieds-mains",
+        twoPractitionersEligible: true,
         subcategory: "Head Spa",
         label: "SUPPLÉMENT HAND FEET MASSAGE/ MASSAGE PIEDS-MAINS",
         description: "Supplément pour le service Head spa.",
@@ -312,6 +347,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-croisiere-head-spa",
+        twoPractitionersEligible: true,
         subcategory: "Head Spa",
         label: "SOIN CROISIERE HEAD SPA",
         duration: "120 min",
@@ -320,6 +356,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-pose-u-part-wig",
+        twoPractitionersEligible: false,
         subcategory: "Perruques",
         label: "POSE U-PART WIG",
         duration: "70 min",
@@ -328,6 +365,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-tissage-versatile",
+        twoPractitionersEligible: true,
         subcategory: "Tissage",
         label: "TISSAGE VERSATILE",
         duration: "120 min",
@@ -336,6 +374,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-shampoing-sechage",
+        twoPractitionersEligible: false,
         subcategory: "Brushing",
         label: "SHAMPOING SÉCHAGE",
         duration: "60 min",
@@ -344,6 +383,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-flip-over-sew-in-tissage-ferme",
+        twoPractitionersEligible: true,
         subcategory: "Tissage",
         label: "FLIP OVER SEW IN ( TISSAGE FERMÉ )",
         duration: "150 min",
@@ -352,6 +392,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-tissage-closure-behind-the-hair-line-new",
+        twoPractitionersEligible: true,
         subcategory: "Tissage",
         label: "TISSAGE CLOSURE BEHIND THE HAIR LINE (NEW)",
         duration: "190 min",
@@ -360,6 +401,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-supplement-express-floral-facial-soin-du-visage-relaxant",
+        twoPractitionersEligible: false,
         subcategory: "Nos Rituels Soins",
         label: "SUPPLÉMENT EXPRESS FLORAL FACIAL/ SOIN DU VISAGE RELAXANT",
         duration: "35 min",
@@ -368,6 +410,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-vip",
+        twoPractitionersEligible: true,
         subcategory: "Nos Rituels Soins",
         label: "SOIN VIP",
         duration: "160 min",
@@ -376,6 +419,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "coiffure-soin-reparateur-olapex-new-in",
+        twoPractitionersEligible: true,
         subcategory: "Nos Rituels Soins",
         label: "SOIN RÉPARATEUR OLAPEX ( NEW IN)",
         duration: "120 min",
@@ -403,6 +447,7 @@ export const bookingServices: BookingService[] = [
     subServices: [
       {
         id: "manucure-pedicure-gel-sur-ongle-naturel-gainage",
+        twoPractitionersEligible: true,
         label: "GEL SUR ONGLE NATUREL(GAINAGE)",
         duration: "70 min",
         durationMinutes: 70,
@@ -410,6 +455,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-supplement-decoration-chrome-cat-eye-baby-boomer",
+        twoPractitionersEligible: true,
         label: "SUPPLÉMENT DÉCORATION ( Chrome , Cat Eye , Baby Boomer )",
         description: "Ce service vient en supplément .",
         duration: "20 min",
@@ -418,6 +464,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-manucure-permanent",
+        twoPractitionersEligible: true,
         label: "MANUCURE + PERMANENT",
         duration: "80 min",
         durationMinutes: 80,
@@ -425,6 +472,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-jelly-pedicure",
+        twoPractitionersEligible: true,
         label: "JELLY PÉDICURE",
         duration: "65 min",
         durationMinutes: 65,
@@ -432,6 +480,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-smooth-pedicure",
+        twoPractitionersEligible: true,
         label: "SMOOTH PÉDICURE",
         duration: "80 min",
         durationMinutes: 80,
@@ -439,6 +488,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-perfect-manucure-russe-gel-sur-ongles-naturels-gainage",
+        twoPractitionersEligible: true,
         label: "PERFECT MANUCURE RUSSE+ GEL SUR ONGLES NATURELS (GAINAGE)",
         description: "Découvrez notre manucure russe sans eau pour des mains impeccables. Ce rituel inclut une préparation minutieuse des cuticules, une exfoliation revitalisante, et la pose du gel et le vernis permanent.",
         duration: "90 min",
@@ -447,6 +497,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-manucure-russe-sans-vernis-sans-gel",
+        twoPractitionersEligible: true,
         label: "MANUCURE RUSSE( sans vernis/sans gel)",
         duration: "30 min",
         durationMinutes: 30,
@@ -454,6 +505,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-vernis-simple-mains-classique-et-halal",
+        twoPractitionersEligible: true,
         label: "VERNIS SIMPLE MAINS (CLASSIQUE ET HALAL)",
         duration: "30 min",
         durationMinutes: 30,
@@ -461,6 +513,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-pedicure-me-spa",
+        twoPractitionersEligible: true,
         label: "PÉDICURE ME SPA",
         duration: "60 min",
         durationMinutes: 60,
@@ -468,6 +521,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-manucure-spa-express",
+        twoPractitionersEligible: true,
         label: "MANUCURE SPA EXPRESS",
         duration: "45 min",
         durationMinutes: 45,
@@ -475,6 +529,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-pedicure-permanent",
+        twoPractitionersEligible: true,
         label: "PÉDICURE PERMANENT",
         duration: "80 min",
         durationMinutes: 80,
@@ -482,6 +537,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-perfect-pedicure-russe-permanent",
+        twoPractitionersEligible: true,
         label: "PERFECT PÉDICURE RUSSE + PERMANENT",
         duration: "80 min",
         durationMinutes: 80,
@@ -489,6 +545,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-luxury-perfect-pedicure",
+        twoPractitionersEligible: true,
         label: "LUXURY PERFECT PÉDICURE",
         duration: "90 min",
         durationMinutes: 90,
@@ -496,6 +553,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "manucure-pedicure-luxury-perfect-manucure-spa",
+        twoPractitionersEligible: true,
         label: "LUXURY PERFECT MANUCURE SPA",
         duration: "70 min",
         durationMinutes: 70,
@@ -513,6 +571,7 @@ export const bookingServices: BookingService[] = [
     subServices: [
       {
         id: "onglerie-vernis-permanent-pieds",
+        twoPractitionersEligible: true,
         label: "VERNIS PERMANENT PIEDS",
         description: "Ce service inclut la pose du permanent sur les pieds.",
         duration: "30 min",
@@ -521,6 +580,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "onglerie-polygel-extensions",
+        twoPractitionersEligible: true,
         label: "POLYGEL EXTENSIONS",
         duration: "120 min",
         durationMinutes: 120,
@@ -528,6 +588,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "onglerie-reparation-ongle-1-doigt",
+        twoPractitionersEligible: false,
         label: "Réparation Ongle ( 1 Doigt )",
         description: "Reconstruction soignée d'ongles cassés ou gel abîmé.",
         duration: "20 min",
@@ -536,6 +597,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "onglerie-depose-gel-gel-a-enlever",
+        twoPractitionersEligible: true,
         label: "DÉPOSE GEL( gel à enlever)",
         description: "protéger vos ongles par une dépose délicate et soignée.",
         duration: "30 min",
@@ -544,6 +606,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "onglerie-gel-x",
+        twoPractitionersEligible: true,
         label: "GEL X",
         description: "Sublimez vos ongles avec notre nouvelle technique de manucure rapide. Ce service inclut la pose de capsules en gel souple suivi d'une couleur permanente. Elle dure 3 à 4 semaines.",
         duration: "80 min",
@@ -552,6 +615,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "onglerie-capsules-permanents-mains",
+        twoPractitionersEligible: true,
         label: "CAPSULES PERMANENTS MAINS",
         description: "Sublimez vos mains avec nos poses de capsules souples suivi d'une couleur permanente.",
         duration: "50 min",
@@ -560,6 +624,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "onglerie-capsules-gel-pieds",
+        twoPractitionersEligible: true,
         label: "CAPSULES GEL PIEDS",
         description: "Ce service inclut une pose de capsules en gel souple qui couvre tout l'ongle naturel des pieds.",
         duration: "60 min",
@@ -568,6 +633,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "onglerie-vernis-permanent-mains",
+        twoPractitionersEligible: true,
         label: "VERNIS PERMANENT MAINS",
         description: "Ce service inclut la pose du permanent sur les mains.",
         duration: "30 min",
@@ -576,6 +642,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "onglerie-remplissage-gel",
+        twoPractitionersEligible: true,
         label: "REMPLISSAGE GEL",
         description: "Entretenez vos ongles avec notre remplissage gel après 2 semaines de pose.",
         duration: "30 min",
@@ -584,6 +651,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "onglerie-supplement-french",
+        twoPractitionersEligible: true,
         label: "SUPPLÉMENT FRENCH",
         duration: "30 min",
         durationMinutes: 30,
@@ -591,6 +659,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "onglerie-supplement-decoration-chrome-cat-eye-baby-boomer",
+        twoPractitionersEligible: true,
         label: "SUPPLÉMENT DÉCORATION ( Chrome , Cat Eye , Baby Boomer )",
         description: "Ce service vient en supplément .",
         duration: "30 min",
@@ -620,6 +689,7 @@ export const bookingServices: BookingService[] = [
     subServices: [
       {
         id: "spa-soin-du-dos",
+        twoPractitionersEligible: true,
         label: "SOIN DU DOS",
         duration: "90 min",
         durationMinutes: 90,
@@ -627,6 +697,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-hot-stone-pierres-chaudes",
+        twoPractitionersEligible: true,
         label: "HOT STONE - PIERRES CHAUDES",
         duration: "60 min",
         durationMinutes: 60,
@@ -634,6 +705,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-reflexology",
+        twoPractitionersEligible: true,
         label: "REFLEXOLOGY",
         duration: "60 min",
         durationMinutes: 60,
@@ -641,6 +713,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-relax-me-time",
+        twoPractitionersEligible: true,
         label: "RELAX ME TIME",
         duration: "80 min",
         durationMinutes: 80,
@@ -648,6 +721,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-energissant-sportif",
+        twoPractitionersEligible: true,
         label: "ENERGISSANT SPORTIF",
         duration: "60 min",
         durationMinutes: 60,
@@ -655,6 +729,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-black-relief-dos",
+        twoPractitionersEligible: true,
         label: "BLACK RELIEF DOS",
         duration: "30 min",
         durationMinutes: 30,
@@ -662,6 +737,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-de-stress-relaxant",
+        twoPractitionersEligible: true,
         label: "DE STRESS RELAXANT",
         duration: "55 min",
         durationMinutes: 55,
@@ -669,6 +745,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-deep-tonique",
+        twoPractitionersEligible: true,
         label: "DEEP TONIQUE",
         duration: "60 min",
         durationMinutes: 60,
@@ -676,6 +753,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-steam-time",
+        twoPractitionersEligible: false,
         label: "STEAM TIME",
         duration: "50 min",
         durationMinutes: 50,
@@ -683,6 +761,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-express-head-neck-shoulder",
+        twoPractitionersEligible: true,
         label: "EXPRESS HEAD NECK SHOULDER",
         duration: "30 min",
         durationMinutes: 30,
@@ -690,6 +769,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-magic-vip-rituel-repair-and-reset",
+        twoPractitionersEligible: true,
         label: "MAGIC VIP RITUEL REPAIR AND RESET",
         duration: "190 min",
         durationMinutes: 190,
@@ -697,6 +777,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "spa-pure-delice",
+        twoPractitionersEligible: true,
         label: "PURE DELICE",
         duration: "130 min",
         durationMinutes: 130,
@@ -721,6 +802,7 @@ export const bookingServices: BookingService[] = [
     subServices: [
       {
         id: "soin-du-visage-golden-vip-facial",
+        twoPractitionersEligible: false,
         label: "GOLDEN VIP FACIAL",
         duration: "90 min",
         durationMinutes: 90,
@@ -728,6 +810,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "soin-du-visage-face-lift-and-glow-raffermissant-lift-et-glow",
+        twoPractitionersEligible: false,
         label: "FACE LIFT AND GLOW - RAFFERMISSANT LIFT ET GLOW",
         duration: "70 min",
         durationMinutes: 70,
@@ -735,6 +818,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "soin-du-visage-glow-me-facial",
+        twoPractitionersEligible: false,
         label: "GLOW ME FACIAL",
         duration: "60 min",
         durationMinutes: 60,
@@ -742,6 +826,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "soin-du-visage-acne-treatment",
+        twoPractitionersEligible: false,
         label: "ACNE TREATMENT",
         duration: "60 min",
         durationMinutes: 60,
@@ -749,6 +834,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "soin-du-visage-hydrate-me-and-restore",
+        twoPractitionersEligible: false,
         label: "HYDRATE ME AND RESTORE",
         duration: "60 min",
         durationMinutes: 60,
@@ -756,6 +842,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "soin-du-visage-hydrafacial-deep-clean",
+        twoPractitionersEligible: false,
         label: "HYDRAFACIAL DEEP CLEAN",
         duration: "75 min",
         durationMinutes: 75,
@@ -763,6 +850,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "soin-du-visage-detox-me-facial",
+        twoPractitionersEligible: false,
         label: "DETOX ME FACIAL",
         duration: "60 min",
         durationMinutes: 60,
@@ -780,6 +868,7 @@ export const bookingServices: BookingService[] = [
     subServices: [
       {
         id: "epilation-epilation-menton",
+        twoPractitionersEligible: false,
         label: "ÉPILATION MENTON",
         duration: "25 min",
         durationMinutes: 25,
@@ -787,6 +876,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-pack-epilations-completes",
+        twoPractitionersEligible: true,
         label: "PACK ÉPILATIONS COMPLÈTES",
         duration: "60 min",
         durationMinutes: 60,
@@ -794,6 +884,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-epilation-bras",
+        twoPractitionersEligible: true,
         label: "ÉPILATION BRAS",
         duration: "25 min",
         durationMinutes: 25,
@@ -801,6 +892,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-epilation-jambes-completes",
+        twoPractitionersEligible: true,
         label: "ÉPILATION JAMBES COMPLÈTES",
         duration: "45 min",
         durationMinutes: 45,
@@ -808,6 +900,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-epilation-maillot-integral",
+        twoPractitionersEligible: false,
         label: "ÉPILATION MAILLOT INTÉGRAL",
         duration: "45 min",
         durationMinutes: 45,
@@ -815,6 +908,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-epilation-demi-jambes",
+        twoPractitionersEligible: true,
         label: "ÉPILATION DEMI - JAMBES",
         duration: "25 min",
         durationMinutes: 25,
@@ -822,6 +916,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-epilation-duvet-ventre",
+        twoPractitionersEligible: false,
         label: "ÉPILATION DUVET/VENTRE",
         duration: "25 min",
         durationMinutes: 25,
@@ -829,6 +924,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-epilation-maillot-bresilien",
+        twoPractitionersEligible: false,
         label: "ÉPILATION MAILLOT BRÉSILIEN",
         duration: "25 min",
         durationMinutes: 25,
@@ -836,6 +932,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-epilation-aisselles",
+        twoPractitionersEligible: true,
         label: "ÉPILATION AISSELLES",
         duration: "25 min",
         durationMinutes: 25,
@@ -843,6 +940,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-epilation-sourcils",
+        twoPractitionersEligible: false,
         label: "ÉPILATION SOURCILS",
         description: "Nettoyage des sourcils",
         duration: "15 min",
@@ -851,6 +949,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-soin-vagifacial",
+        twoPractitionersEligible: false,
         label: "SOIN VAGIFACIAL",
         duration: "35 min",
         durationMinutes: 35,
@@ -858,6 +957,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "epilation-soin-vagifacial-maillot-integral",
+        twoPractitionersEligible: false,
         label: "SOIN VAGIFACIAL+ MAILLOT INTEGRAL",
         duration: "60 min",
         durationMinutes: 60,
@@ -876,6 +976,7 @@ export const bookingServices: BookingService[] = [
     subServices: [
       {
         id: "mini-co-mini-hair-treat-mini-co",
+        twoPractitionersEligible: true,
         label: "MINI HAIR TREAT ( Mini&co)",
         description:
           "Un instant féerique pour les cheveux de votre princesse. On commence par un démêlage délicat en 4 parties, tout en douceur, pour ne pas faire mal aux petites filles.",
@@ -885,6 +986,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "mini-co-mini-hair-treat-braids-mini-co",
+        twoPractitionersEligible: true,
         label: "MINI HAIR TREAT+ BRAIDS ( Mini&co)",
         description:
           "Un rituel complet pour des cheveux choyés et un style qui dure. Après le démêlage doux en 4 parties, on offre un shampoing tendre, un masque nourrissant, et un soin protecteur thermique avant un séchage léger.",
@@ -894,6 +996,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "mini-co-supplement-coiffure-enfant",
+        twoPractitionersEligible: false,
         label: "SUPPLEMENT COIFFURE ENFANT",
         duration: "50 min",
         durationMinutes: 50,
@@ -901,6 +1004,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "mini-co-definition-boucles-enfant",
+        twoPractitionersEligible: false,
         label: "DEFINITION BOUCLES ENFANT",
         duration: "30 min",
         durationMinutes: 30,
@@ -908,6 +1012,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "mini-co-defaire-tresses-enfant",
+        twoPractitionersEligible: true,
         label: "DEFAIRE TRESSES ENFANT",
         duration: "45 min",
         durationMinutes: 45,
@@ -915,6 +1020,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "mini-co-coupe-pointes-enfants-mini-co",
+        twoPractitionersEligible: false,
         label: "COUPE POINTES ENFANTS (Mini&co)",
         duration: "25 min",
         durationMinutes: 25,
@@ -922,6 +1028,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "mini-co-supplement-brushing-enfant",
+        twoPractitionersEligible: false,
         label: "SUPPLEMENT BRUSHING ENFANT",
         description: "Occasions spéciales uniquement.",
         duration: "60 min",
@@ -930,6 +1037,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "mini-co-supplements-tresses-enfants-mini-and-co",
+        twoPractitionersEligible: true,
         label: "SUPPLÉMENTS TRESSES ENFANTS MINI AND CO",
         description: "Sans mèches, 90 min max.",
         duration: "60 min",
@@ -949,6 +1057,7 @@ export const bookingServices: BookingService[] = [
     subServices: [
       {
         id: "mini-co-mini-jely-manucure",
+        twoPractitionersEligible: true,
         label: "MINI JELLY MANUCURE",
         description:
           "Un moment ludique et tout doux pour les petites mains. Les doigts plongent dans un bain jelly coloré, à la texture amusante et sans parfum, pour une expérience sûre et agréable.",
@@ -958,6 +1067,7 @@ export const bookingServices: BookingService[] = [
       },
       {
         id: "mini-co-mini-cutie-pedicure",
+        twoPractitionersEligible: true,
         label: "MINI CUTIE PÉDICURE",
         duration: "35 min",
         durationMinutes: 35,

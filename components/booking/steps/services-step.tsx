@@ -5,6 +5,7 @@ import Image from "next/image";
 import { CategoryPrestationList } from "@/components/booking/category-prestation-list";
 import { CategoryTiles } from "@/components/booking/category-tiles";
 import { PersonToggle } from "@/components/booking/person-toggle";
+import { StepFooter } from "@/components/booking/steps/step-footer";
 import { bookingServices, type BookingService, type BookingSubService } from "@/lib/data/booking-services";
 import { formatPrice } from "@/lib/booking/format";
 import type { Selections } from "@/lib/booking/cart";
@@ -225,8 +226,8 @@ export function ServicesStep({
 
   return (
     <div>
-      <h2 className="text-[21px] font-bold text-[#1d2939]">Choisir vos services</h2>
-      <p className="mt-1 text-[19px] text-[#667085]">
+      <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Choisir vos services</h2>
+      <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">
         Choisissez les services que vous souhaitez recevoir.
       </p>
       <div ref={personToggleRef} className="mt-4">
@@ -272,7 +273,7 @@ export function ServicesStep({
           )}
         >
           <div className="flex items-center justify-between gap-4">
-            <p className="text-[15px] font-[450] text-[#667085]">Beaucoup ajoutent aussi :</p>
+            <p className="text-[15px] font-[450] text-[var(--color-gray-500)]">Beaucoup ajoutent aussi :</p>
             <button
               type="button"
               onClick={() => {
@@ -280,7 +281,7 @@ export function ServicesStep({
                 setHasInteractedWithSuggestions(true);
               }}
               aria-label="Fermer la suggestion"
-              className="shrink-0 text-[19px] leading-none text-[#98a2b3] transition hover:text-[#667085]"
+              className="shrink-0 text-[19px] leading-none text-[var(--color-gray-400)] transition hover:text-[var(--color-gray-500)]"
             >
               ×
             </button>
@@ -302,10 +303,10 @@ export function ServicesStep({
                     />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[15px] font-bold text-[#1d2939]" title={toSentenceCase(sub.label)}>
+                    <p className="truncate text-[15px] font-bold text-[var(--color-gray-800)]" title={toSentenceCase(sub.label)}>
                       {toSentenceCase(sub.label)}
                     </p>
-                    <p className="text-[13px] font-[500] text-[#1d2939]">
+                    <p className="text-[13px] font-[500] text-[var(--color-gray-800)]">
                       {sub.duration} · {formatPrice(sub.price)}
                     </p>
                   </div>
@@ -320,8 +321,8 @@ export function ServicesStep({
                         onClick={() => handleSuggestionToggle(person.id, sub.id)}
                         aria-pressed={isAdded}
                         className={cn(
-                          "shrink-0 self-start rounded-full border border-[#806562] px-3 py-1.5 text-[15px] font-[450] whitespace-nowrap transition",
-                          isAdded ? "bg-[#806562] text-white" : "bg-white text-[#806562] hover:bg-[#806562]/5",
+                          "shrink-0 self-start rounded-full border border-[var(--brand-taupe-muted)] px-3 py-1.5 text-[15px] font-[450] whitespace-nowrap transition",
+                          isAdded ? "bg-[var(--brand-taupe-muted)] text-white" : "bg-white text-[var(--brand-taupe-muted)] hover:bg-[var(--brand-taupe-muted)]/5",
                         )}
                       >
                         {isAdded ? "Sélectionné" : "Sélectionner"}
@@ -330,7 +331,7 @@ export function ServicesStep({
                   })()
                 ) : (
                   <div>
-                    <p className="text-[13px] text-[#667085]">Sélectionner pour :</p>
+                    <p className="text-[13px] text-[var(--color-gray-500)]">Sélectionner pour :</p>
                     <div className="mt-1.5 flex flex-wrap items-center gap-2">
                       {targetPeople.map((person) => {
                         const isAdded = Boolean(selections[person.id]?.has(sub.id));
@@ -341,8 +342,8 @@ export function ServicesStep({
                             onClick={() => handleSuggestionToggle(person.id, sub.id)}
                             aria-pressed={isAdded}
                             className={cn(
-                              "shrink-0 rounded-full border border-[#806562] px-3 py-1.5 text-[15px] font-[450] whitespace-nowrap transition",
-                              isAdded ? "bg-[#806562] text-white" : "bg-white text-[#806562] hover:bg-[#806562]/5",
+                              "shrink-0 rounded-full border border-[var(--brand-taupe-muted)] px-3 py-1.5 text-[15px] font-[450] whitespace-nowrap transition",
+                              isAdded ? "bg-[var(--brand-taupe-muted)] text-white" : "bg-white text-[var(--brand-taupe-muted)] hover:bg-[var(--brand-taupe-muted)]/5",
                             )}
                           >
                             {person.label}
@@ -360,7 +361,7 @@ export function ServicesStep({
 
       <div className="mt-8">
         {showMissingSelectionWarning && peopleMissingSelection.length > 0 && (
-          <p className="mb-4 rounded-xl bg-[rgba(217,45,32,0.08)] px-4 py-3 text-[15px] font-[450] text-[#b42318]">
+          <p className="mb-4 rounded-xl bg-[rgba(217,45,32,0.08)] px-4 py-3 text-[15px] font-[450] text-[var(--color-error)]">
             {peopleMissingSelection.length === people.length
               ? "Choisissez au moins une prestation pour continuer."
               : `${peopleMissingSelection.map((person) => person.label).join(" et ")} ${
@@ -369,7 +370,7 @@ export function ServicesStep({
           </p>
         )}
         {showMissingQuestionsWarning && peopleMissingSelection.length === 0 && peopleMissingQuestions.length > 0 && (
-          <p className="mb-4 rounded-xl bg-[rgba(217,45,32,0.08)] px-4 py-3 text-[15px] font-[450] text-[#b42318]">
+          <p className="mb-4 rounded-xl bg-[rgba(217,45,32,0.08)] px-4 py-3 text-[15px] font-[450] text-[var(--color-error)]">
             {peopleMissingQuestions.length === people.length
               ? "Merci de répondre aux informations complémentaires obligatoires pour continuer."
               : `${peopleMissingQuestions.map((person) => person.label).join(" et ")} ${
@@ -377,22 +378,7 @@ export function ServicesStep({
                 } répondre aux informations complémentaires obligatoires pour continuer.`}
           </p>
         )}
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-[17px] font-[450] text-[#886666] transition hover:bg-black/[.02]"
-          >
-            Annuler
-          </button>
-          <button
-            type="button"
-            onClick={handleContinue}
-            className="rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
-          >
-            Continuer
-          </button>
-        </div>
+        <StepFooter onBack={onCancel} onContinue={handleContinue} backLabel="Annuler" />
       </div>
     </div>
   );

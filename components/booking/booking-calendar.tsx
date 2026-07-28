@@ -25,23 +25,23 @@ export function BookingCalendar({ selectedDate, onSelectDate }: BookingCalendarP
   const grid = getMonthGrid(viewedMonth.getFullYear(), viewedMonth.getMonth());
 
   return (
-    <div className="rounded-2xl border border-[#eaecf0] bg-white p-3">
+    <div className="rounded-2xl border border-[var(--color-gray-200)] bg-white p-3">
       <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={() => setViewedMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
           disabled={isCurrentMonth}
           aria-label="Mois précédent"
-          className="flex size-7 items-center justify-center rounded-lg border border-[#e5e7eb] disabled:opacity-50"
+          className="flex size-7 items-center justify-center rounded-lg border border-[var(--color-border-light)] disabled:opacity-50"
         >
           <Image src="/images/rdv/icon-chevron-left.svg" alt="" width={16} height={16} />
         </button>
-        <p className="text-[21px] font-bold text-[#344054] capitalize">{monthFormatter.format(viewedMonth)}</p>
+        <p className="text-[21px] font-bold text-[var(--text-secondary)] capitalize">{monthFormatter.format(viewedMonth)}</p>
         <button
           type="button"
           onClick={() => setViewedMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
           aria-label="Mois suivant"
-          className="flex size-7 items-center justify-center rounded-lg border border-[#e5e7eb]"
+          className="flex size-7 items-center justify-center rounded-lg border border-[var(--color-border-light)]"
         >
           <Image src="/images/rdv/icon-chevron-right.svg" alt="" width={16} height={16} />
         </button>
@@ -49,7 +49,7 @@ export function BookingCalendar({ selectedDate, onSelectDate }: BookingCalendarP
 
       <div className="mt-4 grid grid-cols-7 gap-y-1">
         {weekdayLabels.map((label) => (
-          <div key={label} className="flex h-8 items-center justify-center text-[15px] text-[#64748b]">
+          <div key={label} className="flex h-8 items-center justify-center text-[15px] text-[var(--color-slate-500)]">
             {label}
           </div>
         ))}
@@ -68,10 +68,10 @@ export function BookingCalendar({ selectedDate, onSelectDate }: BookingCalendarP
                 className={cn(
                   "flex size-10 items-center justify-center rounded-full text-[17px] font-bold transition",
                   isSelected
-                    ? "bg-[#FDCFCB] text-[#886666] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)]"
+                    ? "bg-[var(--core-brand-color)] text-[var(--brand-taupe-muted)] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)]"
                     : disabled
-                      ? "text-[#64748b] opacity-40"
-                      : "text-[#344054] hover:bg-[#f7f8fa]",
+                      ? "text-[var(--color-slate-500)] opacity-40"
+                      : "text-[var(--text-secondary)] hover:bg-[var(--color-bg-subtle)]",
                 )}
               >
                 {day.getDate()}

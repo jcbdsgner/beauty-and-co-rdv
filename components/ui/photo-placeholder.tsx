@@ -9,7 +9,7 @@ export function PhotoPlaceholder({ className, label = "Photo à venir" }: PhotoP
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-[#d0d5dd] bg-[#f8f6f9] text-[#98a2b3]",
+        "flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-[var(--color-gray-300)] bg-[var(--brand-cream)] text-[var(--color-gray-400)]",
         className,
       )}
     >

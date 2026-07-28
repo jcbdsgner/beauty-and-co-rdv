@@ -1,0 +1,5 @@
+# La Souscription reste accessible sans Compte, et un Abonnement n'a pas d'exclusivité
+
+On était d'abord partis sur un Compte obligatoire pour Souscrire (par symétrie avec le besoin d'afficher "mes Abonnements" quelque part), et sur la règle héritée qu'un client ne peut avoir qu'un seul Abonnement actif à la fois. Les deux ont été abandonnés une fois le vrai besoin précisé : on doit pouvoir souscrire un Forfait pour quelqu'un d'autre que soi (ex: un proche, sans lui demander de créer un compte), et un souscripteur peut légitimement cumuler plusieurs Abonnements — les siens et ceux pris pour d'autres bénéficiaires.
+
+Un Abonnement appartient donc à qui a fait la Souscription (son Compte s'il est connecté, ses coordonnées d'invité sinon), avec un champ optionnel de coordonnées si le bénéficiaire est quelqu'un d'autre — sans introduire de rôle "bénéficiaire" formel séparé dans le modèle. Le Compte redevient un simple raccourci (préremplissage, retrouver ses Abonnements), jamais un prérequis, ce qui aligne la Souscription sur le comportement déjà établi du parcours de Réservation.

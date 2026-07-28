@@ -2,28 +2,33 @@
 
 import { cn } from "@/lib/utils";
 import { formatDurationMinutes } from "@/lib/booking/format";
+import { Switch } from "@/components/ui/switch";
 
 type TwoPractitionersToggleProps = {
   enabled: boolean;
   onChange: (enabled: boolean) => void;
-  totalMinutes: number;
+  soloMinutes: number;
+  twoPractitionersMinutes: number;
 };
 
-export function TwoPractitionersToggle({ enabled, onChange, totalMinutes }: TwoPractitionersToggleProps) {
-  const halvedMinutes = Math.round(totalMinutes / 2);
-
+export function TwoPractitionersToggle({
+  enabled,
+  onChange,
+  soloMinutes,
+  twoPractitionersMinutes,
+}: TwoPractitionersToggleProps) {
   return (
     <div className={cn("mt-4 rounded-2xl bg-[rgba(253,207,202,0.35)] p-[18px]", !enabled && "attention-shake-once")}>
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-[17px] text-[#1d2939]">
-            <span className="font-bold text-[#886666]">Gagner 2 fois plus de temps</span> avec 2 praticiens,
+          <p className="text-[17px] text-[var(--color-gray-800)]">
+            <span className="font-bold text-[var(--brand-taupe-muted)]">Gagner 2 fois plus de temps</span> avec 2 praticiens,
             gratuitement.
-            {totalMinutes > 0 && (
+            {soloMinutes > 0 && (
               <>
                 {" "}
-                Votre rendez-vous passera de {formatDurationMinutes(totalMinutes)} à{" "}
-                <span className="font-bold">{formatDurationMinutes(halvedMinutes)}</span>.
+                Votre rendez-vous passera de {formatDurationMinutes(soloMinutes)} à{" "}
+                <span className="font-bold">{formatDurationMinutes(twoPractitionersMinutes)}</span>.
               </>
             )}
           </p>
@@ -37,7 +42,7 @@ export function TwoPractitionersToggle({ enabled, onChange, totalMinutes }: TwoP
           onClick={() => onChange(!enabled)}
           className={cn(
             "relative h-6 w-11 shrink-0 rounded-full transition",
-            enabled ? "bg-[#886666]" : "bg-[#d0d5dd]",
+            enabled ? "bg-[var(--brand-taupe-muted)]" : "bg-[var(--color-gray-300)]",
           )}
         >
           <span

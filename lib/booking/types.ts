@@ -18,6 +18,7 @@ export type CartItem = {
   price: number;
   duration: string;
   durationMinutes: number;
+  twoPractitionersEligible: boolean;
 };
 
 export type Sex = "femme" | "homme";

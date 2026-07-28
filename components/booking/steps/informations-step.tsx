@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PhoneInput } from "@/components/booking/phone-input";
+import { StepFooter } from "@/components/booking/steps/step-footer";
 import { loginLink } from "@/lib/data/nav";
 import { cn } from "@/lib/utils";
 import {
@@ -23,7 +24,7 @@ type InformationsStepProps = {
 };
 
 const inputClassName =
-  "h-12 w-full rounded-full border border-[#e5e7eb] bg-white px-4 text-[17px] text-[#020817] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] outline-none focus:border-[#886666]";
+  "h-12 w-full rounded-full border border-[var(--color-border-light)] bg-white px-4 text-[17px] text-[var(--color-ink)] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] outline-none focus:border-[var(--brand-taupe-muted)]";
 
 const genderOptions: { value: ContactInfo["sex"] & string; label: string }[] = [
   { value: "femme", label: "Femme" },
@@ -57,12 +58,12 @@ function GenderOption({
         onClick={onSelect}
         className={cn(
           "flex size-5 shrink-0 items-center justify-center rounded-lg border transition",
-          selected ? "border-[#fdcfca] bg-[#fdcfca]" : "border-[#eaecf0] bg-white",
+          selected ? "border-[var(--core-brand-color)] bg-[var(--core-brand-color)]" : "border-[var(--color-gray-200)] bg-white",
         )}
       >
         {selected && <span className="size-2 rounded-sm bg-white" />}
       </button>
-      <span className="text-[17px] font-[450] text-[#344054]">{label}</span>
+      <span className="text-[17px] font-[450] text-[var(--text-secondary)]">{label}</span>
     </label>
   );
 }
@@ -85,9 +86,9 @@ function PersonInfoBlock({
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center gap-2">
-        <h3 className="text-[21px] font-bold text-[#1d2939]">{person.label}</h3>
+        <h3 className="text-[21px] font-bold text-[var(--color-gray-800)]">{person.label}</h3>
         {isPrimaryContact && (
-          <span className="rounded-full bg-[rgba(237,220,218,0.5)] px-3 py-1 text-[13px] font-[450] text-[#806562]">
+          <span className="rounded-full bg-[rgba(237,220,218,0.5)] px-3 py-1 text-[13px] font-[450] text-[var(--brand-taupe-muted)]">
             Contact principal
           </span>
         )}
@@ -95,7 +96,7 @@ function PersonInfoBlock({
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
-          <label htmlFor={id("firstName")} className="text-[17px] font-bold text-[#374151]">
+          <label htmlFor={id("firstName")} className="text-[17px] font-bold text-[var(--color-text-tertiary)]">
             Prénom *
           </label>
           <input
@@ -110,7 +111,7 @@ function PersonInfoBlock({
         </div>
 
         <div>
-          <label htmlFor={id("lastName")} className="text-[17px] font-bold text-[#374151]">
+          <label htmlFor={id("lastName")} className="text-[17px] font-bold text-[var(--color-text-tertiary)]">
             Nom *
           </label>
           <input
@@ -126,7 +127,7 @@ function PersonInfoBlock({
       </div>
 
       <div id={id("sex")} tabIndex={-1} className="mt-6 outline-none">
-        <p className="text-[17px] font-bold text-[#374151]">Genre *</p>
+        <p className="text-[17px] font-bold text-[var(--color-text-tertiary)]">Genre *</p>
         <div className="mt-2 flex items-center gap-5">
           {genderOptions.map((option) => (
             <GenderOption
@@ -141,7 +142,7 @@ function PersonInfoBlock({
       </div>
 
       <div className="mt-6">
-        <label htmlFor={id("email")} className="text-[17px] font-bold text-[#374151]">
+        <label htmlFor={id("email")} className="text-[17px] font-bold text-[var(--color-text-tertiary)]">
           Adresse email *
         </label>
         <input
@@ -154,14 +155,14 @@ function PersonInfoBlock({
         />
         <FieldError message={errors.email} />
         {!errors.email && (
-          <p className="mt-2 text-[15px] text-[#64748b]">
+          <p className="mt-2 text-[15px] text-[var(--color-slate-500)]">
             Nous vous enverrons la confirmation de votre rendez-vous
           </p>
         )}
       </div>
 
       <div className="mt-6">
-        <label htmlFor={id("phone")} className="text-[17px] font-bold text-[#374151]">
+        <label htmlFor={id("phone")} className="text-[17px] font-bold text-[var(--color-text-tertiary)]">
           Numéro de téléphone *
         </label>
         <PhoneInput
@@ -177,15 +178,15 @@ function PersonInfoBlock({
 
       <div className="mt-6">
         <div className="flex items-center justify-between">
-          <span className="text-[17px] font-bold text-[#374151]">WhatsApp (optionnel)</span>
+          <span className="text-[17px] font-bold text-[var(--color-text-tertiary)]">WhatsApp (optionnel)</span>
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={contactInfo.whatsappSameAsPhone}
               onChange={(event) => onChange({ whatsappSameAsPhone: event.target.checked })}
-              className="size-4 accent-[#806562]"
+              className="size-4 accent-[var(--brand-taupe-muted)]"
             />
-            <span className="text-[17px] font-[450] text-[#020817]">Identique au téléphone</span>
+            <span className="text-[17px] font-[450] text-[var(--color-ink)]">Identique au téléphone</span>
           </label>
         </div>
         <PhoneInput
@@ -195,7 +196,7 @@ function PersonInfoBlock({
           onChange={(whatsapp) => onChange({ whatsapp })}
           disabled={contactInfo.whatsappSameAsPhone}
         />
-        <p className="mt-2 text-[15px] text-[#64748b]">
+        <p className="mt-2 text-[15px] text-[var(--color-slate-500)]">
           Pour recevoir des rappels et mises à jour de votre rendez-vous
         </p>
       </div>
@@ -238,14 +239,14 @@ export function InformationsStep({
     <div>
       <div className="flex flex-wrap items-center gap-4 rounded-2xl bg-[rgba(253,207,202,0.15)] py-4 pr-6 pl-4">
         <div className="min-w-[220px] flex-1">
-          <p className="text-[20px] font-bold text-[#101828]">Avez-vous un compte ?</p>
-          <p className="text-[18px] text-[#475467]">
+          <p className="text-[20px] font-bold text-[var(--color-gray-900)]">Avez-vous un compte ?</p>
+          <p className="text-[18px] text-[var(--color-gray-600)]">
             Connectez-vous et renseignez automatiquement vos informations personnelles.
           </p>
         </div>
         <Link
           href={loginLink.href}
-          className="shrink-0 rounded-full bg-[#fdcfca] px-4 py-3 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
+          className="shrink-0 rounded-full bg-[var(--core-brand-color)] px-4 py-3 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
         >
           {loginLink.label}
         </Link>
@@ -255,7 +256,7 @@ export function InformationsStep({
         {adults.map((person, index) => {
           const contactInfo = contactInfoByPerson[person.id] ?? emptyContactInfo;
           return (
-            <div key={person.id} className="rounded-2xl border border-[#eaecf0] bg-white p-[25px]">
+            <div key={person.id} className="rounded-2xl border border-[var(--color-gray-200)] bg-white p-[25px]">
               <PersonInfoBlock
                 person={person}
                 isPrimaryContact={index === 0}
@@ -268,21 +269,8 @@ export function InformationsStep({
         })}
       </div>
 
-      <div className="mt-8 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-full border border-[rgba(136,102,102,0.3)] bg-white px-6 py-2 text-[17px] font-[450] text-[#886666] transition hover:bg-black/[.02]"
-        >
-          Retourner
-        </button>
-        <button
-          type="button"
-          onClick={handleContinueClick}
-          className="rounded-full bg-[#fdcfca] px-8 py-2 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
-        >
-          Continuer
-        </button>
+      <div className="mt-8">
+        <StepFooter onBack={onBack} onContinue={handleContinueClick} />
       </div>
     </div>
   );

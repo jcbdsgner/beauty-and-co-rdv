@@ -10,7 +10,7 @@ export function BookingHelp() {
       <h2 className="font-[family-name:var(--font-prata)] text-[34px] text-[#575555]">
         Besoin d&apos;aide pour réserver ?
       </h2>
-      <p className="max-w-md text-[17px] text-[#806562]">
+      <p className="max-w-md text-[17px] text-[var(--brand-taupe-muted)]">
         Regardez notre guide vidéo rapide pour comprendre comment prendre rendez-vous en quelques clics
       </p>
       <Button

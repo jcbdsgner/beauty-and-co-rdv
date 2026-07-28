@@ -5,19 +5,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
+import { AccountMenu } from "@/components/layout/account-menu";
 import { ChevronIcon, ServicesDropdown } from "@/components/layout/services-dropdown";
 import { footerServices } from "@/lib/data/services";
-import { bookingLink, loginLink } from "@/lib/data/nav";
+import { bookingLink, loginLink, accountLink } from "@/lib/data/nav";
+import { logout, useAccount } from "@/lib/account/persistence";
 import { cn } from "@/lib/utils";
 
-const navLinkClassName = "font-[family-name:var(--font-nav)] text-[18px] text-[var(--on-core-brand-color,#2d2d2d)]";
+const navLinkClassName = "font-[family-name:var(--font-nav)] text-[18px] text-[var(--on-core-brand-color,var(--on-core-brand-color))]";
 
 export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isTarifs = pathname === "/tarifs";
+  const isAbonnement = pathname.startsWith("/abonnement");
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const account = useAccount();
+  const connected = account?.connected ?? false;
 
   // Closing on route change would need a router event, but the simplest reliable rule here is:
   // whenever the mobile menu is open, lock page scroll so it doesn't move behind the overlay.
@@ -40,33 +45,46 @@ export function Header() {
         <nav className="hidden items-center gap-8 lg:flex">
           <Link
             href="/"
-            className={cn(navLinkClassName, "relative", isHome && "text-[var(--core-brand-color,#fdcfca)]")}
+            className={cn(navLinkClassName, "relative", isHome && "text-[var(--core-brand-color,var(--core-brand-color))]")}
           >
             Accueil
             {isHome && (
-              <span className="absolute inset-x-0 -bottom-0.5 h-[2px] rounded-full bg-[var(--core-brand-color,#fdcfca)]" />
+              <span className="absolute inset-x-0 -bottom-0.5 h-[2px] rounded-full bg-[var(--core-brand-color,var(--core-brand-color))]" />
             )}
           </Link>
           <ServicesDropdown />
           <Link
             href="/tarifs"
-            className={cn(navLinkClassName, "relative", isTarifs && "text-[var(--core-brand-color,#fdcfca)]")}
+            className={cn(navLinkClassName, "relative", isTarifs && "text-[var(--core-brand-color,var(--core-brand-color))]")}
           >
             Grille tarifaire
             {isTarifs && (
-              <span className="absolute inset-x-0 -bottom-0.5 h-[2px] rounded-full bg-[var(--core-brand-color,#fdcfca)]" />
+              <span className="absolute inset-x-0 -bottom-0.5 h-[2px] rounded-full bg-[var(--core-brand-color,var(--core-brand-color))]" />
+            )}
+          </Link>
+          <Link
+            href="/abonnement"
+            className={cn(navLinkClassName, "relative", isAbonnement && "text-[var(--core-brand-color,var(--core-brand-color))]")}
+          >
+            Abonnements
+            {isAbonnement && (
+              <span className="absolute inset-x-0 -bottom-0.5 h-[2px] rounded-full bg-[var(--core-brand-color,var(--core-brand-color))]" />
             )}
           </Link>
         </nav>
       </div>
 
       <div className="hidden items-center gap-3 lg:flex">
-        <Button href={bookingLink.href} variant="outline">
+        <Button href={bookingLink.href} variant="brand">
           {bookingLink.label}
         </Button>
-        <Button href={loginLink.href} variant="brand">
-          {loginLink.label}
-        </Button>
+        {connected && account ? (
+          <AccountMenu account={account} />
+        ) : (
+          <Button href={loginLink.href} variant="outline">
+            {loginLink.label}
+          </Button>
+        )}
       </div>
 
       <button
@@ -74,7 +92,7 @@ export function Header() {
         onClick={() => setMenuOpen(true)}
         aria-label="Ouvrir le menu"
         aria-expanded={menuOpen}
-        className="flex size-11 items-center justify-center rounded-lg text-[#2d2d2d] transition hover:bg-black/5 lg:hidden"
+        className="flex size-11 items-center justify-center rounded-lg text-[var(--on-core-brand-color)] transition hover:bg-black/5 lg:hidden"
       >
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -107,7 +125,7 @@ export function Header() {
             type="button"
             onClick={() => setMenuOpen(false)}
             aria-label="Fermer le menu"
-            className="flex size-11 items-center justify-center rounded-lg text-[#667085] transition hover:bg-black/5"
+            className="flex size-11 items-center justify-center rounded-lg text-[var(--color-gray-500)] transition hover:bg-black/5"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
@@ -127,7 +145,7 @@ export function Header() {
             onClick={() => setMenuOpen(false)}
             className={cn(
               "rounded-lg px-2 py-3 font-[family-name:var(--font-nav)] text-[19px]",
-              isHome ? "text-[var(--core-brand-color,#fdcfca)]" : "text-[#2d2d2d]",
+              isHome ? "text-[var(--core-brand-color,var(--core-brand-color))]" : "text-[var(--on-core-brand-color)]",
             )}
           >
             Accueil
@@ -137,10 +155,20 @@ export function Header() {
             onClick={() => setMenuOpen(false)}
             className={cn(
               "rounded-lg px-2 py-3 font-[family-name:var(--font-nav)] text-[19px]",
-              isTarifs ? "text-[var(--core-brand-color,#fdcfca)]" : "text-[#2d2d2d]",
+              isTarifs ? "text-[var(--core-brand-color,var(--core-brand-color))]" : "text-[var(--on-core-brand-color)]",
             )}
           >
             Grille tarifaire
+          </Link>
+          <Link
+            href="/abonnement"
+            onClick={() => setMenuOpen(false)}
+            className={cn(
+              "rounded-lg px-2 py-3 font-[family-name:var(--font-nav)] text-[19px]",
+              isAbonnement ? "text-[var(--core-brand-color,var(--core-brand-color))]" : "text-[var(--on-core-brand-color)]",
+            )}
+          >
+            Abonnements
           </Link>
 
           <button
@@ -149,7 +177,7 @@ export function Header() {
             aria-expanded={servicesOpen}
             className={cn(
               "mt-3 flex items-center justify-between rounded-lg px-2 py-3 font-[family-name:var(--font-nav)] text-[19px] transition-colors",
-              servicesOpen ? "text-[var(--core-brand-color,#fdcfca)]" : "text-[#2d2d2d]",
+              servicesOpen ? "text-[var(--core-brand-color,var(--core-brand-color))]" : "text-[var(--on-core-brand-color)]",
             )}
           >
             Services
@@ -162,7 +190,7 @@ export function Header() {
                   key={service.slug}
                   href={`/services/${service.slug}`}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-4 py-2.5 text-[17px] text-[#2d2d2d]"
+                  className="rounded-lg px-4 py-2.5 text-[17px] text-[var(--on-core-brand-color)]"
                 >
                   {service.label}
                 </Link>
@@ -172,11 +200,41 @@ export function Header() {
         </nav>
 
         <div className="mt-auto flex flex-col gap-3">
-          <Button href={bookingLink.href} variant="outline" className="w-full">
+          {connected && account ? (
+            <div className="flex flex-col gap-3 rounded-2xl border border-[var(--color-gray-200)] p-4">
+              <div className="flex items-center gap-3">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-full border border-[rgba(162,117,118,0.5)] bg-[rgba(253,207,202,0.2)] text-[16px] font-semibold text-[var(--button-2-color)]">
+                  {account.firstName.charAt(0).toUpperCase() || "?"}
+                </span>
+                <p className="truncate text-[17px] font-bold text-[var(--color-gray-900)]">
+                  {`${account.firstName} ${account.lastName}`.trim()}
+                </p>
+              </div>
+              <Link
+                href={accountLink.href}
+                onClick={() => setMenuOpen(false)}
+                className="rounded-full border border-[var(--color-border-light)] px-4 py-2.5 text-center text-[16px] font-[450] text-[var(--text-secondary)]"
+              >
+                {accountLink.label}
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  logout();
+                  setMenuOpen(false);
+                }}
+                className="text-center text-[16px] font-[450] text-[var(--color-gray-500)]"
+              >
+                Se déconnecter
+              </button>
+            </div>
+          ) : (
+            <Button href={loginLink.href} variant="outline" className="w-full">
+              {loginLink.label}
+            </Button>
+          )}
+          <Button href={bookingLink.href} variant="brand" className="w-full">
             {bookingLink.label}
-          </Button>
-          <Button href={loginLink.href} variant="brand" className="w-full">
-            {loginLink.label}
           </Button>
         </div>
       </div>

@@ -24,10 +24,10 @@ export function GiftCard() {
         </div>
 
         <div className="flex flex-col items-center gap-5 text-center sm:items-start sm:text-left">
-          <h2 className="font-[family-name:var(--font-prata)] text-[27px] text-[#2d2d2d] sm:text-[34px]">
+          <h2 className="font-[family-name:var(--font-prata)] text-[27px] text-[var(--on-core-brand-color)] sm:text-[34px]">
             Offrez un moment beauté
           </h2>
-          <p className="max-w-md text-[17px] text-[var(--text-secondary,#344054)]">
+          <p className="max-w-md text-[17px] text-[var(--text-secondary,var(--text-secondary))]">
             La carte cadeau Beauty and Co, valable dans tous nos salons et sur l&apos;ensemble de nos
             prestations.
           </p>

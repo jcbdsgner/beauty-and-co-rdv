@@ -30,13 +30,13 @@ export function CategoryTiles({
             aria-pressed={isActive}
             className={cn(
               "relative flex flex-col items-center gap-2 rounded-2xl border-2 bg-white px-3.5 py-[18px] text-center transition",
-              isActive ? "border-[#886666]" : "border-[#d0d5dd] hover:border-[#886666]/50",
+              isActive ? "border-[var(--brand-taupe-muted)]" : "border-[var(--color-gray-300)] hover:border-[var(--brand-taupe-muted)]/50",
             )}
           >
             <span
               className={cn(
                 "absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-lg border-[1.5px] transition",
-                checked ? "border-[#886666] bg-[#886666]" : "border-[#d0d5dd] bg-white",
+                checked ? "border-[var(--brand-taupe-muted)] bg-[var(--brand-taupe-muted)]" : "border-[var(--color-gray-300)] bg-white",
               )}
             >
               {checked && <Image src="/images/rdv/icon-check.svg" alt="" width={14} height={14} />}
@@ -50,7 +50,7 @@ export function CategoryTiles({
                 className={service.iconOnly ? undefined : "size-full object-cover"}
               />
             </span>
-            <span className="flex min-h-10 items-center justify-center text-[17px] font-bold text-[#1d2939] [text-box-edge:cap_alphabetic] [text-box-trim:trim-both]">
+            <span className="flex min-h-10 items-center justify-center text-[17px] font-bold text-[var(--color-gray-800)] [text-box-edge:cap_alphabetic] [text-box-trim:trim-both]">
               {service.label}
             </span>
           </button>

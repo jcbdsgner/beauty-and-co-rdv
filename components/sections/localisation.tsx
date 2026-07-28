@@ -22,7 +22,7 @@ export function Localisation() {
           {locations.map((location) => (
             <div
               key={location.name}
-              className="flex h-[422px] w-[359px] max-w-full flex-col items-center justify-center gap-6 border border-[#fef0ee] bg-[rgba(87,85,85,0.75)] px-8"
+              className="flex h-[422px] w-[359px] max-w-full flex-col items-center justify-center gap-6 border border-[var(--brand-rose-soft)] bg-[rgba(87,85,85,0.75)] px-8"
             >
               <p className="text-center font-[family-name:var(--font-prata)] text-[39px] text-[#fdf2f0] sm:text-[51px]">
                 {location.name}

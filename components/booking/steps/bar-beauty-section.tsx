@@ -9,11 +9,11 @@ type BarBeautySectionProps = {
 
 export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautySectionProps) {
   return (
-    <div className="rounded-2xl border border-[#f2f4f7] bg-white p-6">
-      <h3 className="font-[family-name:var(--font-prata)] text-[25px] font-bold text-[#806562]">
+    <div className="rounded-2xl border border-[var(--color-gray-100)] bg-white p-6">
+      <h3 className="font-[family-name:var(--font-prata)] text-[25px] font-bold text-[var(--brand-taupe-muted)]">
         Le Bar Beauty
       </h3>
-      <p className="mt-1 text-[17px] text-[#667085]">
+      <p className="mt-1 text-[17px] text-[var(--color-gray-500)]">
         Envie d&apos;une pause gourmande pendant votre soin ? Réservez votre boisson, elle vous sera
         servie sur place.
       </p>
@@ -24,9 +24,9 @@ export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautyS
           return (
             <div
               key={drink.id}
-              className="flex flex-col overflow-hidden rounded-2xl border border-[#f2f4f7]"
+              className="flex flex-col overflow-hidden rounded-2xl border border-[var(--color-gray-100)]"
             >
-              <div className="relative aspect-[24/31] w-full bg-[#f8f6f9]">
+              <div className="relative aspect-[24/31] w-full bg-[var(--brand-cream)]">
                 <Image
                   src={drink.image}
                   alt={drink.name}
@@ -36,10 +36,10 @@ export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautyS
                 />
               </div>
               <div className="flex flex-1 flex-col gap-2 p-4">
-                <p className="text-[17px] font-bold text-[#1d2939]">{drink.name}</p>
-                <p className="flex-1 text-[15px] text-[#667085]">{drink.description}</p>
+                <p className="text-[17px] font-bold text-[var(--color-gray-800)]">{drink.name}</p>
+                <p className="flex-1 text-[15px] text-[var(--color-gray-500)]">{drink.description}</p>
                 <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <span className="text-[17px] font-bold whitespace-nowrap text-[#1d2939]">
+                  <span className="text-[17px] font-bold whitespace-nowrap text-[var(--color-gray-800)]">
                     {formatPrice(drink.price)}
                   </span>
                   <button
@@ -48,8 +48,8 @@ export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautyS
                     aria-pressed={isReserved}
                     className={
                       isReserved
-                        ? "w-full rounded-full border border-[#886666] bg-[#886666] px-4 py-1.5 text-[15px] font-[450] whitespace-nowrap text-white transition hover:opacity-90 sm:w-auto sm:shrink-0"
-                        : "w-full rounded-full border border-[#806562] bg-white px-4 py-1.5 text-[15px] font-[450] whitespace-nowrap text-[#806562] transition hover:bg-[#806562]/5 sm:w-auto sm:shrink-0"
+                        ? "w-full rounded-full border border-[var(--brand-taupe-muted)] bg-[var(--brand-taupe-muted)] px-4 py-1.5 text-[15px] font-[450] whitespace-nowrap text-white transition hover:opacity-90 sm:w-auto sm:shrink-0"
+                        : "w-full rounded-full border border-[var(--brand-taupe-muted)] bg-white px-4 py-1.5 text-[15px] font-[450] whitespace-nowrap text-[var(--brand-taupe-muted)] transition hover:bg-[var(--brand-taupe-muted)]/5 sm:w-auto sm:shrink-0"
                     }
                   >
                     {isReserved ? "Réservé" : "Réserver"}
@@ -61,7 +61,7 @@ export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautyS
         })}
       </div>
 
-      <p className="mt-3 text-[13px] text-[#98a2b3]">{barBeautyNote}</p>
+      <p className="mt-3 text-[13px] text-[var(--color-gray-400)]">{barBeautyNote}</p>
     </div>
   );
 }

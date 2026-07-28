@@ -26,19 +26,19 @@ export function BookingProgress({ currentStep }: BookingProgressProps) {
           return (
             <li key={step.id} className="relative flex min-w-0 flex-1 flex-col items-center px-2">
               {index < steps.length - 1 && (
-                <span aria-hidden className="absolute left-1/2 top-3 h-px w-full bg-[#eaecf0]" />
+                <span aria-hidden className="absolute left-1/2 top-3 h-px w-full bg-[var(--color-gray-200)]" />
               )}
               <span
                 className={cn(
                   "relative flex size-6 items-center justify-center rounded-full",
-                  isDone || isActive ? "bg-[#fdcfca]" : "border border-[#eaecf0] bg-white",
+                  isDone || isActive ? "bg-[var(--core-brand-color)]" : "border border-[var(--color-gray-200)] bg-white",
                 )}
               >
                 {isDone ? (
                   <Image src="/images/rdv/icon-check.svg" alt="" width={14} height={14} />
                 ) : (
                   <span
-                    className={cn("size-2 rounded-full", isActive ? "bg-white" : "bg-[#eaecf0]")}
+                    className={cn("size-2 rounded-full", isActive ? "bg-white" : "bg-[var(--color-gray-200)]")}
                   />
                 )}
               </span>
@@ -48,7 +48,7 @@ export function BookingProgress({ currentStep }: BookingProgressProps) {
               <span
                 className={cn(
                   "mt-3 hidden text-[17px] font-bold sm:block",
-                  isActive || isDone ? "text-[#1d2939]" : "text-[#667085]",
+                  isActive || isDone ? "text-[var(--color-gray-800)]" : "text-[var(--color-gray-500)]",
                 )}
               >
                 {step.label}
@@ -57,7 +57,7 @@ export function BookingProgress({ currentStep }: BookingProgressProps) {
           );
         })}
       </ol>
-      <p className="mt-3 text-center text-[15px] font-bold text-[#1d2939] sm:hidden">
+      <p className="mt-3 text-center text-[15px] font-bold text-[var(--color-gray-800)] sm:hidden">
         Étape {currentIndex + 1}/{steps.length} — {steps[currentIndex]?.label}
       </p>
     </div>

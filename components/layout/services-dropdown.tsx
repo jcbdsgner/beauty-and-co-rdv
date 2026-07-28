@@ -28,14 +28,14 @@ export function ServicesDropdown() {
         aria-expanded={open}
         className={cn(
           "relative flex cursor-pointer items-center gap-2 py-1 font-[family-name:var(--font-nav)] text-[18px] transition-colors",
-          open ? "text-[var(--core-brand-color,#fdcfca)]" : "text-[var(--on-core-brand-color,#2d2d2d)]",
+          open ? "text-[var(--core-brand-color,var(--core-brand-color))]" : "text-[var(--on-core-brand-color,var(--on-core-brand-color))]",
         )}
       >
         Nos services
         <ChevronIcon className={cn("transition-transform", open ? "rotate-90" : "-rotate-90")} />
         <span
           className={cn(
-            "absolute inset-x-0 -bottom-0.5 h-[2px] rounded-full bg-[var(--core-brand-color,#fdcfca)] transition-opacity",
+            "absolute inset-x-0 -bottom-0.5 h-[2px] rounded-full bg-[var(--core-brand-color,var(--core-brand-color))] transition-opacity",
             open ? "opacity-100" : "opacity-0",
           )}
         />
@@ -47,7 +47,7 @@ export function ServicesDropdown() {
             <li key={service.slug}>
               <Link
                 href={`/services/${service.slug}`}
-                className="block px-4 py-2 text-[14px] text-[#374151] hover:bg-black/5"
+                className="block px-4 py-2 text-[14px] text-[var(--color-text-tertiary)] hover:bg-black/5"
               >
                 {service.label}
               </Link>

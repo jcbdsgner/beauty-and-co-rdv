@@ -1,0 +1,5 @@
+# L'éligibilité "2 praticiens" se décide par Prestation, pas globalement
+
+Le calcul de durée avec "2 praticiens" divisait auparavant systématiquement par deux la durée totale de toutes les Prestations sélectionnées, sans distinction. Or seules certaines Prestations peuvent réellement être réparties entre deux praticiens travaillant chacun une zone distincte en simultané (ex: extensions et tresses réparties de chaque côté de la tête, manucure/pédicure réparties entre les deux mains ou les deux pieds) — d'autres reposent sur une technique unique et continue, ou une zone unique trop petite pour être répartie (ex: un soin du visage, une coupe, une épilation du maillot).
+
+On a donc introduit un champ `twoPractitionersEligible` sur chaque Prestation (`BookingSubService`), et le calcul de durée à 2 praticiens ne divise par deux que la portion éligible du temps de chaque Personne — le reste reste à taux plein. La classification actuelle (77 Prestations éligibles sur 107) est une première passe posée par déduction physique du geste, en attendant qu'un vrai back-office permette au salon de la confirmer/ajuster prestation par prestation.

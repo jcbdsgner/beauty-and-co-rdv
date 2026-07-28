@@ -23,9 +23,9 @@ export function PersonToggle({ people, activePersonId, onChange, highlightPerson
           className={cn(
             "rounded-full px-[17px] py-[9px] text-[15px] font-[450] whitespace-nowrap transition",
             activePersonId === person.id
-              ? "bg-[#886666] text-white"
-              : "text-[#475467] hover:text-[#886666]",
-            person.id === highlightPersonId && "animate-pulse ring-2 ring-[#b42318] ring-offset-2",
+              ? "bg-[var(--brand-taupe-muted)] text-white"
+              : "text-[var(--color-gray-600)] hover:text-[var(--brand-taupe-muted)]",
+            person.id === highlightPersonId && "animate-pulse ring-2 ring-[var(--color-error)] ring-offset-2",
           )}
         >
           {person.label}
