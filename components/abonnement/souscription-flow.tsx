@@ -3,10 +3,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ContactFields } from "@/components/abonnement/contact-fields";
+import { PaymentMethodDialog } from "@/components/booking/payment-method-dialog";
 import { addAbonnement } from "@/lib/abonnement/persistence";
 import type { Abonnement } from "@/lib/abonnement/types";
+import { useAccount } from "@/lib/account/persistence";
 import { getForfaitPrestations, type Forfait } from "@/lib/data/forfaits";
 import { formatPrice } from "@/lib/booking/format";
 import { loginLink } from "@/lib/data/nav";
@@ -16,6 +19,9 @@ import { cn } from "@/lib/utils";
 type PourQui = "moi" | "autre";
 
 export function SouscriptionFlow({ forfait }: { forfait: Forfait }) {
+  const router = useRouter();
+  const account = useAccount();
+  const connected = account?.connected ?? false;
   const prestations = getForfaitPrestations(forfait);
 
   const [pourQui, setPourQui] = useState<PourQui>("moi");
@@ -23,9 +29,26 @@ export function SouscriptionFlow({ forfait }: { forfait: Forfait }) {
   const [beneficiaryInfo, setBeneficiaryInfo] = useState<ContactInfo>(emptyContactInfo);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
-  const [confirmedAbonnement, setConfirmedAbonnement] = useState<Abonnement | null>(null);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
 
-  const subscriberErrors = getContactInfoErrors(subscriberInfo);
+  // Connecté : le Compte remplace entièrement la saisie du souscripteur (raccourci documenté
+  // dans docs/adr/0003) — on ne collecte donc pas de Genre, absent du Compte.
+  const effectiveSubscriberInfo: ContactInfo =
+    connected && account
+      ? {
+          ...emptyContactInfo,
+          firstName: account.firstName,
+          lastName: account.lastName,
+          email: account.email,
+          phone: account.phone,
+          phoneCountry: account.phoneCountry,
+          whatsapp: account.whatsapp,
+          whatsappCountry: account.whatsappCountry,
+          whatsappSameAsPhone: account.whatsappSameAsPhone,
+        }
+      : subscriberInfo;
+
+  const subscriberErrors = connected ? {} : getContactInfoErrors(subscriberInfo);
   const beneficiaryErrors = pourQui === "autre" ? getContactInfoErrors(beneficiaryInfo) : {};
   const canSubmit =
     Object.keys(subscriberErrors).length === 0 && Object.keys(beneficiaryErrors).length === 0 && acceptedTerms;
@@ -35,40 +58,24 @@ export function SouscriptionFlow({ forfait }: { forfait: Forfait }) {
       setShowErrors(true);
       return;
     }
+    setShowPaymentDialog(true);
+  };
 
+  const handlePaymentSelected = () => {
+    setShowPaymentDialog(false);
     const now = new Date().toISOString();
     const abonnement: Abonnement = {
       id: crypto.randomUUID(),
       forfaitId: forfait.id,
-      subscriberContactInfo: subscriberInfo,
+      subscriberContactInfo: effectiveSubscriberInfo,
       beneficiaryContactInfo: pourQui === "autre" ? beneficiaryInfo : null,
       subscribedAt: now,
       lastPaidAt: now,
       revokedAt: null,
     };
     addAbonnement(abonnement);
-    setConfirmedAbonnement(abonnement);
+    router.push("/compte?panel=abonnements");
   };
-
-  if (confirmedAbonnement) {
-    return (
-      <div className="mx-auto max-w-xl rounded-2xl border border-[var(--color-gray-100)] bg-white p-8 text-center">
-        <h1 className="text-[23px] font-bold text-[var(--color-gray-900)]">Vous êtes abonné(e) !</h1>
-        <p className="mt-2 text-[17px] text-[var(--text-secondary)]">
-          Le {forfait.label} est actif{pourQui === "autre" ? ` pour ${beneficiaryInfo.firstName}` : ""}. Un email de
-          confirmation a été envoyé.
-        </p>
-        <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Link href="/abonnement/mes-abonnements" className="text-[16px] font-bold text-[var(--button-2-color)]">
-            Voir mes Abonnements
-          </Link>
-          <Button href="/abonnement" variant="outline">
-            Retour aux Forfaits
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -85,32 +92,36 @@ export function SouscriptionFlow({ forfait }: { forfait: Forfait }) {
         </div>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl bg-[rgba(253,207,202,0.15)] py-4 pr-6 pl-4">
-        <div className="min-w-[220px] flex-1">
-          <p className="text-[20px] font-bold text-[var(--color-gray-900)]">Avez-vous un compte ?</p>
-          <p className="text-[18px] text-[var(--color-gray-600)]">
-            Connectez-vous pour retrouver vos Abonnements plus tard.
-          </p>
-        </div>
-        <Link
-          href={loginLink.href}
-          className="shrink-0 rounded-full bg-[var(--core-brand-color)] px-4 py-3 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
-        >
-          {loginLink.label}
-        </Link>
-      </div>
+      {!connected && (
+        <>
+          <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl bg-[rgba(253,207,202,0.15)] py-4 pr-6 pl-4">
+            <div className="min-w-[220px] flex-1">
+              <p className="text-[20px] font-bold text-[var(--color-gray-900)]">Avez-vous un compte ?</p>
+              <p className="text-[18px] text-[var(--color-gray-600)]">
+                Connectez-vous pour retrouver vos Abonnements plus tard.
+              </p>
+            </div>
+            <Link
+              href={loginLink.href}
+              className="shrink-0 rounded-full bg-[var(--core-brand-color)] px-4 py-3 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
+            >
+              {loginLink.label}
+            </Link>
+          </div>
 
-      <div className="mt-6 rounded-2xl border border-[var(--color-gray-200)] bg-white p-[25px]">
-        <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Vos coordonnées</h2>
-        <div className="mt-6">
-          <ContactFields
-            idPrefix="subscriber"
-            contactInfo={subscriberInfo}
-            onChange={(patch) => setSubscriberInfo((prev) => ({ ...prev, ...patch }))}
-            errors={showErrors ? subscriberErrors : {}}
-          />
-        </div>
-      </div>
+          <div className="mt-6 rounded-2xl border border-[var(--color-gray-200)] bg-white p-[25px]">
+            <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Vos coordonnées</h2>
+            <div className="mt-6">
+              <ContactFields
+                idPrefix="subscriber"
+                contactInfo={subscriberInfo}
+                onChange={(patch) => setSubscriberInfo((prev) => ({ ...prev, ...patch }))}
+                errors={showErrors ? subscriberErrors : {}}
+              />
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="mt-6 rounded-2xl border border-[var(--color-gray-200)] bg-white p-[25px]">
         <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Pour qui est ce Forfait ?</h2>
@@ -167,6 +178,14 @@ export function SouscriptionFlow({ forfait }: { forfait: Forfait }) {
       <Button onClick={handleSubmit} className="mt-6 w-full">
         Souscrire — {formatPrice(forfait.price)} / {forfait.cycleLabel.toLowerCase()}
       </Button>
+
+      <PaymentMethodDialog
+        open={showPaymentDialog}
+        amountLabel={`${formatPrice(forfait.price)} / ${forfait.cycleLabel.toLowerCase()}`}
+        description={`Réglez votre Abonnement (${formatPrice(forfait.price)} / ${forfait.cycleLabel.toLowerCase()}) pour l'ajouter à vos Abonnements.`}
+        onClose={() => setShowPaymentDialog(false)}
+        onSelect={handlePaymentSelected}
+      />
     </div>
   );
 }

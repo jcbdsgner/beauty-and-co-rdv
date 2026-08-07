@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { ForfaitCard } from "@/components/abonnement/forfait-card";
 import { forfaits } from "@/lib/data/forfaits";
 
@@ -14,9 +14,9 @@ export default function AbonnementPage() {
             Un Forfait regroupe une sélection de prestations, renouvelée à chaque cycle, pour un prix fixe.
           </p>
         </div>
-        <Link href="/abonnement/mes-abonnements" className="text-[16px] font-bold text-[var(--button-2-color)]">
+        <Button href="/compte?panel=abonnements" variant="outline" className="shrink-0">
           Mes Abonnements
-        </Link>
+        </Button>
       </div>
 
       <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

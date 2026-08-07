@@ -34,7 +34,7 @@ export function Localisation() {
                   href="tel:+22178120868"
                   variant="brand"
                   className="w-full justify-center py-2 text-[17px]"
-                  icon={<Image src="/images/accueil/icon-call.svg" alt="" width={20} height={20} />}
+                  icon={<Image src="/images/accueil/icon-call.svg" alt="" width={22} height={22} />}
                 >
                   Appeler
                 </Button>
@@ -42,7 +42,7 @@ export function Localisation() {
                   href="https://maps.google.com"
                   variant="outline"
                   className="w-full justify-center py-2 text-[17px]"
-                  icon={<Image src="/images/accueil/icon-find-big.svg" alt="" width={20} height={20} />}
+                  icon={<Image src="/images/accueil/icon-find-big.svg" alt="" width={22} height={22} />}
                 >
                   Localiser
                 </Button>
