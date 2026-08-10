@@ -25,6 +25,28 @@ type AttendeesDialogProps = {
   onConfirm: (attendees: Attendees) => void;
 };
 
+function MinusIcon({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 15 15" fill="none" className={cn("overflow-visible", className)}>
+      <path d="M0.5 7.5H14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function PlusIcon({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 15 15" fill="none" className={cn("overflow-visible", className)}>
+      <path
+        d="M0.5 7.5H14.5M7.5 0.5V14.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 type StepperProps = {
   label: string;
   hint: string;
@@ -48,11 +70,11 @@ function Stepper({ label, hint, value, min, max, onChange }: StepperProps) {
           disabled={value <= min}
           aria-label={`Diminuer le nombre — ${label}`}
           className={cn(
-            "flex size-9 items-center justify-center rounded-full border-2 border-[rgba(136,102,102,0.3)] text-[19px] leading-none font-[450] text-[var(--brand-taupe-muted)] transition",
+            "flex size-9 items-center justify-center rounded-full border-2 border-[rgba(136,102,102,0.3)] text-[var(--brand-taupe-muted)] transition",
             "disabled:cursor-not-allowed disabled:opacity-30 enabled:hover:border-[var(--brand-taupe-muted)]",
           )}
         >
-          −
+          <MinusIcon className="size-4" />
         </button>
         <span className="w-4 text-center text-[17px] font-bold text-[var(--color-gray-800)]">{value}</span>
         <button
@@ -61,11 +83,11 @@ function Stepper({ label, hint, value, min, max, onChange }: StepperProps) {
           disabled={value >= max}
           aria-label={`Augmenter le nombre — ${label}`}
           className={cn(
-            "flex size-9 items-center justify-center rounded-full border-2 border-[rgba(136,102,102,0.3)] text-[19px] leading-none font-[450] text-[var(--brand-taupe-muted)] transition",
+            "flex size-9 items-center justify-center rounded-full border-2 border-[rgba(136,102,102,0.3)] text-[var(--brand-taupe-muted)] transition",
             "disabled:cursor-not-allowed disabled:opacity-30 enabled:hover:border-[var(--brand-taupe-muted)]",
           )}
         >
-          +
+          <PlusIcon className="size-4" />
         </button>
       </div>
     </div>

@@ -13,6 +13,7 @@ import { CreneauStep } from "@/components/booking/steps/creneau-step";
 import { InformationsStep } from "@/components/booking/steps/informations-step";
 import { ConfirmationStep } from "@/components/booking/steps/confirmation-step";
 import { addBookingHistoryEntry } from "@/lib/account/history";
+import { useAccount } from "@/lib/account/persistence";
 import { buildCartItems, type Selections } from "@/lib/booking/cart";
 import { buildPersonTabs } from "@/lib/booking/people";
 import { DEPOSIT_AMOUNT, formatPrice } from "@/lib/booking/format";
@@ -42,6 +43,8 @@ const stepNumbers: Record<BookingStepId, 1 | 2 | 3 | 4> = {
 
 export function BookingForm() {
   const router = useRouter();
+  const account = useAccount();
+  const connected = account?.connected ?? false;
   const [attendees, setAttendees] = useState<Attendees | null>(null);
   const [step, setStep] = useState<BookingStepId>("services");
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
@@ -152,7 +155,37 @@ export function BookingForm() {
   // synthetic "guardian" contact who isn't themselves receiving any service.
   const contacts = adults.length > 0 ? adults : [{ id: "contact-guardian", label: "Vos informations", type: "adult" as const }];
   const cartItems = buildCartItems(people, selections);
-  const primaryContactInfo = contactInfoByPerson[contacts[0]?.id] ?? emptyContactInfo;
+  const primaryContactId = contacts[0]?.id;
+  const primaryContactInfo = contactInfoByPerson[primaryContactId] ?? emptyContactInfo;
+  // "Seul(e) à prendre des prestations" : un unique adulte, personne d'autre (ni autre adulte, ni
+  // enfant) — dans ce cas, connecté, l'étape Informations n'a plus rien à collecter.
+  const soloAdultBooking = attendees !== null && adults.length === 1 && people.length === 1;
+
+  // Connecté : le contact principal (moi) est prérempli depuis le Compte au lieu de demander de
+  // se connecter ici — cf. bannière masquée dans InformationsStep. Ne déborde jamais sur une
+  // saisie déjà faite (brouillon restauré ou édition manuelle) : ne s'applique que tant que ce
+  // contact est encore vierge. Suit le même schéma "setState pendant le rendu" que app/compte —
+  // voir sa justification là-bas.
+  if (connected && account && attendees && primaryContactId) {
+    const current = contactInfoByPerson[primaryContactId];
+    const stillEmpty = !current || (!current.firstName && !current.lastName && !current.email && !current.phone);
+    if (stillEmpty) {
+      setContactInfoByPerson((prev) => ({
+        ...prev,
+        [primaryContactId]: {
+          ...emptyContactInfo,
+          firstName: account.firstName,
+          lastName: account.lastName,
+          email: account.email,
+          phone: account.phone,
+          phoneCountry: account.phoneCountry,
+          whatsapp: account.whatsapp,
+          whatsappCountry: account.whatsappCountry,
+          whatsappSameAsPhone: account.whatsappSameAsPhone,
+        },
+      }));
+    }
+  }
 
   // People are served in parallel, so the appointment's total length is the longest
   // individual person's total, not the sum of everyone's durations.
@@ -237,10 +270,20 @@ export function BookingForm() {
       const href = anchor.getAttribute("href");
       if (!href || href.startsWith("#")) return;
 
-      if (href === loginLink.href) {
-        // Connecting mid-flow means the account already has this person's info, so there's
-        // nothing left to fill in — resume straight at confirmation instead of back at informations.
-        saveBookingDraft({ ...draftStateRef.current, step: "confirmation" });
+      // "Se connecter" only gets a free pass on the informations step itself — that's the one
+      // place connecting is offered as a shortcut to autofill, so it isn't really "leaving".
+      // Clicked from anywhere else on /rdv (header included), it's leaving like any other link:
+      // nothing is kept, same as confirming "Quitter" below.
+      if (href === loginLink.href && draftStateRef.current.step === "informations") {
+        // Connecting here fills in my own info automatically, but if anyone else (another
+        // adult, a child's guardian slot) still needs their own info, informations has to stay
+        // in the loop for them — only a solo adult booking has truly nothing left to collect.
+        const currentAttendees = draftStateRef.current.attendees;
+        const willBeSoloAdult = currentAttendees?.adults === 1 && currentAttendees?.children === 0;
+        saveBookingDraft({
+          ...draftStateRef.current,
+          step: willBeSoloAdult ? "confirmation" : "informations",
+        });
         return;
       }
 
@@ -260,6 +303,10 @@ export function BookingForm() {
 
   const confirmLeave = () => {
     setShowLeaveConfirm(false);
+    // The warning explicitly says the information won't be kept — so unlike the informations-step
+    // "Se connecter" detour, this thread is really over. Otherwise the draft would linger in
+    // sessionStorage and wrongly resurface the next time anyone logs in during this browser session.
+    clearBookingDraft();
     const href = pendingHref ?? "/";
     if (/^(https?:|mailto:|tel:)/.test(href) || href.startsWith("//")) {
       window.location.href = href;
@@ -323,7 +370,7 @@ export function BookingForm() {
               twoPractitioners={twoPractitioners}
               onToggleTwoPractitioners={setTwoPractitioners}
               canContinue={Boolean(selectedDate && selectedLocationId && selectedTime)}
-              onContinue={() => setStep("informations")}
+              onContinue={() => setStep(connected && soloAdultBooking ? "confirmation" : "informations")}
               onBack={() => setStep("services")}
             />
           )}
@@ -336,6 +383,7 @@ export function BookingForm() {
               canContinue={canContinueInformations}
               onContinue={() => setStep("confirmation")}
               onBack={() => setStep("creneau")}
+              connected={connected}
             />
           )}
 
@@ -352,7 +400,7 @@ export function BookingForm() {
               contactInfoByPerson={contactInfoByPerson}
               acceptedTerms={acceptedTerms}
               onAcceptedTermsChange={setAcceptedTerms}
-              onBack={() => setStep("informations")}
+              onBack={() => setStep(connected && soloAdultBooking ? "creneau" : "informations")}
               onConfirm={() => setShowPaymentDialog(true)}
               canConfirm={acceptedTerms}
             />

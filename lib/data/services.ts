@@ -5,14 +5,14 @@ export type HeroService = {
 };
 
 export const heroServices: HeroService[] = [
-  { label: "Coiffure", slug: "coiffure", icons: ["/images/accueil/service-coiffure.png"] },
-  { label: "SPA", slug: "spa", icons: ["/images/accueil/service-spa.png"] },
-  { label: "Épilation", slug: "epilation", icons: ["/images/accueil/service-epilation.png"] },
-  { label: "Cils", slug: "cils", icons: ["/images/accueil/service-cils.png"] },
+  { label: "Coiffure", slug: "coiffure", icons: ["/images/accueil/service-coiffure.svg"] },
+  { label: "SPA", slug: "spa", icons: ["/images/accueil/service-spa.svg"] },
+  { label: "Épilation", slug: "epilation", icons: ["/images/accueil/service-epilation.svg"] },
+  { label: "Cils", slug: "cils", icons: ["/images/accueil/service-cils.svg"] },
   {
     label: "Manicure et Pédicure",
     slug: "manucure-pedicure",
-    icons: ["/images/accueil/service-manucure.png", "/images/accueil/service-pedicure.png"],
+    icons: ["/images/accueil/service-manucure.svg", "/images/accueil/service-pedicure.svg"],
   },
 ];
 

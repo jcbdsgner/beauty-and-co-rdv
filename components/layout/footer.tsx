@@ -70,15 +70,15 @@ export function Footer() {
           </p>
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              <Image src="/images/accueil/icon-call-outline.svg" alt="" width={24} height={24} />
+              <Image src="/images/accueil/icon-call-outline.svg" alt="" width={16} height={16} />
               <p className="text-[15px] font-[500] text-[var(--text-secondary,var(--text-secondary))]">{contactInfo.phones}</p>
             </div>
             <div className="flex items-center gap-2">
-              <Image src="/images/accueil/icon-mail-outline.svg" alt="" width={24} height={24} />
+              <Image src="/images/accueil/icon-mail-outline.svg" alt="" width={16} height={16} />
               <p className="text-[15px] font-[500] text-[var(--text-secondary,var(--text-secondary))]">{contactInfo.email}</p>
             </div>
             <div className="flex items-center gap-2">
-              <Image src="/images/accueil/icon-schedule-outline.svg" alt="" width={24} height={24} />
+              <Image src="/images/accueil/icon-schedule-outline.svg" alt="" width={16} height={16} />
               <p className="text-[15px] font-[500] whitespace-nowrap text-[var(--text-secondary,var(--text-secondary))]">
                 {contactInfo.hours}
               </p>

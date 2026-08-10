@@ -34,24 +34,7 @@ export function TwoPractitionersToggle({
           </p>
         </div>
 
-        <button
-          type="button"
-          role="switch"
-          aria-checked={enabled}
-          aria-label="Activer 2 praticiens"
-          onClick={() => onChange(!enabled)}
-          className={cn(
-            "relative h-6 w-11 shrink-0 rounded-full transition",
-            enabled ? "bg-[var(--brand-taupe-muted)]" : "bg-[var(--color-gray-300)]",
-          )}
-        >
-          <span
-            className={cn(
-              "absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition",
-              enabled && "translate-x-5",
-            )}
-          />
-        </button>
+        <Switch checked={enabled} onChange={onChange} label="Activer 2 praticiens" />
       </div>
     </div>
   );

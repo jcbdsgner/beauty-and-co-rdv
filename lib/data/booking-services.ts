@@ -36,7 +36,8 @@ export const bookingServices: BookingService[] = [
   {
     id: "coiffure",
     label: "COIFFURE",
-    image: "/images/rdv/service-coiffure.png",
+    image: "/images/rdv/service-coiffure.svg",
+    iconOnly: true,
     spotsLeft: 6,
     duration: "15 min – 4h",
     description: "Rappels Jours Mini&Co : Mardi,Mercredi,Dimanche",
@@ -431,7 +432,8 @@ export const bookingServices: BookingService[] = [
   {
     id: "manucure-pedicure",
     label: "MANUCURE PEDICURE",
-    image: "/images/rdv/service-manucure-pedicure.png",
+    image: "/images/rdv/service-manucure-pedicure.svg",
+    iconOnly: true,
     spotsLeft: 4,
     duration: "20 min – 1h30",
     description: "Offrez à vos pieds et mains l'amour dont ils ont besoin",
@@ -671,7 +673,8 @@ export const bookingServices: BookingService[] = [
   {
     id: "spa",
     label: "SPA",
-    image: "/images/rdv/service-spa.png",
+    image: "/images/rdv/service-spa.svg",
+    iconOnly: true,
     spotsLeft: 1,
     duration: "30 min – 3h10",
     description: "SPA",
@@ -788,7 +791,8 @@ export const bookingServices: BookingService[] = [
   {
     id: "soin-du-visage",
     label: "SOIN DU VISAGE",
-    image: "/images/rdv/service-soin-visage.png",
+    image: "/images/rdv/service-soin-visage.svg",
+    iconOnly: true,
     spotsLeft: 4,
     duration: "1h – 1h30",
     requiredQuestions: [
@@ -861,7 +865,8 @@ export const bookingServices: BookingService[] = [
   {
     id: "epilation",
     label: "ÉPILATION",
-    image: "/images/rdv/service-epilation.png",
+    image: "/images/rdv/service-epilation.svg",
+    iconOnly: true,
     spotsLeft: 2,
     duration: "15 min – 1h",
     description: "EPILATIONS",
@@ -968,7 +973,8 @@ export const bookingServices: BookingService[] = [
   {
     id: "mini-co-hair",
     label: "HAIR",
-    image: "/images/rdv/service-coiffure.png",
+    image: "/images/rdv/service-coiffure.svg",
+    iconOnly: true,
     spotsLeft: 2,
     duration: "25 min – 3h",
     description: "Soin et coiffure enfants",
@@ -1049,7 +1055,8 @@ export const bookingServices: BookingService[] = [
   {
     id: "mini-co-spa",
     label: "MINI SPA",
-    image: "/images/rdv/service-spa.png",
+    image: "/images/rdv/service-spa.svg",
+    iconOnly: true,
     spotsLeft: 2,
     duration: "25 min – 3h",
     description: "Beauté des mains et bien-être",

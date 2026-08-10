@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { PhoneInput } from "@/components/booking/phone-input";
 import { StepFooter } from "@/components/booking/steps/step-footer";
+import { Switch } from "@/components/ui/switch";
 import { loginLink } from "@/lib/data/nav";
 import { cn } from "@/lib/utils";
 import {
@@ -21,6 +22,8 @@ type InformationsStepProps = {
   canContinue: boolean;
   onContinue: () => void;
   onBack: () => void;
+  /** Compte déjà connecté : le contact principal est prérempli, donc plus besoin de proposer de se connecter ici. */
+  connected: boolean;
 };
 
 const inputClassName =
@@ -179,15 +182,14 @@ function PersonInfoBlock({
       <div className="mt-6">
         <div className="flex items-center justify-between">
           <span className="text-[17px] font-bold text-[var(--color-text-tertiary)]">WhatsApp (optionnel)</span>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
+          <div className="flex items-center gap-2">
+            <Switch
               checked={contactInfo.whatsappSameAsPhone}
-              onChange={(event) => onChange({ whatsappSameAsPhone: event.target.checked })}
-              className="size-4 accent-[var(--brand-taupe-muted)]"
+              onChange={(checked) => onChange({ whatsappSameAsPhone: checked })}
+              label="Identique au téléphone"
             />
             <span className="text-[17px] font-[450] text-[var(--color-ink)]">Identique au téléphone</span>
-          </label>
+          </div>
         </div>
         <PhoneInput
           countryCode={contactInfo.whatsappSameAsPhone ? contactInfo.phoneCountry : contactInfo.whatsappCountry}
@@ -211,6 +213,7 @@ export function InformationsStep({
   canContinue,
   onContinue,
   onBack,
+  connected,
 }: InformationsStepProps) {
   const [showErrors, setShowErrors] = useState(false);
 
@@ -237,22 +240,24 @@ export function InformationsStep({
 
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-4 rounded-2xl bg-[rgba(253,207,202,0.15)] py-4 pr-6 pl-4">
-        <div className="min-w-[220px] flex-1">
-          <p className="text-[20px] font-bold text-[var(--color-gray-900)]">Avez-vous un compte ?</p>
-          <p className="text-[18px] text-[var(--color-gray-600)]">
-            Connectez-vous et renseignez automatiquement vos informations personnelles.
-          </p>
+      {!connected && (
+        <div className="flex flex-wrap items-center gap-4 rounded-2xl bg-[rgba(253,207,202,0.15)] py-4 pr-6 pl-4">
+          <div className="min-w-[220px] flex-1">
+            <p className="text-[20px] font-bold text-[var(--color-gray-900)]">Avez-vous un compte ?</p>
+            <p className="text-[18px] text-[var(--color-gray-600)]">
+              Connectez-vous et renseignez automatiquement vos informations personnelles.
+            </p>
+          </div>
+          <Link
+            href={loginLink.href}
+            className="shrink-0 rounded-full bg-[var(--core-brand-color)] px-4 py-3 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
+          >
+            {loginLink.label}
+          </Link>
         </div>
-        <Link
-          href={loginLink.href}
-          className="shrink-0 rounded-full bg-[var(--core-brand-color)] px-4 py-3 text-[17px] font-[450] text-black shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] transition hover:opacity-90"
-        >
-          {loginLink.label}
-        </Link>
-      </div>
+      )}
 
-      <div className="mt-6 flex flex-col gap-6">
+      <div className={cn("flex flex-col gap-6", !connected && "mt-6")}>
         {adults.map((person, index) => {
           const contactInfo = contactInfoByPerson[person.id] ?? emptyContactInfo;
           return (

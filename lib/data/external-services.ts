@@ -16,7 +16,7 @@ export const externalServices: ExternalService[] = [
       "Offrez un moment beauté avec une carte cadeau Beauty and Co, valable dans tous nos salons et sur l'ensemble de nos prestations.",
     cta: "Acheter une carte cadeau",
     href: "https://carte-cadeau.beautyandco.example",
-    icon: "/images/accueil/service-spa.png",
+    icon: "/images/accueil/service-spa.svg",
   },
   {
     key: "mini-and-co",
@@ -25,7 +25,7 @@ export const externalServices: ExternalService[] = [
       "Des soins beauté pensés pour les enfants, dans une ambiance douce et ludique. Coupe, coiffure et petites attentions rien que pour eux.",
     cta: "Découvrir Mini & Co",
     href: "https://mini-and-co.beautyandco.example",
-    icon: "/images/accueil/service-coiffure.png",
+    icon: "/images/accueil/service-coiffure.svg",
   },
   {
     key: "boutique",
@@ -34,6 +34,6 @@ export const externalServices: ExternalService[] = [
       "Produits capillaires et de beauté, à commander directement sur notre boutique.",
     cta: "Voir la boutique",
     href: "https://boutique.beautyandco.example",
-    icon: "/images/accueil/service-manucure.png",
+    icon: "/images/accueil/service-manucure.svg",
   },
 ];
