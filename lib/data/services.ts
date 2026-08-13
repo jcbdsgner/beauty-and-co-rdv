@@ -10,7 +10,7 @@ export const heroServices: HeroService[] = [
   { label: "Épilation", slug: "epilation", icons: ["/images/accueil/service-epilation.svg"] },
   { label: "Cils", slug: "cils", icons: ["/images/accueil/service-cils.svg"] },
   {
-    label: "Manicure et Pédicure",
+    label: "Manucure et Pédicure",
     slug: "manucure-pedicure",
     icons: ["/images/accueil/service-manucure.svg", "/images/accueil/service-pedicure.svg"],
   },
@@ -24,7 +24,7 @@ export type FooterService = {
 export const footerServices: FooterService[] = [
   { label: "Coiffure", slug: "coiffure" },
   { label: "SPA", slug: "spa" },
-  { label: "Manicure et pédicure", slug: "manucure-pedicure" },
+  { label: "Manucure et pédicure", slug: "manucure-pedicure" },
   { label: "Visage", slug: "visage" },
   { label: "Épilation", slug: "epilation" },
   { label: "Cils", slug: "cils" },

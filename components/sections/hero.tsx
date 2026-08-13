@@ -5,17 +5,25 @@ import { bookingLink, videoGuideLink } from "@/lib/data/nav";
 import { heroServices, type HeroService } from "@/lib/data/services";
 
 function ServiceChip({ service }: { service: HeroService }) {
+  const isMulti = service.icons.length > 1;
+
   return (
     <Link
       href={`/services/${service.slug}`}
-      className="group flex w-[105px] flex-col items-center gap-2 transition-transform duration-200 hover:scale-110"
+      className="group flex flex-col items-center gap-2 text-center transition-transform duration-200 hover:scale-110"
     >
-      <div className="flex items-center justify-center gap-1.5 rounded-full bg-[#9c7d79] p-3 transition-colors duration-200 group-hover:bg-[#ab8985] sm:p-4">
-        {service.icons.map((icon) => (
-          <Image key={icon} src={icon} alt="" width={48} height={48} className="h-7 w-7 sm:h-8 sm:w-8" />
-        ))}
+      <div className="flex size-20 items-center justify-center rounded-full bg-[rgba(253,207,202,0.3)] transition-colors duration-200 group-hover:bg-[rgba(253,207,202,0.45)]">
+        {isMulti ? (
+          <div className="flex items-center gap-2">
+            {service.icons.map((icon) => (
+              <Image key={icon} src={icon} alt="" width={20} height={20} className="size-5" />
+            ))}
+          </div>
+        ) : (
+          <Image src={service.icons[0]} alt="" width={40} height={40} className="size-10" />
+        )}
       </div>
-      <p className="text-center text-[19px] text-[#f2dedc]">{service.label}</p>
+      <p className="text-[15px] leading-[20px] text-white">{service.label}</p>
     </Link>
   );
 }
@@ -37,46 +45,45 @@ export function Hero() {
         <div className="absolute inset-0 bg-[rgba(223,174,175,0.11)]" />
       </div>
 
-      <div className="relative z-10 mx-auto -mt-[496px] w-[88%] max-w-[451px] overflow-hidden rounded-t-[1500px] border border-white/80 bg-[#856a67] px-8 pb-12 pt-16 sm:-mt-[560px] lg:-mt-[486px] lg:px-12 lg:pt-20">
-        <div className="flex flex-col items-center gap-8 sm:gap-12">
-          <div className="flex flex-col items-center gap-6">
-            <h1 className="px-[30px] py-[14px] text-center text-white lg:p-0">
-              <span className="font-[family-name:var(--font-prata)] text-[31px] leading-[1.3] sm:text-[39px] lg:text-[39px] lg:leading-[55px]">
-                Et si on prenait soin
-              </span>{" "}
-              <span className="ml-1.5 font-[family-name:var(--font-benedict)] text-[34px] leading-[1.3] sm:text-[42px] lg:text-[44px] lg:leading-[55px]">
-                de vous ?
-              </span>
-            </h1>
+      <div className="relative z-10 mx-auto -mt-[496px] w-[88%] max-w-[448px] overflow-hidden rounded-t-[1500px] bg-[#806562] px-8 pb-8 pt-16 sm:-mt-[560px] lg:-mt-[486px]">
+        <div className="flex flex-col items-center gap-8">
+          <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center gap-2 text-center text-white">
+              <p className="font-[family-name:var(--font-prata)] text-[36px] leading-[40px]">Et si on prenait</p>
+              <p>
+                <span className="font-[family-name:var(--font-prata)] text-[36px] leading-[40px]">soin</span>{" "}
+                <span className="font-[family-name:var(--font-benedict)] text-[42px] leading-[40px]">de vous ?</span>
+              </p>
+            </div>
 
-            <div className="flex flex-col items-center gap-5">
-              <p className="text-[21px] font-[450] text-[var(--brand-rose-soft)] sm:text-[25px]">Nos services</p>
-              <div className="flex flex-col items-center gap-5">
-                <div className="flex items-start justify-center gap-x-3">
-                  {firstRow.map((service) => (
-                    <ServiceChip key={service.label} service={service} />
-                  ))}
-                </div>
-                <div className="flex items-start justify-center gap-x-3">
-                  {secondRow.map((service) => (
-                    <ServiceChip key={service.label} service={service} />
-                  ))}
-                </div>
-              </div>
+            <p className="pt-6 text-[22px] leading-[28px] text-white">Nos services</p>
+
+            <div className="grid w-full grid-cols-3 justify-items-center gap-6 pt-8">
+              {firstRow.map((service) => (
+                <ServiceChip key={service.label} service={service} />
+              ))}
+            </div>
+            <div className="grid w-full grid-cols-2 justify-items-center gap-6 pt-8">
+              {secondRow.map((service) => (
+                <ServiceChip key={service.label} service={service} />
+              ))}
             </div>
           </div>
 
-          <div className="flex w-full max-w-[288px] flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2">
             <Button
               href={videoGuideLink.href}
               external
               hideExternalIcon
               icon={<Image src="/images/accueil/icon-play.svg" alt="" width={16} height={16} />}
-              className="w-full"
+              className="h-9 rounded-full px-8 py-0 text-[16px] font-bold leading-6 text-[#575555] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]"
             >
               {videoGuideLink.label}
             </Button>
-            <Button href={bookingLink.href} className="w-full">
+            <Button
+              href={bookingLink.href}
+              className="h-9 rounded-full px-8 py-0 text-[16px] font-bold leading-6 text-[#575555] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]"
+            >
               {bookingLink.label}
             </Button>
           </div>
