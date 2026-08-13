@@ -52,7 +52,7 @@ export function Hero() {
               <p className="font-[family-name:var(--font-prata)] text-[36px] leading-[40px]">Et si on prenait</p>
               <p>
                 <span className="font-[family-name:var(--font-prata)] text-[36px] leading-[40px]">soin</span>{" "}
-                <span className="font-[family-name:var(--font-benedict)] text-[42px] leading-[40px]">de vous ?</span>
+                <span className="ml-1.5 font-[family-name:var(--font-benedict)] text-[42px] leading-[40px]">de vous ?</span>
               </p>
             </div>
 
