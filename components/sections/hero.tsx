@@ -14,16 +14,16 @@ function ServiceChip({ service }: { service: HeroService }) {
     >
       <div className="flex size-20 items-center justify-center rounded-full bg-[rgba(253,207,202,0.3)] transition-colors duration-200 group-hover:bg-[rgba(253,207,202,0.45)]">
         {isMulti ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {service.icons.map((icon) => (
-              <Image key={icon} src={icon} alt="" width={20} height={20} className="size-5" />
+              <Image key={icon} src={icon} alt="" width={28} height={28} className="size-7" />
             ))}
           </div>
         ) : (
           <Image src={service.icons[0]} alt="" width={40} height={40} className="size-10" />
         )}
       </div>
-      <p className="text-[15px] leading-[20px] text-white">{service.label}</p>
+      <p className="text-[16px] leading-[20px] text-white">{service.label}</p>
     </Link>
   );
 }
@@ -76,13 +76,13 @@ export function Hero() {
               external
               hideExternalIcon
               icon={<Image src="/images/accueil/icon-play.svg" alt="" width={16} height={16} />}
-              className="h-9 rounded-full px-8 py-0 text-[16px] font-bold leading-6 text-[#575555] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]"
+              className="h-9 rounded-full px-8 py-0 text-[18px] font-medium leading-6 text-[#575555] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]"
             >
               {videoGuideLink.label}
             </Button>
             <Button
               href={bookingLink.href}
-              className="h-9 rounded-full px-8 py-0 text-[16px] font-bold leading-6 text-[#575555] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]"
+              className="h-9 rounded-full px-8 py-0 text-[18px] font-medium leading-6 text-[#575555] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]"
             >
               {bookingLink.label}
             </Button>
