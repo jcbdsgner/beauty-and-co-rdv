@@ -5,6 +5,8 @@ export type Forfait = {
   id: string;
   label: string;
   image: string;
+  /** Vidéo de fond en boucle pour la card carousel, en remplacement de `image` — `image` reste le poster/fallback. */
+  video?: string;
   description: string;
   /** Valeur libre décidée par le salon, indépendante de la somme des prix des Prestations incluses. */
   price: number;
@@ -17,7 +19,7 @@ export type Forfait = {
 export const forfaits: Forfait[] = [
   {
     id: "eclat-mensuel",
-    label: "Forfait Éclat Mensuel",
+    label: "Abonnement Éclat Mensuel",
     image: "/images/accueil/gallery-6.png",
     description: "Un rituel complet à renouveler chaque mois : cheveux, visage et mains chouchoutés.",
     price: 65000,
@@ -31,8 +33,9 @@ export const forfaits: Forfait[] = [
   },
   {
     id: "detente-spa",
-    label: "Forfait Détente Spa",
-    image: "/images/accueil/gallery-5.png",
+    label: "Abonnement Détente Spa",
+    image: "/images/accueil/forfait-detente-spa-poster.jpg",
+    video: "/videos/forfait-detente-spa.mp4",
     description: "Une parenthèse détente chaque mois, entre massage du dos et réflexologie.",
     price: 90000,
     cycleLabel: "Mensuel",
@@ -41,7 +44,7 @@ export const forfaits: Forfait[] = [
   },
   {
     id: "mains-et-pieds",
-    label: "Forfait Mains & Pieds",
+    label: "Abonnement Mains & Pieds",
     image: "/images/accueil/gallery-1.png",
     description: "Mains et pieds toujours impeccables, sans jamais y repenser.",
     price: 55000,
@@ -60,9 +63,11 @@ export type ForfaitPrestation = {
   label: string;
   categoryId: string;
   categoryLabel: string;
+  /** Texte marketing de la Prestation dans le catalogue, absent pour certaines — jamais de prix ni de durée ici : le Forfait a un prix libre, indépendant de la somme de ses Prestations. */
+  description?: string;
 };
 
-/** Résout les prestationIds d'un Forfait dans le catalogue — jamais de prix ni de durée : seul le nom et sa Catégorie d'origine comptent ici. */
+/** Résout les prestationIds d'un Forfait dans le catalogue — jamais de prix ni de durée : seuls le nom, sa description marketing et sa Catégorie d'origine comptent ici. */
 export function getForfaitPrestations(forfait: Forfait): ForfaitPrestation[] {
   const prestations: ForfaitPrestation[] = [];
 
@@ -74,6 +79,7 @@ export function getForfaitPrestations(forfait: Forfait): ForfaitPrestation[] {
         label: toSentenceCase(sub.label),
         categoryId: category.id,
         categoryLabel: category.label,
+        description: sub.description,
       });
     }
   }

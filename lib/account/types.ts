@@ -7,6 +7,7 @@ export type AccountInfo = {
   whatsapp: string;
   whatsappCountry: string;
   whatsappSameAsPhone: boolean;
+  photoUrl: string | null;
 };
 
 export type Account = AccountInfo & { connected: boolean };
@@ -21,6 +22,7 @@ export const defaultAccountInfo: AccountInfo = {
   whatsapp: "76 356 98 74",
   whatsappCountry: "SN",
   whatsappSameAsPhone: true,
+  photoUrl: null,
 };
 
 export type BookingHistoryEntry = {

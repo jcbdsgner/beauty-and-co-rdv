@@ -1,9 +1,12 @@
 import { notFound } from "next/navigation";
 import { footerServices } from "@/lib/data/services";
+import { tarifCategories } from "@/lib/data/tarifs";
+
+const allServices = [...footerServices, ...tarifCategories.map(({ slug, label }) => ({ slug, label }))];
 
 export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const service = footerServices.find((item) => item.slug === slug);
+  const service = allServices.find((item) => item.slug === slug);
 
   if (!service) {
     notFound();

@@ -11,6 +11,8 @@ export type Abonnement = {
   /** Date du dernier paiement simulé — sert de point de départ au calcul de la prochaine échéance. */
   lastPaidAt: string;
   revokedAt: string | null;
+  /** Ids de prestations du Forfait déjà consommées durant le cycle en cours — remis à zéro à chaque paiement (voir markAbonnementPaid). */
+  redeemedPrestationIds: string[];
 };
 
 export function computeNextDueDate(abonnement: Abonnement, cycleDays: number): Date {
@@ -22,6 +24,13 @@ export function computeNextDueDate(abonnement: Abonnement, cycleDays: number): D
 
 export function isPaymentDue(abonnement: Abonnement, cycleDays: number): boolean {
   return computeNextDueDate(abonnement, cycleDays).getTime() <= Date.now();
+}
+
+/** Due date if `cycles` cycles were prepaid starting today — mirrors the "reset from today" logic in markAbonnementPaid, for a live preview before any payment actually happens. */
+export function estimatePrepaidDueDate(cycles: number, cycleDays: number): Date {
+  const next = new Date();
+  next.setDate(next.getDate() + cycles * cycleDays);
+  return next;
 }
 
 export function beneficiaryDisplayName(abonnement: Abonnement): string {

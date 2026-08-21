@@ -17,26 +17,29 @@ function AbonnementCard({ abonnement, onChanged }: { abonnement: Abonnement; onC
   const forfait = forfaits.find((item) => item.id === abonnement.forfaitId);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [payModalOpen, setPayModalOpen] = useState(false);
+  const [cyclesToPay, setCyclesToPay] = useState(1);
   if (!forfait) return null;
 
   const revoked = Boolean(abonnement.revokedAt);
   const due = !revoked && isPaymentDue(abonnement, forfait.cycleDays);
   const nextDueDate = computeNextDueDate(abonnement, forfait.cycleDays);
+  const amountDue = forfait.price * cyclesToPay;
 
   const handleSelectPaymentMethod = () => {
-    markAbonnementPaid(abonnement.id);
+    markAbonnementPaid(abonnement.id, forfait.cycleDays, cyclesToPay);
     setPayModalOpen(false);
     onChanged();
   };
 
   const handleRevoke = () => {
-    if (!confirm(`Révoquer le ${forfait.label} ?`)) return;
+    if (!confirm(`Révoquer l'${forfait.label} ?`)) return;
     revokeAbonnement(abonnement.id);
     setDetailsOpen(false);
     onChanged();
   };
 
-  const handlePay = () => {
+  const handleConfirmCycles = (cycles: number) => {
+    setCyclesToPay(cycles);
     setDetailsOpen(false);
     setPayModalOpen(true);
   };
@@ -94,12 +97,12 @@ function AbonnementCard({ abonnement, onChanged }: { abonnement: Abonnement; onC
             nextDueDate={nextDueDate}
             onClose={() => setDetailsOpen(false)}
             onRevoke={handleRevoke}
-            onPay={handlePay}
+            onConfirmCycles={handleConfirmCycles}
           />
           <PaymentMethodDialog
             open={payModalOpen}
-            amountLabel={formatPrice(forfait.price)}
-            description={`Réglez l'échéance (${formatPrice(forfait.price)}) du ${forfait.label}.`}
+            amountLabel={formatPrice(amountDue)}
+            description={`Réglez ${cyclesToPay > 1 ? `${cyclesToPay} échéances` : "l'échéance"} (${formatPrice(amountDue)}) de l'${forfait.label}.`}
             onClose={() => setPayModalOpen(false)}
             onSelect={handleSelectPaymentMethod}
           />
@@ -124,9 +127,9 @@ export function MesAbonnementsList() {
     return (
       <div className="rounded-2xl border border-dashed border-[var(--color-gray-200)] bg-white p-10 text-center">
         <p className="text-[19px] font-bold text-[var(--color-gray-900)]">Vous n&apos;avez pas encore d&apos;Abonnement</p>
-        <p className="mt-2 text-[16px] text-[var(--text-secondary)]">Découvrez nos Forfaits pour en souscrire un.</p>
+        <p className="mt-2 text-[16px] text-[var(--text-secondary)]">Découvrez nos Abonnements pour en souscrire un.</p>
         <Button href="/abonnement" className="mt-6">
-          Voir les Forfaits
+          Voir les Abonnements
         </Button>
       </div>
     );

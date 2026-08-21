@@ -14,6 +14,8 @@ type CategoryPrestationListProps = {
   showQuestionErrors: boolean;
   /** Lets the parent scroll straight to the required-questions block instead of the whole list. */
   questionsRef?: RefObject<HTMLDivElement | null>;
+  /** Subservice ids already paid for by the active person's owned Pack or active Abonnement, and which of the two — rendered as "Déjà payé" instead of their price. */
+  coverageBySubServiceId?: Map<string, "pack" | "abonnement">;
 };
 
 function groupBySubcategory(subServices: BookingSubService[]) {
@@ -31,10 +33,12 @@ function FlatSubServiceRow({
   sub,
   selected,
   onToggle,
+  coverageSource,
 }: {
   sub: BookingSubService;
   selected: boolean;
   onToggle: () => void;
+  coverageSource?: "pack" | "abonnement";
 }) {
   return (
     <li className="flex items-center gap-3 border-b border-[var(--color-gray-200)] py-4 last:border-b-0">
@@ -46,7 +50,13 @@ function FlatSubServiceRow({
             <Image src="/images/rdv/icon-clock-dark.svg" alt="" width={16} height={16} />
             {sub.duration}
           </span>
-          <span className="text-[17px] font-[500] text-[var(--color-gray-800)]">· {formatPrice(sub.price)}</span>
+          {coverageSource ? (
+            <span className="text-[15px] font-bold text-[var(--brand-taupe-muted)]">
+              · Déjà payé avec votre {coverageSource === "pack" ? "pack" : "abonnement"}
+            </span>
+          ) : (
+            <span className="text-[17px] font-[500] text-[var(--color-gray-800)]">· {formatPrice(sub.price)}</span>
+          )}
         </div>
       </div>
       <button
@@ -84,6 +94,7 @@ export function CategoryPrestationList({
   onAnswerQuestion,
   showQuestionErrors,
   questionsRef,
+  coverageBySubServiceId,
 }: CategoryPrestationListProps) {
   // Accordion, not independent toggles: opening a subcategory closes whichever one was open —
   // its checkbox only stays checked afterward if a prestation was actually picked from it.
@@ -154,6 +165,7 @@ export function CategoryPrestationList({
                         sub={sub}
                         selected={selectedSubServiceIds.has(sub.id)}
                         onToggle={() => onToggleSubService(sub.id)}
+                        coverageSource={coverageBySubServiceId?.get(sub.id)}
                       />
                     ))}
                   </ul>
@@ -170,6 +182,7 @@ export function CategoryPrestationList({
               sub={sub}
               selected={selectedSubServiceIds.has(sub.id)}
               onToggle={() => onToggleSubService(sub.id)}
+              coverageSource={coverageBySubServiceId?.get(sub.id)}
             />
           ))}
         </ul>

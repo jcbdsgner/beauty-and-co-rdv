@@ -21,9 +21,18 @@ const boutiqueHref = externalServices.find((service) => service.key === "boutiqu
 const LOOP_REPEAT = 3;
 const carouselProducts = Array.from({ length: LOOP_REPEAT }, () => boutiqueShowcaseProducts).flat();
 
+// `toLocaleString("fr-FR")`'s thousands separator is a narrow no-break space that can render as
+// good as invisible next to certain digits (e.g. "31000" instead of "31 000"), so this spells out
+// an explicit non-breaking space instead — see lib/booking/format.ts's formatPrice for the same fix.
+function groupThousands(amount: number): string {
+  return Math.round(amount)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 function ProductPrice({ price, originalPrice }: { price: number; originalPrice?: number }) {
-  const priceLabel = `${price.toLocaleString("fr-FR")} FCFA`;
-  const originalPriceLabel = originalPrice !== undefined ? `${originalPrice.toLocaleString("fr-FR")} FCFA` : null;
+  const priceLabel = `${groupThousands(price)} FCFA`;
+  const originalPriceLabel = originalPrice !== undefined ? `${groupThousands(originalPrice)} FCFA` : null;
 
   return (
     <div className="flex items-center gap-2 text-[19px]">

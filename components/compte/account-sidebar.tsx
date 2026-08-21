@@ -1,16 +1,35 @@
 "use client";
 
+import { useRef, useState } from "react";
+import { Avatar } from "@/components/ui/avatar";
 import { logout } from "@/lib/account/persistence";
 import type { AccountInfo } from "@/lib/account/types";
 import { cn } from "@/lib/utils";
 
-export type ComptePanel = "informations" | "historique" | "abonnements";
+export type ComptePanel = "informations" | "historique" | "abonnements" | "packs";
 
 type AccountSidebarProps = {
   account: AccountInfo;
   panel: ComptePanel;
   onPanelChange: (panel: ComptePanel) => void;
+  onPhotoChange?: (photoUrl: string | null) => void;
 };
+
+const MAX_PHOTO_BYTES = 3 * 1024 * 1024;
+
+function EditIcon() {
+  return (
+    <svg aria-hidden viewBox="0 0 24 24" fill="none" className="size-3.5">
+      <path
+        d="M13.5 3.5L17.5 7.5M19.67 5.31C20.2 4.78 20.5 4.07 20.5 3.32C20.5 2.57 20.2 1.85 19.67 1.33C19.15 0.8 18.43 0.5 17.68 0.5C16.93 0.5 16.22 0.8 15.69 1.33L2.34 14.67C2.11 14.91 1.94 15.19 1.84 15.5L0.52 19.86C0.5 19.94 0.5 20.03 0.52 20.12C0.54 20.21 0.58 20.29 0.65 20.35C0.71 20.42 0.79 20.46 0.88 20.48C0.97 20.51 1.06 20.5 1.14 20.48L5.5 19.16C5.81 19.06 6.1 18.89 6.33 18.66L19.67 5.31Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function UserIcon() {
   return (
@@ -54,6 +73,20 @@ function RefreshIcon() {
   );
 }
 
+function PackageIcon() {
+  return (
+    <svg aria-hidden viewBox="0 0 20 20" fill="none" className="size-5 shrink-0">
+      <path
+        d="M2.5 6 10 2.5l7.5 3.5v8l-7.5 3.5-7.5-3.5v-8ZM2.5 6 10 9.5m0 0L17.5 6M10 9.5v8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function LogoutIcon() {
   return (
     <svg aria-hidden viewBox="0 0 20 20" fill="none" className="size-5 shrink-0">
@@ -72,6 +105,7 @@ const panels: { id: ComptePanel; label: string; icon: React.ReactNode }[] = [
   { id: "informations", label: "Informations personnelles", icon: <UserIcon /> },
   { id: "historique", label: "Mes rendez-vous", icon: <CalendarCheckIcon /> },
   { id: "abonnements", label: "Mes Abonnements", icon: <RefreshIcon /> },
+  { id: "packs", label: "Mes Packs", icon: <PackageIcon /> },
 ];
 
 /**
@@ -79,16 +113,72 @@ const panels: { id: ComptePanel; label: string; icon: React.ReactNode }[] = [
  * tabs so the page can also surface Mes Abonnements and Déconnexion, which used to live only
  * behind the header dropdown — a full account page should be the hub for all of it.
  */
-export function AccountSidebar({ account, panel, onPanelChange }: AccountSidebarProps) {
+export function AccountSidebar({ account, panel, onPanelChange, onPhotoChange }: AccountSidebarProps) {
   const initial = account.firstName.charAt(0).toUpperCase() || "?";
   const fullName = `${account.firstName} ${account.lastName}`.trim();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
+  const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file || !onPhotoChange) return;
+
+    if (!file.type.startsWith("image/")) {
+      setPhotoError("Choisissez une image.");
+      return;
+    }
+    if (file.size > MAX_PHOTO_BYTES) {
+      setPhotoError("Image trop lourde (3 Mo max).");
+      return;
+    }
+
+    setPhotoError(null);
+    const reader = new FileReader();
+    reader.onload = () => onPhotoChange(reader.result as string);
+    reader.readAsDataURL(file);
+  };
 
   return (
     <aside className="h-fit rounded-3xl border border-[var(--color-gray-200)] bg-white p-6 lg:sticky lg:top-24">
       <div className="flex flex-col items-center gap-3 text-center">
-        <span className="flex size-16 shrink-0 items-center justify-center rounded-full border border-[rgba(162,117,118,0.5)] bg-[rgba(253,207,202,0.35)] text-[22px] font-semibold text-[var(--button-2-color)]">
-          {initial}
-        </span>
+        <div className="relative">
+          <Avatar
+            photoUrl={account.photoUrl}
+            initial={initial}
+            size={64}
+            className="border border-[rgba(162,117,118,0.5)] bg-[rgba(253,207,202,0.35)] text-[22px] font-semibold text-[var(--button-2-color)]"
+          />
+          {onPhotoChange && (
+            <>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                aria-label="Changer la photo de profil"
+                className="absolute -right-1 -bottom-1 flex size-6 items-center justify-center rounded-full border border-white bg-[var(--core-brand-color)] text-[var(--brand-taupe-muted)] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.15)] transition hover:opacity-90"
+              >
+                <EditIcon />
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelected}
+                className="hidden"
+              />
+            </>
+          )}
+        </div>
+        {photoError && <p className="text-[13px] text-[var(--color-error)]">{photoError}</p>}
+        {account.photoUrl && onPhotoChange && (
+          <button
+            type="button"
+            onClick={() => onPhotoChange(null)}
+            className="text-[13px] font-[450] text-[var(--color-gray-500)] underline-offset-2 hover:underline"
+          >
+            Retirer la photo
+          </button>
+        )}
         <div className="min-w-0">
           <p className="truncate text-[19px] font-bold text-[var(--color-gray-900)]">{fullName}</p>
           <p className="truncate text-[15px] text-[var(--color-gray-600)]">{account.email}</p>

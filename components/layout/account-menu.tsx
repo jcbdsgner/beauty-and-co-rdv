@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { Avatar } from "@/components/ui/avatar";
 import { logout } from "@/lib/account/persistence";
 import type { Account } from "@/lib/account/types";
 import { accountLink } from "@/lib/data/nav";
@@ -41,11 +42,17 @@ export function AccountMenu({ account }: AccountMenuProps) {
         aria-expanded={open}
         aria-label="Ouvrir le menu du compte"
         className={cn(
-          "flex size-11 items-center justify-center rounded-full border border-[rgba(162,117,118,0.5)] bg-[rgba(253,207,202,0.2)] text-[16px] font-semibold text-[var(--button-2-color,#a27576)] transition hover:bg-[rgba(253,207,202,0.35)]",
-          open && "bg-[rgba(253,207,202,0.35)]",
+          "flex size-11 items-center justify-center rounded-full transition",
+          !account.photoUrl && "border border-[rgba(162,117,118,0.5)] bg-[rgba(253,207,202,0.2)] hover:bg-[rgba(253,207,202,0.35)]",
+          open && !account.photoUrl && "bg-[rgba(253,207,202,0.35)]",
         )}
       >
-        {initial}
+        <Avatar
+          photoUrl={account.photoUrl}
+          initial={initial}
+          size={44}
+          className="text-[16px] font-semibold text-[var(--button-2-color,#a27576)]"
+        />
       </button>
 
       {open && (

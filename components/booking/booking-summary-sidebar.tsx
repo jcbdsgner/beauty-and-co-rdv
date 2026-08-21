@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { groupCartItemsByPack } from "@/lib/booking/cart";
 import type { CartItem } from "@/lib/booking/types";
 import { formatBookingDate, formatDurationMinutes, formatPrice } from "@/lib/booking/format";
+import { cn } from "@/lib/utils";
 
 type BookingSummarySidebarProps = {
   step: 1 | 2 | 3 | 4;
@@ -24,6 +26,7 @@ export function BookingSummarySidebar({
   const totalMinutes =
     totalMinutesOverride ?? cartItems.reduce((sum, item) => sum + item.durationMinutes, 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0);
+  const { grouped, ungrouped } = groupCartItemsByPack(cartItems);
 
   return (
     <aside className="h-fit rounded-2xl border border-[rgba(136,102,102,0.2)] bg-white p-6 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)] lg:sticky lg:top-10 lg:self-start">
@@ -64,7 +67,7 @@ export function BookingSummarySidebar({
         ) : (
           <div className="flex flex-col gap-3 rounded-xl bg-[rgba(237,220,218,0.3)] px-4 py-3">
             <div className="flex items-center gap-3">
-              <Image src="/images/rdv/icon-scissors.svg" alt="" width={20} height={20} />
+              <Image src="/images/rdv/icon-scissors-outline.svg" alt="" width={20} height={20} />
               <p className="text-[17px]">
                 <span className="font-bold text-[var(--color-gray-800)]">
                   {cartItems.length} prestation{cartItems.length > 1 ? "s" : ""}
@@ -74,7 +77,7 @@ export function BookingSummarySidebar({
             </div>
 
             <ul className="flex flex-col gap-1">
-              {cartItems.map((item) => (
+              {ungrouped.map((item) => (
                 <li key={item.id} className="flex items-center justify-between gap-2 text-[15px]">
                   <span className="text-[var(--color-gray-600)]">
                     {item.label}
@@ -82,9 +85,41 @@ export function BookingSummarySidebar({
                       <span className="text-[var(--color-gray-400)]"> · {item.personLabel}</span>
                     )}
                   </span>
-                  <span className="shrink-0 font-[450] text-[var(--color-gray-800)]">
-                    {formatPrice(item.price)}
+                  <span
+                    className={cn(
+                      "shrink-0 font-[450]",
+                      item.coverageSource ? "text-[var(--brand-taupe-muted)]" : "text-[var(--color-gray-800)]",
+                    )}
+                  >
+                    {item.coverageSource ? "Déjà payé" : formatPrice(item.price)}
                   </span>
+                </li>
+              ))}
+
+              {grouped.map((group) => (
+                <li key={group.key} className="flex flex-col gap-1.5 rounded-lg bg-white/60 px-2 py-2">
+                  <div className="flex items-center justify-between gap-2 text-[15px]">
+                    <span className="font-bold text-[var(--color-gray-800)]">
+                      {group.pack.label}
+                      {showPersonLabels && (
+                        <span className="font-[450] text-[var(--color-gray-400)]"> · {group.personLabel}</span>
+                      )}
+                    </span>
+                    <span className="shrink-0 font-[450] text-[var(--brand-taupe-muted)]">
+                      {formatPrice(group.pack.price)}
+                    </span>
+                  </div>
+                  <ul className="flex flex-col gap-0.5">
+                    {group.items.map((item) => (
+                      <li
+                        key={item.id}
+                        className="flex items-center justify-between gap-2 text-[13px] text-[var(--color-gray-400)]"
+                      >
+                        <span>{item.label}</span>
+                        <span className="shrink-0 line-through">{formatPrice(item.originalPrice)}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </li>
               ))}
             </ul>

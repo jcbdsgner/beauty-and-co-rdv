@@ -72,6 +72,7 @@ export function SouscriptionFlow({ forfait }: { forfait: Forfait }) {
       subscribedAt: now,
       lastPaidAt: now,
       revokedAt: null,
+      redeemedPrestationIds: [],
     };
     addAbonnement(abonnement);
     router.push("/compte?panel=abonnements");
@@ -124,7 +125,7 @@ export function SouscriptionFlow({ forfait }: { forfait: Forfait }) {
       )}
 
       <div className="mt-6 rounded-2xl border border-[var(--color-gray-200)] bg-white p-[25px]">
-        <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Pour qui est ce Forfait ?</h2>
+        <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Pour qui est cet Abonnement ?</h2>
         <div className="mt-4 flex gap-3">
           {(["moi", "autre"] as const).map((option) => (
             <button

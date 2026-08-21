@@ -12,8 +12,17 @@ export function formatBookingDate(date: Date): string {
   return dateFormatter.format(date);
 }
 
+/** Groups digits by 3 with a non-breaking space — `toLocaleString("fr-FR")`'s own thousands
+ *  separator is a narrow no-break space that can render as good as invisible next to certain
+ *  digits (e.g. "31000" instead of "31 000"), so this spells it out explicitly instead. */
+function groupThousands(amount: number): string {
+  return Math.round(amount)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 export function formatPrice(amount: number): string {
-  return `${amount.toLocaleString("fr-FR")} F CFA`;
+  return `${groupThousands(amount)} F CFA`;
 }
 
 export function formatDurationMinutes(totalMinutes: number): string {

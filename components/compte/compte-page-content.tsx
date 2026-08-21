@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import { PhoneInput } from "@/components/booking/phone-input";
@@ -9,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AccountSidebar, type ComptePanel } from "@/components/compte/account-sidebar";
 import { HistoryEntryCard } from "@/components/compte/history-entry-card";
+import { LoyaltyBanner } from "@/components/compte/loyalty-banner";
 import { MesAbonnementsList } from "@/components/abonnement/mes-abonnements-list";
+import { MesPacksList } from "@/components/packs/mes-packs-list";
 import { getBookingHistory } from "@/lib/account/history";
 import { updateAccount, useAccount } from "@/lib/account/persistence";
 import type { AccountInfo } from "@/lib/account/types";
@@ -41,7 +42,7 @@ function EmptyHistoryIllustration() {
   );
 }
 
-const validPanels: ComptePanel[] = ["informations", "historique", "abonnements"];
+const validPanels: ComptePanel[] = ["informations", "historique", "abonnements", "packs"];
 
 /** Lets other pages deep-link straight into a panel (e.g. `/compte?panel=abonnements` from the Forfaits page) instead of always landing on Informations. */
 function readRequestedPanel(searchParams: ReadonlyURLSearchParams): ComptePanel {
@@ -74,7 +75,15 @@ export function ComptePageContent() {
   if (!account?.connected || !form) return null;
 
   const history = getBookingHistory();
-  const loyaltyPoints = 0;
+  // Placeholder until a real points-accrual system exists (see LoyaltyBanner) — no earning logic
+  // is wired up yet, so these are illustrative Gold→Platine numbers, not this Compte's actual data.
+  const loyaltyPoints = 1620;
+  const loyaltyAdvantages = [
+    "-10% sur les soins visage & corps, toute l'année",
+    "Un soin offert le mois de votre anniversaire",
+    "Accès prioritaire aux créneaux du week-end",
+    "Livraison offerte sur la boutique en ligne",
+  ];
 
   const patchForm = (patch: Partial<AccountInfo>) => setForm((prev) => (prev ? { ...prev, ...patch } : prev));
 
@@ -91,17 +100,22 @@ export function ComptePageContent() {
       </h1>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-[280px_1fr] lg:gap-8">
-        <AccountSidebar account={form} panel={panel} onPanelChange={setPanel} />
+        <AccountSidebar
+          account={form}
+          panel={panel}
+          onPanelChange={setPanel}
+          onPhotoChange={(photoUrl) => patchForm({ photoUrl })}
+        />
 
         <div>
           {panel === "informations" ? (
             <div className="rounded-2xl border border-[var(--color-gray-200)] bg-white p-6 sm:p-[25px]">
-              <div className="flex justify-end">
-                <span className="inline-flex items-center gap-2 rounded-full border border-[rgba(162,117,118,0.5)] py-1.5 pr-4 pl-2 text-[14px] font-bold text-[var(--color-ink)]">
-                  <Image src="/images/compte/icon-loyalty-points.png" alt="" width={22} height={22} />
-                  {loyaltyPoints} points de fidélité
-                </span>
-              </div>
+              <LoyaltyBanner
+                points={loyaltyPoints}
+                goldThreshold={1000}
+                platinumThreshold={2000}
+                advantages={loyaltyAdvantages}
+              />
 
               <div className="mt-6">
                 <h2 className="text-[19px] font-bold text-[var(--color-gray-900)]">Identité</h2>
@@ -209,8 +223,10 @@ export function ComptePageContent() {
                 history.map((entry) => <HistoryEntryCard key={entry.id} entry={entry} />)
               )}
             </div>
-          ) : (
+          ) : panel === "abonnements" ? (
             <MesAbonnementsList />
+          ) : (
+            <MesPacksList />
           )}
         </div>
       </div>

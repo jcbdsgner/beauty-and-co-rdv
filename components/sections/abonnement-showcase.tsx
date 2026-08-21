@@ -23,10 +23,10 @@ export function AbonnementShowcase() {
 
         <div className="flex max-w-[367px] flex-col items-center gap-5">
           <p className="text-[17px] leading-[1.5] font-[500] text-[#4a4e45]">
-            Nos Forfaits regroupent vos prestations préférées à prix fixe, renouvelées automatiquement à
+            Nos Abonnements regroupent vos prestations préférées à prix fixe, renouvelées automatiquement à
             chaque cycle.
           </p>
-          <Button href="/abonnement">Voir les forfaits</Button>
+          <Button href="/abonnement">Voir les abonnements</Button>
         </div>
       </div>
 
@@ -67,10 +67,10 @@ export function AbonnementShowcase() {
 
           <div className="relative z-20 flex max-w-[367px] translate-y-[40px] flex-col items-start gap-5">
             <p className="text-[17px] leading-[1.5] font-[500] text-[#4a4e45]">
-              Nos Forfaits regroupent vos prestations préférées à prix fixe, renouvelées automatiquement à
+              Nos Abonnements regroupent vos prestations préférées à prix fixe, renouvelées automatiquement à
               chaque cycle.
             </p>
-            <Button href="/abonnement">Voir les forfaits</Button>
+            <Button href="/abonnement">Voir les abonnements</Button>
           </div>
         </div>
       </div>

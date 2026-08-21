@@ -6,6 +6,7 @@ import { StepFooter } from "@/components/booking/steps/step-footer";
 import { bookingServices } from "@/lib/data/booking-services";
 import { barBeautyDrinks } from "@/lib/data/bar-beauty";
 import { boutiqueHighlights } from "@/lib/data/boutique-highlights";
+import { type CartDisplayGroup, groupCartItemsByPack } from "@/lib/booking/cart";
 import { emptyContactInfo, type CartItem, type ContactInfo, type PersonTab } from "@/lib/booking/types";
 import { addMinutes, DEPOSIT_AMOUNT, formatDurationMinutes, formatPrice } from "@/lib/booking/format";
 import { cn } from "@/lib/utils";
@@ -33,7 +34,7 @@ type ConfirmationStepProps = {
   acceptedTerms: boolean;
   onAcceptedTermsChange: (accepted: boolean) => void;
   onBack: () => void;
-  onConfirm: () => void;
+  onConfirm: (grandTotal: number) => void;
   canConfirm: boolean;
 };
 
@@ -64,15 +65,46 @@ function PrestationOption({ item }: { item: CartItem }) {
     <div className="rounded-2xl bg-[#fafafa] px-4 py-3">
       <p className="text-[17px] font-bold text-[var(--color-gray-900)]">{item.label}</p>
       <div className="mt-2 flex items-center gap-3 text-[16px] text-[var(--text-secondary)]">
-        <span className="flex items-center gap-1">
+        <span
+          className={cn(
+            "flex items-center gap-1",
+            item.coverageSource && "font-bold text-[var(--brand-taupe-muted)]",
+          )}
+        >
           <Image src="/images/rdv/icon-price-tag.svg" alt="" width={16} height={16} />
-          {formatPrice(item.price)}
+          {item.coverageSource === "pack"
+            ? "Déjà payé avec votre pack"
+            : item.coverageSource === "abonnement"
+              ? "Déjà payé avec votre abonnement"
+              : formatPrice(item.price)}
         </span>
         <span className="flex items-center gap-1">
           <Image src="/images/rdv/icon-clock.svg" alt="" width={16} height={16} />
           {item.duration}
         </span>
       </div>
+    </div>
+  );
+}
+
+/** A Pack whose every prestation is selected for this person — shown as one block with the Pack's
+ *  own name and discounted price, and each included prestation's à la carte price struck through,
+ *  instead of listing them individually among the other services (see groupCartItemsByPack). */
+function PackGroupCard({ group }: { group: CartDisplayGroup }) {
+  return (
+    <div className="rounded-2xl border border-[var(--brand-taupe-muted)]/30 bg-[rgba(216,184,180,0.08)] p-4">
+      <div className="flex items-center justify-between gap-4">
+        <p className="text-[17px] font-bold text-[var(--color-gray-900)]">{group.pack.label}</p>
+        <p className="shrink-0 text-[17px] font-bold text-[var(--brand-taupe-muted)]">{formatPrice(group.pack.price)}</p>
+      </div>
+      <ul className="mt-2 flex flex-col gap-1.5">
+        {group.items.map((item) => (
+          <li key={item.id} className="flex items-center justify-between gap-2 text-[15px] text-[var(--color-gray-600)]">
+            <span>{item.label}</span>
+            <span className="shrink-0 text-[var(--color-gray-400)] line-through">{formatPrice(item.originalPrice)}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -230,8 +262,9 @@ export function ConfirmationStep({
               const personItems = personLabel
                 ? cartItems.filter((item) => item.personLabel === personLabel)
                 : cartItems;
+              const { grouped, ungrouped } = groupCartItemsByPack(personItems);
               const categories = Array.from(
-                new Map(personItems.map((item) => [item.categoryId, item.categoryLabel])),
+                new Map(ungrouped.map((item) => [item.categoryId, item.categoryLabel])),
               );
 
               return (
@@ -242,8 +275,11 @@ export function ConfirmationStep({
                       key={categoryId}
                       categoryId={categoryId}
                       categoryLabel={categoryLabel}
-                      items={personItems.filter((item) => item.categoryId === categoryId)}
+                      items={ungrouped.filter((item) => item.categoryId === categoryId)}
                     />
+                  ))}
+                  {grouped.map((group) => (
+                    <PackGroupCard key={group.key} group={group} />
                   ))}
                 </div>
               );
@@ -318,8 +354,10 @@ export function ConfirmationStep({
 
       <StepFooter
         onBack={onBack}
-        onContinue={onConfirm}
-        continueLabel={`Payer l'acompte (${formatPrice(DEPOSIT_AMOUNT)}) et confirmer`}
+        onContinue={() => onConfirm(grandTotal)}
+        continueLabel={
+          grandTotal <= 0 ? "Confirmer le rendez-vous" : `Payer l'acompte (${formatPrice(DEPOSIT_AMOUNT)}) et confirmer`
+        }
         continueDisabled={!canConfirm}
         stacked
       />

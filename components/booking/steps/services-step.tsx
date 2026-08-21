@@ -8,7 +8,7 @@ import { PersonToggle } from "@/components/booking/person-toggle";
 import { StepFooter } from "@/components/booking/steps/step-footer";
 import { bookingServices, type BookingService, type BookingSubService } from "@/lib/data/booking-services";
 import { formatPrice } from "@/lib/booking/format";
-import type { Selections } from "@/lib/booking/cart";
+import type { PrestationCoverage, Selections } from "@/lib/booking/cart";
 import {
   answerKey,
   isCategoryQuestionsComplete,
@@ -76,6 +76,8 @@ type ServicesStepProps = {
   onAnswerQuestion: (personId: string, categoryId: string, questionId: string, value: string) => void;
   onContinue: () => void;
   onCancel: () => void;
+  /** Prestations already paid for by an owned Pack or an active Abonnement this booking, per attendee (see AlreadyPaidDialog). */
+  coverage?: PrestationCoverage;
 };
 
 export function ServicesStep({
@@ -86,6 +88,7 @@ export function ServicesStep({
   onAnswerQuestion,
   onContinue,
   onCancel,
+  coverage,
 }: ServicesStepProps) {
   // The attendees dialog can still be open (people === []) when this step first mounts, so
   // a plain useState default would lock onto a stale/empty id — fall back to people[0] at
@@ -230,6 +233,22 @@ export function ServicesStep({
       <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">
         Choisissez les services que vous souhaitez recevoir.
       </p>
+
+      {(() => {
+        const activePersonFreeCount = coverage?.get(activePersonId)?.size ?? 0;
+        if (activePersonFreeCount === 0) return null;
+        return (
+          <div className="mt-4 flex items-center gap-3 rounded-xl bg-[rgba(237,220,218,0.35)] px-4 py-3">
+            <Image src="/images/rdv/icon-price-tag.svg" alt="" width={20} height={20} className="shrink-0" />
+            <p className="text-[15px] font-[450] text-[var(--brand-taupe-muted)]">
+              <span className="font-bold">Vos avantages</span> appliqués — {activePersonFreeCount} prestation
+              {activePersonFreeCount > 1 ? "s" : ""} déjà payée{activePersonFreeCount > 1 ? "s" : ""} pour{" "}
+              {people.find((person) => person.id === activePersonId)?.label ?? "vous"}.
+            </p>
+          </div>
+        );
+      })()}
+
       <div ref={personToggleRef} className="mt-4">
         <PersonToggle
           people={people}
@@ -262,6 +281,7 @@ export function ServicesStep({
           }
           showQuestionErrors={showMissingQuestionsWarning}
           questionsRef={questionsRef}
+          coverageBySubServiceId={coverage?.get(activePersonId)}
         />
       </div>
 

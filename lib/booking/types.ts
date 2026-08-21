@@ -6,6 +6,13 @@ export type PersonTab = {
   type: "adult" | "child";
 };
 
+export type PackGroupInfo = {
+  packId: string;
+  packLabel: string;
+  /** The Pack's discounted bundle price — carried by exactly one item of the group, see buildCartItems. */
+  groupPrice: number;
+};
+
 export type CartItem = {
   /** Unique across the whole cart: `${personId}:${subServiceId}` */
   id: string;
@@ -16,9 +23,15 @@ export type CartItem = {
   subServiceId: string;
   label: string;
   price: number;
+  /** This prestation's own à la carte price, regardless of coverage/pack-group pricing — used to show a struck-through reference price next to a grouped Pack's line items. */
+  originalPrice: number;
   duration: string;
   durationMinutes: number;
   twoPractitionersEligible: boolean;
+  /** Set when this prestation is already paid for by an owned Pack or an active Abonnement — its price is 0. */
+  coverageSource: "pack" | "abonnement" | null;
+  /** Set when this person has selected every prestation of this Pack — they're billed together at the Pack's discounted price instead of individually. Removing any one of them (unchecking it on the services step) drops the whole group back to individual pricing. */
+  packGroup: PackGroupInfo | null;
 };
 
 export type Sex = "femme" | "homme";
