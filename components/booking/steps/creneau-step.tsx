@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { BookingCalendar } from "@/components/booking/booking-calendar";
 import { TwoPractitionersToggle } from "@/components/booking/two-practitioners-toggle";
 import { StepFooter } from "@/components/booking/steps/step-footer";
-import { bookingLocations } from "@/lib/data/booking-locations";
+import type { BookingLocation } from "@/lib/data/booking-locations";
 import { addMinutes, formatDurationMinutes } from "@/lib/booking/format";
 
 const timeSlots = ["10:00", "11:30", "12:00", "13:30", "14:30", "16:00"];
@@ -11,6 +11,7 @@ const timeSlots = ["10:00", "11:30", "12:00", "13:30", "14:30", "16:00"];
 type CreneauStepProps = {
   selectedDate: Date | null;
   onSelectDate: (date: Date) => void;
+  locations: BookingLocation[];
   selectedLocationId: string | null;
   onSelectLocation: (id: string) => void;
   selectedTime: string | null;
@@ -27,6 +28,7 @@ type CreneauStepProps = {
 export function CreneauStep({
   selectedDate,
   onSelectDate,
+  locations,
   selectedLocationId,
   onSelectLocation,
   selectedTime,
@@ -62,7 +64,7 @@ export function CreneauStep({
                 <h3 className="text-[19px] font-bold text-[var(--color-gray-800)]">Choisissez un lieu</h3>
               </div>
               <div className="mt-4 flex gap-2">
-                {bookingLocations.map((location) => (
+                {locations.map((location) => (
                   <button
                     key={location.id}
                     type="button"

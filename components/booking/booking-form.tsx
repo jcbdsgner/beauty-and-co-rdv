@@ -16,7 +16,7 @@ import { InformationsStep } from "@/components/booking/steps/informations-step";
 import { ConfirmationStep } from "@/components/booking/steps/confirmation-step";
 import { addBookingHistoryEntry } from "@/lib/account/history";
 import { useAccount } from "@/lib/account/persistence";
-import { buildCartItems, type PrestationCoverage, type Selections } from "@/lib/booking/cart";
+import { buildCartItems, requiresAlmadiesOnly, type PrestationCoverage, type Selections } from "@/lib/booking/cart";
 import { buildPersonTabs } from "@/lib/booking/people";
 import { DEPOSIT_AMOUNT, formatPrice } from "@/lib/booking/format";
 import { answerKey, type QuestionAnswers } from "@/lib/booking/questions";
@@ -248,6 +248,22 @@ export function BookingForm() {
     }
   }
   const cartItems = buildCartItems(people, selections, coverage);
+  // Soin du visage, épilation, spa and head spa are only performed at Almadies — narrow the
+  // location choice on the créneau step down to it alone whenever the booking includes one.
+  const almadiesOnly = requiresAlmadiesOnly(cartItems);
+  const availableLocations = almadiesOnly
+    ? bookingLocations.filter((location) => location.id === "almadies")
+    : bookingLocations;
+
+  // A prestation added (or re-added) back on the services step can turn the booking
+  // Almadies-only after Sea Plaza was already picked on the créneau step — drop that now-invalid
+  // choice so the visitor has to pick again from the narrowed list.
+  useEffect(() => {
+    if (almadiesOnly && selectedLocationId && selectedLocationId !== "almadies") {
+      setSelectedLocationId(null);
+    }
+  }, [almadiesOnly, selectedLocationId]);
+
   const primaryContactId = contacts[0]?.id;
   const primaryContactInfo = contactInfoByPerson[primaryContactId] ?? emptyContactInfo;
   // "Seul(e) à prendre des prestations" : un unique adulte, personne d'autre (ni autre adulte, ni
@@ -569,6 +585,7 @@ export function BookingForm() {
             <CreneauStep
               selectedDate={selectedDate}
               onSelectDate={setSelectedDate}
+              locations={availableLocations}
               selectedLocationId={selectedLocationId}
               onSelectLocation={setSelectedLocationId}
               selectedTime={selectedTime}

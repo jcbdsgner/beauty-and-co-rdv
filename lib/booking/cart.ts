@@ -74,6 +74,24 @@ export function buildCartItems(
   return items;
 }
 
+// Soin du visage, épilation, spa and head spa (a Coiffure subcategory) are only performed at
+// Almadies — Sea Plaza has no room for them. Head spa has no category of its own, so it's
+// matched by subcategory instead.
+const ALMADIES_ONLY_CATEGORY_IDS = new Set(["soin-du-visage", "epilation", "spa"]);
+const HEAD_SPA_SUB_SERVICE_IDS = new Set(
+  bookingServices
+    .flatMap((service) => service.subServices)
+    .filter((sub) => sub.subcategory === "Head Spa")
+    .map((sub) => sub.id),
+);
+
+/** True when the booking includes at least one prestation only available at Almadies. */
+export function requiresAlmadiesOnly(cartItems: CartItem[]): boolean {
+  return cartItems.some(
+    (item) => ALMADIES_ONLY_CATEGORY_IDS.has(item.categoryId) || HEAD_SPA_SUB_SERVICE_IDS.has(item.subServiceId),
+  );
+}
+
 export type CartDisplayGroup = {
   key: string;
   personId: string;
