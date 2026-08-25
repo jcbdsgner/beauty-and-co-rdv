@@ -19,5 +19,5 @@ export const tarifCategories: TarifCategory[] = [
   { slug: "soin-du-visage", label: "Soin du visage", icon: "/images/rdv/service-soin-visage.svg", iconOnly: true },
   { slug: "epilation", label: "Épilation", icon: "/images/rdv/service-epilation.svg", iconOnly: true },
   { slug: "mini-co", label: "Mini & Co", icon: "/images/rdv/service-mini-co.png", iconOnly: true },
-  { slug: "brows-lashes", label: "Cils / Lashes", icon: "/images/rdv/icon-brows-lashes.svg", iconOnly: true },
+  { slug: "brows-lashes", label: "Brows / Lashes", icon: "/images/rdv/icon-brows-lashes.svg", iconOnly: true },
 ];
