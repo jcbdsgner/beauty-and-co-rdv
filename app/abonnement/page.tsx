@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { forfaits } from "@/lib/data/forfaits";
 import { packs } from "@/lib/data/packs";
 
+// Plus contrasté que le variant outline par défaut, trop pâle sur le fond rosé de la section Packs.
+const accountButtonClassName = "border-[rgba(162,117,118,0.6)] px-7 text-[#8a5f60]";
+
 type SectionHeadingProps = {
   eyebrow: string;
   title: string;
@@ -48,7 +51,7 @@ export default function AbonnementPage() {
           <ForfaitCarousel forfaits={forfaits} />
         </div>
         <div className="mt-8 flex justify-center">
-          <Button href="/compte?panel=abonnements" variant="outline">
+          <Button href="/compte?panel=abonnements" variant="outline" className={accountButtonClassName}>
             Voir mes abonnements
           </Button>
         </div>
@@ -56,7 +59,7 @@ export default function AbonnementPage() {
 
       <section id="packs" className="scroll-mt-24 bg-[rgba(237,220,218,0.25)] px-4 py-16 sm:py-24">
         <SectionHeading eyebrow="Packs" title="À votre rythme">
-          Envie d&apos;essayer sans vous abonner&nbsp;? Le Pack regroupe plusieurs prestations, 20&nbsp;% moins cher qu&apos;à
+          Le Pack regroupe plusieurs prestations, 20&nbsp;% moins cher qu&apos;à
           l&apos;unité. Vous payez une fois et réservez chaque prestation quand vous le souhaitez.
         </SectionHeading>
         <div className="mx-auto mt-10 grid max-w-[1280px] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -65,7 +68,7 @@ export default function AbonnementPage() {
           ))}
         </div>
         <div className="mt-10 flex justify-center">
-          <Button href="/compte?panel=packs" variant="outline">
+          <Button href="/compte?panel=packs" variant="outline" className={accountButtonClassName}>
             Voir mes packs
           </Button>
         </div>
