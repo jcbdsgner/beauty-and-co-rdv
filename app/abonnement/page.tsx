@@ -25,31 +25,25 @@ function SectionHeading({ eyebrow, title, children }: SectionHeadingProps) {
 export default function AbonnementPage() {
   return (
     <>
-      <section className="px-6 pt-14 pb-8 sm:pt-20 sm:pb-10">
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center">
+      <section id="abonnements" className="scroll-mt-24 px-0 pt-14 pb-16 sm:pt-20 sm:pb-24">
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 px-6 text-center">
           <p className="text-[13px] font-[500] tracking-[0.28em] text-[var(--button-2-color)] uppercase">
-            Abonnements & Packs
+            Abonnements
           </p>
           <h1 className="text-balance font-[family-name:var(--font-prata)] text-[34px] leading-[1.2] text-[var(--on-core-brand-color)] sm:text-[46px]">
             Vos rituels beauté et bien-être
           </h1>
           <p className="max-w-xl text-[17px] leading-[1.5] text-[var(--text-secondary)]">
-            Deux façons de profiter de vos prestations préférées à meilleur prix&nbsp;: l&apos;Abonnement ou le Pack.
+            Vos prestations préférées à prix fixe, renouvelées automatiquement à chaque cycle. Envie de payer une
+            seule fois&nbsp;?{" "}
+            <a
+              href="#packs"
+              className="font-[500] whitespace-nowrap text-[var(--button-2-color)] underline underline-offset-4 hover:opacity-80"
+            >
+              Découvrez nos Packs ↓
+            </a>
           </p>
-          <a
-            href="#packs"
-            className="text-[15px] font-[500] text-[var(--button-2-color)] underline underline-offset-4 hover:opacity-80"
-          >
-            Découvrir les Packs ↓
-          </a>
         </div>
-      </section>
-
-      <section id="abonnements" className="scroll-mt-24 px-0 pb-16 sm:pb-24">
-        <SectionHeading eyebrow="Abonnements" title="Vos prestations, chaque cycle">
-          Un ensemble de prestations à prix fixe, renouvelé automatiquement à chaque cycle. Idéal pour vos soins
-          réguliers.
-        </SectionHeading>
         <div className="mt-10">
           <ForfaitCarousel forfaits={forfaits} />
         </div>
