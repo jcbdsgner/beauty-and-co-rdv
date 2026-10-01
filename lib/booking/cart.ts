@@ -23,7 +23,7 @@ export function buildCartItems(
     if (!selectedIds || selectedIds.size === 0) continue;
 
     // A Pack's prestations group together and bill at the Pack's discounted price as soon as
-    // every one of them is selected for this person — not just when picked from the pack upsell,
+    // every one of them is selected for this person — not just when picked from the Packs category,
     // so unchecking then rechecking a service on the services step ungroups/regroups on its own.
     // Skipped when every one of its prestations is already covered for free (owned Pack/Abonnement)
     // — nothing left to discount there.

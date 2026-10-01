@@ -3,11 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { CategoryPrestationList } from "@/components/booking/category-prestation-list";
-import { CategoryTiles } from "@/components/booking/category-tiles";
+import { CategoryTiles, type CategoryTile } from "@/components/booking/category-tiles";
+import { isPackFullySelected, PackList } from "@/components/booking/pack-list";
 import { PersonToggle } from "@/components/booking/person-toggle";
 import { StepFooter } from "@/components/booking/steps/step-footer";
 import { bookingServices, type BookingService, type BookingSubService } from "@/lib/data/booking-services";
 import { formatPrice } from "@/lib/booking/format";
+import { packs, type Pack } from "@/lib/data/packs";
 import type { PrestationCoverage, Selections } from "@/lib/booking/cart";
 import {
   answerKey,
@@ -18,6 +20,16 @@ import {
 } from "@/lib/booking/questions";
 import type { PersonTab } from "@/lib/booking/types";
 import { cn, toSentenceCase } from "@/lib/utils";
+
+// Not a real BookingService: a pseudo-category listing the Packs, shown first to adults (every
+// Pack bundles adult-only prestations) — see PackList.
+const PACKS_CATEGORY_ID = "packs";
+const packsTile: CategoryTile = {
+  id: PACKS_CATEGORY_ID,
+  label: "PACKS",
+  image: "/images/rdv/icon-sparkle.svg",
+  iconOnly: true,
+};
 
 type Suggestion = { category: BookingService; sub: BookingSubService; targetPeople: PersonTab[] };
 
@@ -78,6 +90,9 @@ type ServicesStepProps = {
   onCancel: () => void;
   /** Prestations already paid for by an owned Pack or an active Abonnement this booking, per attendee (see AlreadyPaidDialog). */
   coverage?: PrestationCoverage;
+  /** The attendee whose services are being picked — owned by the parent so the live recap can switch it too. Falls back to the first person when null or no longer valid. */
+  selectedPersonId: string | null;
+  onSelectPerson: (personId: string) => void;
 };
 
 export function ServicesStep({
@@ -89,17 +104,40 @@ export function ServicesStep({
   onContinue,
   onCancel,
   coverage,
+  selectedPersonId,
+  onSelectPerson: setSelectedPersonId,
 }: ServicesStepProps) {
   // The attendees dialog can still be open (people === []) when this step first mounts, so
-  // a plain useState default would lock onto a stale/empty id — fall back to people[0] at
-  // render time whenever the manually selected id isn't (or is no longer) a real person.
-  const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
+  // the selected id can be stale/empty — fall back to people[0] at render time whenever it isn't
+  // (or is no longer) a real person.
   const activePersonId =
     selectedPersonId && people.some((person) => person.id === selectedPersonId)
       ? selectedPersonId
       : (people[0]?.id ?? "");
 
   const activePerson = people.find((person) => person.id === activePersonId);
+  const activePersonIndex = people.findIndex((person) => person.id === activePersonId);
+
+  // Which side the next person's content slides in from: the person toggle reads left to right,
+  // so moving to a later person comes from the right and back to an earlier one from the left.
+  // Adjusted during render (same pattern as prevSelections below) so the very render that
+  // switches person already carries the right direction.
+  const [slide, setSlide] = useState<{ personId: string; index: number; from: "left" | "right" | null }>({
+    personId: activePersonId,
+    index: activePersonIndex,
+    from: null,
+  });
+  if (slide.personId !== activePersonId) {
+    setSlide({
+      personId: activePersonId,
+      index: activePersonIndex,
+      from: slide.index === -1 ? null : activePersonIndex > slide.index ? "right" : "left",
+    });
+  }
+
+  const countsByPersonId = Object.fromEntries(
+    people.map((person) => [person.id, selections[person.id]?.size ?? 0]),
+  );
 
   // Mini & Co is exclusively for children, and it's the only category children can book.
   const availableServices = useMemo(
@@ -110,11 +148,16 @@ export function ServicesStep({
     [activePerson],
   );
 
+  const categoryTiles = useMemo<CategoryTile[]>(
+    () => (activePerson?.type === "child" ? availableServices : [packsTile, ...availableServices]),
+    [activePerson, availableServices],
+  );
+
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const activeCategoryId =
-    selectedCategoryId && availableServices.some((service) => service.id === selectedCategoryId)
+    selectedCategoryId && categoryTiles.some((tile) => tile.id === selectedCategoryId)
       ? selectedCategoryId
-      : (availableServices[0]?.id ?? "");
+      : (categoryTiles[0]?.id ?? "");
   const [showMissingSelectionWarning, setShowMissingSelectionWarning] = useState(false);
   const [showMissingQuestionsWarning, setShowMissingQuestionsWarning] = useState(false);
   const [highlightPersonId, setHighlightPersonId] = useState<string | null>(null);
@@ -122,6 +165,7 @@ export function ServicesStep({
   const personToggleRef = useRef<HTMLDivElement>(null);
   const prestationListRef = useRef<HTMLDivElement>(null);
   const questionsRef = useRef<HTMLDivElement>(null);
+  const personContentRef = useRef<HTMLDivElement>(null);
 
   const activeCategory =
     availableServices.find((service) => service.id === activeCategoryId) ?? availableServices[0];
@@ -129,6 +173,9 @@ export function ServicesStep({
 
   const categoriesWithSelection = useMemo(() => {
     const ids = new Set<string>();
+    if (packs.some((pack) => isPackFullySelected(pack, activeSelection))) {
+      ids.add(PACKS_CATEGORY_ID);
+    }
     for (const service of availableServices) {
       if (service.subServices.some((sub) => activeSelection.has(sub.id))) {
         ids.add(service.id);
@@ -162,6 +209,17 @@ export function ServicesStep({
     }
   }
 
+  // Picking a Pack adds whichever of its prestations aren't selected yet; un-picking a fully
+  // selected one removes all of them.
+  const togglePack = (pack: Pack) => {
+    const fullySelected = isPackFullySelected(pack, activeSelection);
+    for (const prestationId of pack.prestationIds) {
+      if (fullySelected || !activeSelection.has(prestationId)) {
+        onToggleSubService(activePersonId, prestationId);
+      }
+    }
+  };
+
   const handleSuggestionToggle = (personId: string, subServiceId: string) => {
     setPendingSelfToggle(true);
     setHasInteractedWithSuggestions(true);
@@ -193,6 +251,20 @@ export function ServicesStep({
     }
     setScrollTarget(null);
   }, [scrollTarget, activePersonId, activeCategoryId]);
+
+  // Switching person (from the pinned toggle or the live recap) while scrolled down the previous
+  // person's list would otherwise land mid-list of the new one — bring their "Services pour …"
+  // title back into view. Skipped when a "Continuer" warning is already steering the scroll.
+  const previousPersonIdRef = useRef(activePersonId);
+  useEffect(() => {
+    if (previousPersonIdRef.current === activePersonId) return;
+    previousPersonIdRef.current = activePersonId;
+    if (scrollTarget) return;
+    const content = personContentRef.current;
+    if (content && content.getBoundingClientRect().top < 0) {
+      content.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [activePersonId, scrollTarget]);
 
   const handleContinue = () => {
     // Answering required questions for prestations already chosen takes priority over nudging
@@ -229,60 +301,92 @@ export function ServicesStep({
 
   return (
     <div>
-      <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Choisir vos services</h2>
-      <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">
-        Choisissez les services que vous souhaitez recevoir.
-      </p>
+      {/* Stays pinned while scrolling the (long) prestation list, so who the services are being
+          picked for — and switching back to someone else — is never more than a glance away. */}
+      {people.length > 1 && (
+        <div ref={personToggleRef} className="sticky top-0 z-20 -mx-1 mb-5 bg-[var(--color-bg-subtle)] px-1 py-3">
+          <PersonToggle
+            people={people}
+            activePersonId={activePersonId}
+            onChange={(personId) => {
+              setSelectedPersonId(personId);
+              setHighlightPersonId(null);
+            }}
+            highlightPersonId={highlightPersonId}
+            countsByPersonId={countsByPersonId}
+          />
+        </div>
+      )}
 
-      {(() => {
-        const activePersonFreeCount = coverage?.get(activePersonId)?.size ?? 0;
-        if (activePersonFreeCount === 0) return null;
-        return (
-          <div className="mt-4 flex items-center gap-3 rounded-xl bg-[rgba(237,220,218,0.35)] px-4 py-3">
-            <Image src="/images/rdv/icon-price-tag.svg" alt="" width={20} height={20} className="shrink-0" />
-            <p className="text-[15px] font-[450] text-[var(--brand-taupe-muted)]">
-              <span className="font-bold">Vos avantages</span> appliqués — {activePersonFreeCount} prestation
-              {activePersonFreeCount > 1 ? "s" : ""} déjà payée{activePersonFreeCount > 1 ? "s" : ""} pour{" "}
-              {people.find((person) => person.id === activePersonId)?.label ?? "vous"}.
+      {/* Keyed by person so switching remounts it and replays the slide-in — see `slide` above. */}
+      <div
+        key={activePersonId}
+        ref={personContentRef}
+        className={cn(
+          // Leaves room for the pinned person toggle above when scrolled back into view.
+          "scroll-mt-24",
+          slide.from === "right" && "person-slide-from-right",
+          slide.from === "left" && "person-slide-from-left",
+        )}
+      >
+        {people.length > 1 && activePerson ? (
+          <>
+            <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Services pour {activePerson.label}</h2>
+            <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">
+              Passez d&apos;une personne à l&apos;autre avec le sélecteur ci-dessus.
             </p>
-          </div>
-        );
-      })()}
+          </>
+        ) : (
+          <>
+            <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Choisir vos services</h2>
+            <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">
+              Choisissez les services que vous souhaitez recevoir.
+            </p>
+          </>
+        )}
 
-      <div ref={personToggleRef} className="mt-4">
-        <PersonToggle
-          people={people}
-          activePersonId={activePersonId}
-          onChange={(personId) => {
-            setSelectedPersonId(personId);
-            setHighlightPersonId(null);
-          }}
-          highlightPersonId={highlightPersonId}
-        />
-      </div>
+        {(() => {
+          const activePersonFreeCount = coverage?.get(activePersonId)?.size ?? 0;
+          if (activePersonFreeCount === 0) return null;
+          return (
+            <div className="mt-4 flex items-center gap-3 rounded-xl bg-[rgba(237,220,218,0.35)] px-4 py-3">
+              <Image src="/images/rdv/icon-price-tag.svg" alt="" width={20} height={20} className="shrink-0" />
+              <p className="text-[15px] font-[450] text-[var(--brand-taupe-muted)]">
+                <span className="font-bold">Vos avantages</span> appliqués — {activePersonFreeCount} prestation
+                {activePersonFreeCount > 1 ? "s" : ""} déjà payée{activePersonFreeCount > 1 ? "s" : ""} pour{" "}
+                {people.find((person) => person.id === activePersonId)?.label ?? "vous"}.
+              </p>
+            </div>
+          );
+        })()}
 
-      <div className="mt-6">
-        <CategoryTiles
-          services={availableServices}
-          activeCategoryId={activeCategoryId}
-          onSelectCategory={setSelectedCategoryId}
-          categoriesWithSelection={categoriesWithSelection}
-        />
-      </div>
+        <div className="mt-6">
+          <CategoryTiles
+            tiles={categoryTiles}
+            activeCategoryId={activeCategoryId}
+            onSelectCategory={setSelectedCategoryId}
+            categoriesWithSelection={categoriesWithSelection}
+          />
+        </div>
 
-      <div ref={prestationListRef} className="mt-6">
-        <CategoryPrestationList
-          category={activeCategory}
-          selectedSubServiceIds={activeSelection}
-          onToggleSubService={(subServiceId) => onToggleSubService(activePersonId, subServiceId)}
-          questionAnswers={questionAnswers[answerKey(activePersonId, activeCategoryId)] ?? {}}
-          onAnswerQuestion={(questionId, value) =>
-            onAnswerQuestion(activePersonId, activeCategoryId, questionId, value)
-          }
-          showQuestionErrors={showMissingQuestionsWarning}
-          questionsRef={questionsRef}
-          coverageBySubServiceId={coverage?.get(activePersonId)}
-        />
+        <div ref={prestationListRef} className="mt-6">
+          {activeCategoryId === PACKS_CATEGORY_ID ? (
+            <PackList selectedSubServiceIds={activeSelection} onTogglePack={togglePack} />
+          ) : (
+            <CategoryPrestationList
+              category={activeCategory}
+              selectedSubServiceIds={activeSelection}
+              onToggleSubService={(subServiceId) => onToggleSubService(activePersonId, subServiceId)}
+              questionAnswers={questionAnswers[answerKey(activePersonId, activeCategoryId)] ?? {}}
+              onAnswerQuestion={(questionId, value) =>
+                onAnswerQuestion(activePersonId, activeCategoryId, questionId, value)
+              }
+              showQuestionErrors={showMissingQuestionsWarning}
+              questionsRef={questionsRef}
+              coverageBySubServiceId={coverage?.get(activePersonId)}
+            />
+          )}
+        </div>
       </div>
 
       {showUpsell && (

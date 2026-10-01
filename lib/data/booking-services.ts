@@ -44,6 +44,7 @@ export const bookingServices: BookingService[] = [
     requiredQuestions: [
       { id: "tresses-a-retirer", type: "yesno", label: "Avez-vous des tresses à retirer ?" },
       { id: "voilee", type: "yesno", label: "Êtes-vous voilée ?" },
+      { id: "propres-extensions", type: "yesno", label: "Apporterez-vous vos propres extensions ?" },
     ],
     subServices: [
       {

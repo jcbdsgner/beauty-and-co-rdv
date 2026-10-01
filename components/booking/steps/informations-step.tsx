@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { PhoneInput } from "@/components/booking/phone-input";
 import { StepFooter } from "@/components/booking/steps/step-footer";
@@ -8,15 +9,17 @@ import { Switch } from "@/components/ui/switch";
 import { loginLink } from "@/lib/data/nav";
 import { cn } from "@/lib/utils";
 import {
+  contactFieldsFor,
   emptyContactInfo,
   getContactInfoErrors,
+  isContactInfoComplete,
   type ContactInfo,
   type ContactInfoErrors,
-  type PersonTab,
+  type ContactPerson,
 } from "@/lib/booking/types";
 
 type InformationsStepProps = {
-  adults: PersonTab[];
+  contacts: ContactPerson[];
   contactInfoByPerson: Record<string, ContactInfo>;
   onChange: (personId: string, patch: Partial<ContactInfo>) => void;
   canContinue: boolean;
@@ -25,6 +28,8 @@ type InformationsStepProps = {
   /** Compte déjà connecté : le contact principal est prérempli, donc plus besoin de proposer de se connecter ici. */
   connected: boolean;
 };
+
+type SlideDirection = "forward" | "back";
 
 const inputClassName =
   "h-12 w-full rounded-full border border-[var(--color-border-light)] bg-white px-4 text-[17px] text-[var(--color-ink)] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] outline-none focus:border-[var(--brand-taupe-muted)]";
@@ -36,6 +41,10 @@ const genderOptions: { value: ContactInfo["sex"] & string; label: string }[] = [
 
 function fieldId(name: string, personId: string) {
   return `${name}-${personId}`;
+}
+
+function prefersReducedMotion() {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 function FieldError({ message }: { message?: string }) {
@@ -71,25 +80,29 @@ function GenderOption({
   );
 }
 
+/** The fields asked of one person — only those of their contactLevel (see contactFieldsFor): the
+ *  primary contact gives everything, another adult their name and phone, a child just their name. */
 function PersonInfoBlock({
   person,
-  isPrimaryContact,
   contactInfo,
   onChange,
   errors,
 }: {
-  person: PersonTab;
-  isPrimaryContact: boolean;
+  person: ContactPerson;
   contactInfo: ContactInfo;
   onChange: (patch: Partial<ContactInfo>) => void;
   errors: ContactInfoErrors;
 }) {
   const id = (name: string) => fieldId(name, person.id);
+  const fields = new Set(contactFieldsFor(person.contactLevel));
+  const isPrimaryContact = person.contactLevel === "primary";
 
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center gap-2">
-        <h3 className="text-[21px] font-bold text-[var(--color-gray-800)]">{person.label}</h3>
+        <h3 id={id("heading")} tabIndex={-1} className="text-[21px] font-bold text-[var(--color-gray-800)] outline-none">
+          {person.label}
+        </h3>
         {isPrimaryContact && (
           <span className="rounded-full bg-[rgba(237,220,218,0.5)] px-3 py-1 text-[13px] font-[450] text-[var(--brand-taupe-muted)]">
             Contact principal
@@ -129,85 +142,155 @@ function PersonInfoBlock({
         </div>
       </div>
 
-      <div id={id("sex")} tabIndex={-1} className="mt-6 outline-none">
-        <p className="text-[17px] font-bold text-[var(--color-text-tertiary)]">Genre *</p>
-        <div className="mt-2 flex items-center gap-5">
-          {genderOptions.map((option) => (
-            <GenderOption
-              key={option.value}
-              label={option.label}
-              selected={contactInfo.sex === option.value}
-              onSelect={() => onChange({ sex: option.value })}
-            />
-          ))}
-        </div>
-        <FieldError message={errors.sex} />
-      </div>
-
-      <div className="mt-6">
-        <label htmlFor={id("email")} className="text-[17px] font-bold text-[var(--color-text-tertiary)]">
-          Adresse email *
-        </label>
-        <input
-          id={id("email")}
-          type="email"
-          required
-          value={contactInfo.email}
-          onChange={(event) => onChange({ email: event.target.value })}
-          className={cn("mt-2", inputClassName, errors.email && "border-red-400 focus:border-red-500")}
-        />
-        <FieldError message={errors.email} />
-        {!errors.email && (
-          <p className="mt-2 text-[15px] text-[var(--color-slate-500)]">
-            Nous vous enverrons la confirmation de votre rendez-vous
-          </p>
-        )}
-      </div>
-
-      <div className="mt-6">
-        <label htmlFor={id("phone")} className="text-[17px] font-bold text-[var(--color-text-tertiary)]">
-          Numéro de téléphone *
-        </label>
-        <PhoneInput
-          id={id("phone")}
-          countryCode={contactInfo.phoneCountry}
-          onCountryChange={(code) => onChange({ phoneCountry: code })}
-          value={contactInfo.phone}
-          onChange={(phone) => onChange({ phone })}
-          invalid={Boolean(errors.phone)}
-        />
-        <FieldError message={errors.phone} />
-      </div>
-
-      <div className="mt-6">
-        <div className="flex items-center justify-between">
-          <span className="text-[17px] font-bold text-[var(--color-text-tertiary)]">WhatsApp (optionnel)</span>
-          <div className="flex items-center gap-2">
-            <Switch
-              checked={contactInfo.whatsappSameAsPhone}
-              onChange={(checked) => onChange({ whatsappSameAsPhone: checked })}
-              label="Identique au téléphone"
-            />
-            <span className="text-[17px] font-[450] text-[var(--color-ink)]">Identique au téléphone</span>
+      {fields.has("sex") && (
+        <div id={id("sex")} tabIndex={-1} className="mt-6 outline-none">
+          <p className="text-[17px] font-bold text-[var(--color-text-tertiary)]">Genre *</p>
+          <div className="mt-2 flex items-center gap-5">
+            {genderOptions.map((option) => (
+              <GenderOption
+                key={option.value}
+                label={option.label}
+                selected={contactInfo.sex === option.value}
+                onSelect={() => onChange({ sex: option.value })}
+              />
+            ))}
           </div>
+          <FieldError message={errors.sex} />
         </div>
-        <PhoneInput
-          countryCode={contactInfo.whatsappSameAsPhone ? contactInfo.phoneCountry : contactInfo.whatsappCountry}
-          onCountryChange={(code) => onChange({ whatsappCountry: code })}
-          value={contactInfo.whatsappSameAsPhone ? contactInfo.phone : contactInfo.whatsapp}
-          onChange={(whatsapp) => onChange({ whatsapp })}
-          disabled={contactInfo.whatsappSameAsPhone}
-        />
-        <p className="mt-2 text-[15px] text-[var(--color-slate-500)]">
-          Pour recevoir des rappels et mises à jour de votre rendez-vous
-        </p>
+      )}
+
+      {fields.has("email") && (
+        <div className="mt-6">
+          <label htmlFor={id("email")} className="text-[17px] font-bold text-[var(--color-text-tertiary)]">
+            Adresse email *
+          </label>
+          <input
+            id={id("email")}
+            type="email"
+            required
+            value={contactInfo.email}
+            onChange={(event) => onChange({ email: event.target.value })}
+            className={cn("mt-2", inputClassName, errors.email && "border-red-400 focus:border-red-500")}
+          />
+          <FieldError message={errors.email} />
+          {!errors.email && (
+            <p className="mt-2 text-[15px] text-[var(--color-slate-500)]">
+              Nous vous enverrons la confirmation de votre rendez-vous
+            </p>
+          )}
+        </div>
+      )}
+
+      {fields.has("phone") && (
+        <div className="mt-6">
+          <label htmlFor={id("phone")} className="text-[17px] font-bold text-[var(--color-text-tertiary)]">
+            Numéro de téléphone *
+          </label>
+          <PhoneInput
+            id={id("phone")}
+            countryCode={contactInfo.phoneCountry}
+            onCountryChange={(code) => onChange({ phoneCountry: code })}
+            value={contactInfo.phone}
+            onChange={(phone) => onChange({ phone })}
+            invalid={Boolean(errors.phone)}
+          />
+          <FieldError message={errors.phone} />
+        </div>
+      )}
+
+      {isPrimaryContact && (
+        <div className="mt-6">
+          <div className="flex items-center justify-between">
+            <span className="text-[17px] font-bold text-[var(--color-text-tertiary)]">WhatsApp (optionnel)</span>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={contactInfo.whatsappSameAsPhone}
+                onChange={(checked) => onChange({ whatsappSameAsPhone: checked })}
+                label="Identique au téléphone"
+              />
+              <span className="text-[17px] font-[450] text-[var(--color-ink)]">Identique au téléphone</span>
+            </div>
+          </div>
+          <PhoneInput
+            countryCode={contactInfo.whatsappSameAsPhone ? contactInfo.phoneCountry : contactInfo.whatsappCountry}
+            onCountryChange={(code) => onChange({ whatsappCountry: code })}
+            value={contactInfo.whatsappSameAsPhone ? contactInfo.phone : contactInfo.whatsapp}
+            onChange={(whatsapp) => onChange({ whatsapp })}
+            disabled={contactInfo.whatsappSameAsPhone}
+          />
+          <p className="mt-2 text-[15px] text-[var(--color-slate-500)]">
+            Pour recevoir des rappels et mises à jour de votre rendez-vous
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** "Adulte 2 — 2/3" above a segmented bar, one segment per person, filled up to the current one. */
+function PeopleProgress({ current, total, label }: { current: number; total: number; label: string }) {
+  return (
+    <div>
+      <p className="text-[17px] font-bold text-[var(--color-gray-800)]" aria-live="polite">
+        {label} <span className="font-[450] text-[var(--color-gray-500)]">— {current + 1}/{total}</span>
+      </p>
+      <div
+        className="mt-2 flex gap-1.5"
+        role="progressbar"
+        aria-valuemin={1}
+        aria-valuemax={total}
+        aria-valuenow={current + 1}
+        aria-label="Progression des informations"
+      >
+        {Array.from({ length: total }, (_, index) => (
+          <span
+            key={index}
+            className={cn(
+              "h-1.5 flex-1 rounded-full transition-colors duration-300",
+              index <= current ? "bg-[var(--brand-taupe-muted)]" : "bg-[var(--color-gray-200)]",
+            )}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
+/** A person already filled in, collapsed to one line above the current card. */
+function CompletedPersonLine({ person, info, onEdit }: { person: ContactPerson; info: ContactInfo; onEdit: () => void }) {
+  const name = `${info.firstName} ${info.lastName}`.trim();
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--color-gray-100)] bg-white px-4 py-3">
+      <p className="flex min-w-0 items-center gap-3 text-[17px] text-[var(--color-gray-800)]">
+        <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[var(--brand-taupe-muted)]">
+          <Image src="/images/rdv/icon-check.svg" alt="" width={16} height={16} className="size-4" />
+        </span>
+        <span className="truncate">
+          <span className="font-bold">{person.label}</span>
+          {name && <span className="text-[var(--text-secondary)]"> — {name}</span>}
+        </span>
+      </p>
+      <button
+        type="button"
+        onClick={onEdit}
+        aria-label={`Modifier — ${person.label}`}
+        className="shrink-0 text-[16px] font-[450] text-[var(--button-2-color)] underline underline-offset-2 hover:opacity-80"
+      >
+        Modifier
+      </button>
+    </div>
+  );
+}
+
+function firstIncompleteIndex(contacts: ContactPerson[], contactInfoByPerson: Record<string, ContactInfo>) {
+  const index = contacts.findIndex(
+    (person) => !isContactInfoComplete(contactInfoByPerson[person.id] ?? emptyContactInfo, person.contactLevel),
+  );
+  return index === -1 ? 0 : index;
+}
+
 export function InformationsStep({
-  adults,
+  contacts,
   contactInfoByPerson,
   onChange,
   canContinue,
@@ -215,28 +298,75 @@ export function InformationsStep({
   onBack,
   connected,
 }: InformationsStepProps) {
+  // One person at a time: resume on the first one still missing something (e.g. the primary
+  // contact prefilled from the account lands straight on the next person).
+  const [activeIndex, setActiveIndex] = useState(() => firstIncompleteIndex(contacts, contactInfoByPerson));
+  const [direction, setDirection] = useState<SlideDirection | null>(null);
+  // The card being slid away, kept mounted on top of the incoming one until its exit animation ends.
+  const [leaving, setLeaving] = useState<{ index: number; direction: SlideDirection } | null>(null);
   const [showErrors, setShowErrors] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const safeIndex = Math.min(activeIndex, contacts.length - 1);
+  const person = contacts[safeIndex];
+  const isMultiPerson = contacts.length > 1;
+  const isLast = safeIndex === contacts.length - 1;
+  const infoFor = (target: ContactPerson) => contactInfoByPerson[target.id] ?? emptyContactInfo;
+
+  const goTo = (index: number, slide: SlideDirection) => {
+    const reduced = prefersReducedMotion();
+    setLeaving(reduced ? null : { index: safeIndex, direction: slide });
+    setDirection(reduced ? null : slide);
+    setShowErrors(false);
+    setActiveIndex(index);
+
+    const top = containerRef.current?.getBoundingClientRect().top ?? 0;
+    if (top < 0) {
+      containerRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    }
+    requestAnimationFrame(() => {
+      document.getElementById(fieldId("heading", contacts[index].id))?.focus({ preventScroll: true });
+    });
+  };
+
+  const focusFirstError = (target: ContactPerson) => {
+    const errors = getContactInfoErrors(infoFor(target), target.contactLevel);
+    const firstInvalidField = Object.keys(errors)[0];
+    if (!firstInvalidField) return false;
+    setShowErrors(true);
+    const element = document.getElementById(fieldId(firstInvalidField, target.id));
+    element?.scrollIntoView({ behavior: "smooth", block: "center" });
+    element?.focus();
+    return true;
+  };
 
   const handleContinueClick = () => {
+    if (focusFirstError(person)) return;
+
+    if (!isLast) {
+      goTo(safeIndex + 1, "forward");
+      return;
+    }
+
     if (canContinue) {
       onContinue();
       return;
     }
 
-    setShowErrors(true);
-
-    for (const person of adults) {
-      const info = contactInfoByPerson[person.id] ?? emptyContactInfo;
-      const errors = getContactInfoErrors(info);
-      const firstInvalidField = Object.keys(errors)[0];
-      if (firstInvalidField) {
-        const element = document.getElementById(fieldId(firstInvalidField, person.id));
-        element?.scrollIntoView({ behavior: "smooth", block: "center" });
-        element?.focus();
-        break;
-      }
-    }
+    // Someone earlier became incomplete (e.g. edited after the fact) — take them back there.
+    const incompleteIndex = firstIncompleteIndex(contacts, contactInfoByPerson);
+    goTo(incompleteIndex, "back");
   };
+
+  const handleBackClick = () => {
+    if (safeIndex === 0) {
+      onBack();
+      return;
+    }
+    goTo(safeIndex - 1, "back");
+  };
+
+  if (!person) return null;
 
   return (
     <div>
@@ -257,25 +387,63 @@ export function InformationsStep({
         </div>
       )}
 
-      <div className={cn("flex flex-col gap-6", !connected && "mt-6")}>
-        {adults.map((person, index) => {
-          const contactInfo = contactInfoByPerson[person.id] ?? emptyContactInfo;
-          return (
-            <div key={person.id} className="rounded-2xl border border-[var(--color-gray-200)] bg-white p-[25px]">
+      <div ref={containerRef} className={cn("flex scroll-mt-6 flex-col gap-4", !connected && "mt-6")}>
+        {isMultiPerson && <PeopleProgress current={safeIndex} total={contacts.length} label={person.label} />}
+
+        {isMultiPerson && safeIndex > 0 && (
+          <div className="flex flex-col gap-2">
+            {contacts.slice(0, safeIndex).map((done, index) => (
+              <CompletedPersonLine key={done.id} person={done} info={infoFor(done)} onEdit={() => goTo(index, "back")} />
+            ))}
+          </div>
+        )}
+
+        <div className="relative overflow-hidden">
+          <div
+            key={person.id}
+            className={cn(
+              "rounded-2xl border border-[var(--color-gray-200)] bg-white p-[25px]",
+              direction === "forward" && "person-enter-forward",
+              direction === "back" && "person-enter-back",
+            )}
+          >
+            <PersonInfoBlock
+              person={person}
+              contactInfo={infoFor(person)}
+              onChange={(patch) => onChange(person.id, patch)}
+              errors={showErrors ? getContactInfoErrors(infoFor(person), person.contactLevel) : {}}
+            />
+          </div>
+
+          {leaving && contacts[leaving.index] && (
+            <div
+              key={`leaving-${contacts[leaving.index].id}`}
+              aria-hidden
+              inert
+              onAnimationEnd={() => setLeaving(null)}
+              className={cn(
+                "pointer-events-none absolute inset-x-0 top-0 rounded-2xl border border-[var(--color-gray-200)] bg-white p-[25px]",
+                leaving.direction === "forward" ? "person-leave-forward" : "person-leave-back",
+              )}
+            >
               <PersonInfoBlock
-                person={person}
-                isPrimaryContact={index === 0}
-                contactInfo={contactInfo}
-                onChange={(patch) => onChange(person.id, patch)}
-                errors={showErrors ? getContactInfoErrors(contactInfo) : {}}
+                person={contacts[leaving.index]}
+                contactInfo={infoFor(contacts[leaving.index])}
+                onChange={() => {}}
+                errors={{}}
               />
             </div>
-          );
-        })}
+          )}
+        </div>
       </div>
 
       <div className="mt-8">
-        <StepFooter onBack={onBack} onContinue={handleContinueClick} />
+        <StepFooter
+          onBack={handleBackClick}
+          onContinue={handleContinueClick}
+          backLabel={safeIndex === 0 ? "Retourner" : "Précédent"}
+          continueLabel={isLast ? "Continuer" : `Continuer — ${contacts[safeIndex + 1].label}`}
+        />
       </div>
     </div>
   );

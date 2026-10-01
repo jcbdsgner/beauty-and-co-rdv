@@ -8,7 +8,6 @@ import { BookingProgress } from "@/components/booking/booking-progress";
 import { BookingSummarySidebar } from "@/components/booking/booking-summary-sidebar";
 import { LeaveBookingDialog } from "@/components/booking/leave-booking-dialog";
 import { AlreadyPaidDialog, redeemableItemKey, type RedeemableEntry } from "@/components/booking/already-paid-dialog";
-import { PackUpsellDialog } from "@/components/booking/pack-upsell-dialog";
 import { PaymentMethodDialog } from "@/components/booking/payment-method-dialog";
 import { ServicesStep } from "@/components/booking/steps/services-step";
 import { CreneauStep } from "@/components/booking/steps/creneau-step";
@@ -17,13 +16,13 @@ import { ConfirmationStep } from "@/components/booking/steps/confirmation-step";
 import { addBookingHistoryEntry } from "@/lib/account/history";
 import { useAccount } from "@/lib/account/persistence";
 import { buildCartItems, requiresAlmadiesOnly, type PrestationCoverage, type Selections } from "@/lib/booking/cart";
-import { buildPersonTabs } from "@/lib/booking/people";
+import { buildPersonTabs, contactPeopleFor } from "@/lib/booking/people";
 import { DEPOSIT_AMOUNT, formatPrice } from "@/lib/booking/format";
-import { answerKey, type QuestionAnswers } from "@/lib/booking/questions";
+import { answerKey, needsSalonExtensions, type QuestionAnswers } from "@/lib/booking/questions";
 import { bookingLocations } from "@/lib/data/booking-locations";
 import { bookingServices } from "@/lib/data/booking-services";
 import { loginLink } from "@/lib/data/nav";
-import { getPackPrestations, packs, type Pack } from "@/lib/data/packs";
+import { getPackPrestations, packs } from "@/lib/data/packs";
 import { forfaits } from "@/lib/data/forfaits";
 import { markPrestationsRedeemed, usePackPurchases } from "@/lib/packs/persistence";
 import { markAbonnementPrestationsRedeemed, useAbonnements } from "@/lib/abonnement/persistence";
@@ -60,6 +59,8 @@ export function BookingForm() {
 
   const [selections, setSelections] = useState<Selections>({});
   const [questionAnswers, setQuestionAnswers] = useState<QuestionAnswers>({});
+  /** Attendee whose services are being picked on the services step — shared with the live recap, which can switch it too. */
+  const [servicesPersonId, setServicesPersonId] = useState<string | null>(null);
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
@@ -73,10 +74,10 @@ export function BookingForm() {
   const [showConfirmedModal, setShowConfirmedModal] = useState(false);
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
 
-  // Already-paid gate: shown once right after the attendee count is confirmed — either an upsell
-  // to apply a Pack's prestations to this booking at its discounted price (see choosePackToBuy
-  // below), or — for whichever owned Packs or active Abonnements still have prestations
-  // available — an offer to use them for free at *this* visit. A Pack is kept after
+  // Already-paid gate: shown once right after the attendee count is confirmed, for whichever owned
+  // Packs or active Abonnements still have prestations available — an offer to use them for free
+  // at *this* visit. (Buying a new Pack isn't offered here anymore: Packs are just the first
+  // category of the services step, see ServicesStep.) A Pack is kept after
   // purchase and never expires: only the prestations actually included in a confirmed booking get
   // marked redeemed, the rest stay available for any later visit. An Abonnement instead resets
   // what's available every billing cycle (see markAbonnementPaid), and only counts while current on
@@ -221,10 +222,14 @@ export function BookingForm() {
 
   const people = buildPersonTabs(attendees);
   const adults = people.filter((person) => person.type === "adult");
-  // A booking always needs one contact to fill in the informations step — normally the first
-  // adult attendee, but a solo child booking has no adult attendee at all, so fall back to a
-  // synthetic "guardian" contact who isn't themselves receiving any service.
-  const contacts = adults.length > 0 ? adults : [{ id: "contact-guardian", label: "Vos informations", type: "adult" as const }];
+  // Everyone filled in on the informations step — primary contact first (a synthetic guardian
+  // when only children are booked), then the other adults and the children, see contactPeopleFor.
+  const contacts = contactPeopleFor(people);
+  // Same fallback as ServicesStep: the first person until another one is picked.
+  const servicesActivePersonId =
+    servicesPersonId && people.some((person) => person.id === servicesPersonId)
+      ? servicesPersonId
+      : (people[0]?.id ?? null);
 
   // Every Pack and Forfait so far bundles adult-only categories. With a single adult there's
   // nothing to pick; with several, each owned prestation is assigned individually to whichever one
@@ -335,31 +340,6 @@ export function BookingForm() {
     });
   };
 
-  // Already-paid gate handler — see the state declarations above for the "why" of
-  // redeemableGateResolved/redeemablesApplied. A Pack chosen here is applied straight to this
-  // booking rather than banked for a later visit: its prestations are pre-selected on the
-  // services step that follows — assigned to the first adult by default, same as
-  // ownedPackEntries/ownedAbonnementEntries above — where buildCartItems (via lib/booking/cart)
-  // automatically groups them at the Pack's discounted price as soon as every one of them is
-  // selected, and paid together with the rest of the booking through the usual deposit.
-  const choosePackToBuy = (pack: Pack) => {
-    const personId = adults[0]?.id;
-    if (personId) {
-      setSelections((prev) => {
-        const next = { ...prev };
-        const current = new Set(next[personId] ?? []);
-        for (const prestationId of pack.prestationIds) {
-          current.add(prestationId);
-        }
-        next[personId] = current;
-        return next;
-      });
-    }
-    setRedeemableGateResolved(true);
-  };
-
-  const skipPackUpsell = () => setRedeemableGateResolved(true);
-
   // Grants whichever owned Pack/Abonnement prestations are still picked in the dialog to whichever
   // attendee each one is assigned to, free of charge — buildCartItems (via coverage above) is what
   // actually zeroes their price. Nothing forces taking all of them: whichever stayed deselected in
@@ -418,7 +398,7 @@ export function BookingForm() {
   };
 
   const canContinueInformations = contacts.every((contact) =>
-    isContactInfoComplete(contactInfoByPerson[contact.id] ?? emptyContactInfo),
+    isContactInfoComplete(contactInfoByPerson[contact.id] ?? emptyContactInfo, contact.contactLevel),
   );
 
   // Once the booking is confirmed there's nothing left to lose, so links behave normally again.
@@ -578,6 +558,8 @@ export function BookingForm() {
               onContinue={() => setStep("creneau")}
               onCancel={requestLeave}
               coverage={coverage}
+              selectedPersonId={servicesPersonId}
+              onSelectPerson={setServicesPersonId}
             />
           )}
 
@@ -602,7 +584,7 @@ export function BookingForm() {
 
           {step === "informations" && (
             <InformationsStep
-              adults={contacts}
+              contacts={contacts}
               contactInfoByPerson={contactInfoByPerson}
               onChange={updateContactInfo}
               canContinue={canContinueInformations}
@@ -621,7 +603,7 @@ export function BookingForm() {
               date={selectedDate}
               time={selectedTime}
               totalMinutes={effectiveTotalMinutes}
-              adults={contacts}
+              contacts={contacts}
               contactInfoByPerson={contactInfoByPerson}
               acceptedTerms={acceptedTerms}
               onAcceptedTermsChange={setAcceptedTerms}
@@ -636,6 +618,7 @@ export function BookingForm() {
                 }
               }}
               canConfirm={acceptedTerms}
+              showExtensions={needsSalonExtensions(selections, questionAnswers)}
             />
           )}
         </div>
@@ -645,16 +628,19 @@ export function BookingForm() {
             step={stepNumbers[step]}
             cartItems={cartItems}
             showPersonLabels={people.length > 1}
+            people={people}
+            activePersonId={step === "services" ? servicesActivePersonId : null}
+            onSelectPerson={step === "services" ? setServicesPersonId : undefined}
             date={step === "services" ? null : selectedDate}
             time={step === "services" ? null : selectedTime}
             locationLabel={step === "services" ? null : locationLabel}
-            totalMinutesOverride={step === "services" ? undefined : effectiveTotalMinutes}
+            totalMinutesOverride={step === "services" ? totalMinutes : effectiveTotalMinutes}
           />
         )}
       </div>
 
       <AttendeesDialog open={attendees === null} onConfirm={setAttendees} />
-      {hasRedeemableEntries ? (
+      {hasRedeemableEntries && (
         <AlreadyPaidDialog
           open={attendees !== null && !redeemableGateResolved && adults.length > 0}
           entries={redeemableEntries}
@@ -665,12 +651,6 @@ export function BookingForm() {
           onAssignItem={assignRedeemableItemPerson}
           onViewOtherServices={viewOtherServicesWithRedeemables}
           onSkipToCreneau={skipToCreneauWithRedeemables}
-        />
-      ) : (
-        <PackUpsellDialog
-          open={attendees !== null && !redeemableGateResolved}
-          onChoosePack={choosePackToBuy}
-          onSkip={skipPackUpsell}
         />
       )}
       <LeaveBookingDialog

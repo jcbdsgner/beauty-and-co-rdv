@@ -45,3 +45,16 @@ export function personHasIncompleteQuestions(
   }
   return false;
 }
+
+/** Whether to offer the salon's extensions at the end of the booking: only when at least one
+ *  attendee booking a Coiffure prestation said they won't bring their own. */
+export function needsSalonExtensions(
+  selections: Record<string, Set<string>>,
+  questionAnswers: QuestionAnswers,
+): boolean {
+  return Object.entries(selections).some(
+    ([personId, selectedSubServiceIds]) =>
+      selectedCategoryIds(selectedSubServiceIds).has("coiffure") &&
+      questionAnswers[answerKey(personId, "coiffure")]?.["propres-extensions"] === "Non",
+  );
+}

@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode, useId, useState } from "react";
+import { type ReactNode, useId, useState } from "react";
 import Image from "next/image";
 import { BarBeautySection } from "@/components/booking/steps/bar-beauty-section";
 import { BoutiquePreviewSection } from "@/components/booking/steps/boutique-preview-section";
@@ -7,7 +7,14 @@ import { bookingServices } from "@/lib/data/booking-services";
 import { barBeautyDrinks } from "@/lib/data/bar-beauty";
 import { boutiqueHighlights } from "@/lib/data/boutique-highlights";
 import { type CartDisplayGroup, groupCartItemsByPack } from "@/lib/booking/cart";
-import { emptyContactInfo, type CartItem, type ContactInfo, type PersonTab } from "@/lib/booking/types";
+import { findCountry } from "@/lib/data/countries";
+import {
+  contactFieldsFor,
+  emptyContactInfo,
+  type CartItem,
+  type ContactInfo,
+  type ContactPerson,
+} from "@/lib/booking/types";
 import { addMinutes, DEPOSIT_AMOUNT, formatDurationMinutes, formatPrice } from "@/lib/booking/format";
 import { cn } from "@/lib/utils";
 
@@ -29,13 +36,15 @@ type ConfirmationStepProps = {
   date: Date | null;
   time: string | null;
   totalMinutes: number;
-  adults: PersonTab[];
+  contacts: ContactPerson[];
   contactInfoByPerson: Record<string, ContactInfo>;
   acceptedTerms: boolean;
   onAcceptedTermsChange: (accepted: boolean) => void;
   onBack: () => void;
   onConfirm: (grandTotal: number) => void;
   canConfirm: boolean;
+  /** Offer the salon's extensions — see needsSalonExtensions. */
+  showExtensions: boolean;
 };
 
 function DetailRow({
@@ -143,11 +152,14 @@ function CollapsibleSection({
   title,
   summary,
   defaultOpen = false,
+  brandTitle = false,
   children,
 }: {
   title: string;
   summary: string;
   defaultOpen?: boolean;
+  /** Shows the title in the brand's display style (Prata, taupe) instead of the plain section style. */
+  brandTitle?: boolean;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -163,7 +175,16 @@ function CollapsibleSection({
         className="flex w-full items-center justify-between gap-4 p-4 text-left sm:px-6"
       >
         <span className="min-w-0">
-          <span className="block text-[19px] font-bold text-[var(--color-gray-900)]">{title}</span>
+          <span
+            className={cn(
+              "block font-bold",
+              brandTitle
+                ? "font-[family-name:var(--font-prata)] text-[25px] text-[var(--brand-taupe-muted)]"
+                : "text-[19px] text-[var(--color-gray-900)]",
+            )}
+          >
+            {title}
+          </span>
           {!open && <span className="block truncate text-[16px] text-[var(--text-secondary)]">{summary}</span>}
         </span>
         <Image
@@ -195,13 +216,14 @@ export function ConfirmationStep({
   date,
   time,
   totalMinutes,
-  adults,
+  contacts,
   contactInfoByPerson,
   acceptedTerms,
   onAcceptedTermsChange,
   onBack,
   onConfirm,
   canConfirm,
+  showExtensions,
 }: ConfirmationStepProps) {
   const personLabels = Array.from(new Set(cartItems.map((item) => item.personId))).map(
     (personId) => cartItems.find((item) => item.personId === personId)!.personLabel,
@@ -238,14 +260,13 @@ export function ConfirmationStep({
   const handleProductSizeChange = (id: string, size: string) => {
     setSelectedSizeByProductId((prev) => ({ ...prev, [id]: size }));
   };
-  const hasCoiffure = cartItems.some((item) => item.categoryId === "coiffure");
 
   const formattedDate = date
     ? date.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
     : "—";
   const reservedDrinksCount = reservedDrinkIds.size;
   const productsCount = Object.values(productQuantities).reduce((sum, quantity) => sum + quantity, 0);
-  const primaryContact = adults[0] ? (contactInfoByPerson[adults[0].id] ?? emptyContactInfo) : emptyContactInfo;
+  const primaryContact = contacts[0] ? (contactInfoByPerson[contacts[0].id] ?? emptyContactInfo) : emptyContactInfo;
   const primaryName = `${primaryContact.firstName} ${primaryContact.lastName}`.trim();
 
   return (
@@ -367,21 +388,39 @@ export function ConfirmationStep({
 
         <CollapsibleSection
           title="Vos coordonnées"
-          summary={adults.length > 1 ? `${pluralize(adults.length, "personne")} · ${primaryName || "—"} (contact principal)` : primaryName || "—"}
+          summary={contacts.length > 1 ? `${pluralize(contacts.length, "personne")} · ${primaryName || "—"} (contact principal)` : primaryName || "—"}
         >
-          <div className="flex flex-wrap gap-2.5">
-            {adults.map((adult, index) => {
-              const info = contactInfoByPerson[adult.id] ?? emptyContactInfo;
-              const suffix = adults.length > 1 ? ` — ${adult.label}${index === 0 ? " (contact principal)" : ""}` : "";
+          <div className="flex flex-col gap-4">
+            {contacts.map((contact) => {
+              const info = contactInfoByPerson[contact.id] ?? emptyContactInfo;
+              const fields = new Set(contactFieldsFor(contact.contactLevel));
+              const country = findCountry(info.phoneCountry);
               return (
-                <Fragment key={adult.id}>
-                  <DetailRow
-                    icon="/images/rdv/icon-user.svg"
-                    label={`Prénom et nom${suffix}`}
-                    value={`${info.firstName} ${info.lastName}`.trim() || "—"}
-                  />
-                  <DetailRow icon="/images/rdv/icon-envelope.svg" label={`Email${suffix}`} value={info.email || "—"} />
-                </Fragment>
+                <div key={contact.id}>
+                  {contacts.length > 1 && (
+                    <p className="mb-2 text-[17px] font-bold text-[var(--brand-taupe-muted)]">
+                      {contact.label}
+                      {contact.contactLevel === "primary" && " (contact principal)"}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-2.5">
+                    <DetailRow
+                      icon="/images/rdv/icon-user.svg"
+                      label="Prénom et nom"
+                      value={`${info.firstName} ${info.lastName}`.trim() || "—"}
+                    />
+                    {fields.has("email") && (
+                      <DetailRow icon="/images/rdv/icon-envelope.svg" label="Email" value={info.email || "—"} />
+                    )}
+                    {fields.has("phone") && (
+                      <DetailRow
+                        icon="/images/rdv/icon-phone.svg"
+                        label="Téléphone"
+                        value={info.phone ? `+${country.dialCode} ${info.phone}` : "—"}
+                      />
+                    )}
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -389,6 +428,7 @@ export function ConfirmationStep({
 
         <CollapsibleSection
           title="Le Bar Beauty"
+          brandTitle
           summary={
             reservedDrinksCount > 0
               ? `${pluralize(reservedDrinksCount, "boisson réservée", "boissons réservées")} · ${formatPrice(drinksTotal)}`
@@ -401,7 +441,7 @@ export function ConfirmationStep({
           />
         </CollapsibleSection>
 
-        {hasCoiffure && (
+        {showExtensions && (
           <CollapsibleSection
             title="Extensions"
             summary={

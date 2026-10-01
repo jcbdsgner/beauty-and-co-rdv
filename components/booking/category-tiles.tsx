@@ -1,32 +1,40 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { BookingService } from "@/lib/data/booking-services";
+
+export type CategoryTile = {
+  id: string;
+  label: string;
+  image: string;
+  /** True when `image` is a small pictogram (24px) rather than a photo swatch (44px). */
+  iconOnly?: boolean;
+};
 
 type CategoryTilesProps = {
-  services: BookingService[];
+  tiles: CategoryTile[];
   activeCategoryId: string;
   onSelectCategory: (categoryId: string) => void;
   categoriesWithSelection: Set<string>;
 };
 
 export function CategoryTiles({
-  services,
+  tiles,
   activeCategoryId,
   onSelectCategory,
   categoriesWithSelection,
 }: CategoryTilesProps) {
   return (
     <div className="grid grid-cols-3 gap-3">
-      {services.map((service) => {
-        const isActive = service.id === activeCategoryId;
-        const hasSelection = categoriesWithSelection.has(service.id);
-        const checked = isActive || hasSelection;
+      {tiles.map((tile) => {
+        const isActive = tile.id === activeCategoryId;
+        // Only checked once a prestation was actually picked from it — merely opening a category
+        // shows it as active (border) without implying anything was chosen there.
+        const checked = categoriesWithSelection.has(tile.id);
 
         return (
           <button
-            key={service.id}
+            key={tile.id}
             type="button"
-            onClick={() => onSelectCategory(service.id)}
+            onClick={() => onSelectCategory(tile.id)}
             aria-pressed={isActive}
             className={cn(
               "relative flex flex-col items-center gap-2 rounded-2xl border-2 bg-white px-3.5 py-[18px] text-center transition",
@@ -43,15 +51,15 @@ export function CategoryTiles({
             </span>
             <span className="flex size-12 items-center justify-center overflow-hidden rounded-lg bg-[rgba(237,220,218,0.4)]">
               <Image
-                src={service.image}
+                src={tile.image}
                 alt=""
-                width={service.iconOnly ? 24 : 44}
-                height={service.iconOnly ? 24 : 44}
-                className={service.iconOnly ? undefined : "size-full object-cover"}
+                width={tile.iconOnly ? 24 : 44}
+                height={tile.iconOnly ? 24 : 44}
+                className={tile.iconOnly ? undefined : "size-full object-cover"}
               />
             </span>
             <span className="flex min-h-10 items-center justify-center text-[17px] font-bold text-[var(--color-gray-800)] [text-box-edge:cap_alphabetic] [text-box-trim:trim-both]">
-              {service.label}
+              {tile.label}
             </span>
           </button>
         );
