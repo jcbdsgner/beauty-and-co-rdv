@@ -1,10 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronIcon } from "@/components/layout/services-dropdown";
-import { PackBuyButton } from "@/components/tarifs/pack-buy-button";
-import { formatPrice } from "@/lib/booking/format";
 import { tarifCategories, type TarifCategory } from "@/lib/data/tarifs";
-import { getPackPrestations, getPackPrice, packs } from "@/lib/data/packs";
 
 function TarifCard({ category }: { category: TarifCategory }) {
   return (
@@ -31,59 +28,6 @@ function TarifCard({ category }: { category: TarifCategory }) {
   );
 }
 
-function PackCard({ pack }: { pack: (typeof packs)[number] }) {
-  const prestations = getPackPrestations(pack);
-  const price = getPackPrice(pack);
-
-  return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-[var(--color-border-light)] bg-white">
-      <div className="relative aspect-[4/3] w-full shrink-0">
-        {pack.video ? (
-          <video
-            aria-hidden
-            src={pack.video}
-            poster={pack.image}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 size-full object-cover"
-          />
-        ) : (
-          <Image
-            src={pack.image}
-            alt=""
-            fill
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover"
-          />
-        )}
-      </div>
-      <div className="flex flex-1 flex-col p-5">
-        <p className="font-[family-name:var(--font-nav)] text-[19px] font-bold text-[var(--brand-taupe-muted)]">
-          {pack.label}
-        </p>
-        <p className="mt-1.5 text-[14px] leading-[1.4] text-[var(--color-gray-500)]">{pack.description}</p>
-
-        <ul className="mt-4 flex flex-col gap-1.5">
-          {prestations.map((prestation) => (
-            <li key={prestation.id} className="flex items-start gap-2 text-[14px] text-[var(--color-gray-600)]">
-              <span className="mt-[7px] size-1.5 shrink-0 rounded-full bg-[var(--brand-taupe-muted)]/50" />
-              <span>{prestation.label}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-5 flex flex-1 flex-col items-start justify-end gap-3">
-          <p className="text-[21px] font-bold text-[var(--color-gray-800)]">{formatPrice(price)}</p>
-          <PackBuyButton pack={pack} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function TarifsPage() {
   return (
     <>
@@ -107,17 +51,6 @@ export default function TarifsPage() {
 
       <section className="bg-[rgba(237,220,218,0.25)] px-4 py-16 sm:py-20">
         <div className="mx-auto flex max-w-[1280px] flex-col items-center">
-          <h2 className="text-center font-[family-name:var(--font-prata)] text-[28px] text-[var(--color-gray-800)] sm:text-[36px]">
-            Découvrez nos packs
-          </h2>
-          <div className="mt-10 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {packs.map((pack) => (
-              <PackCard key={pack.id} pack={pack} />
-            ))}
-          </div>
-        </div>
-
-        <div className="mx-auto mt-16 flex max-w-[1280px] flex-col items-center sm:mt-20">
           <h2 className="text-center font-[family-name:var(--font-prata)] text-[28px] text-[var(--color-gray-800)] sm:text-[36px]">
             Découvrez nos tarifs
           </h2>

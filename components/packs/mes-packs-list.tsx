@@ -97,7 +97,7 @@ export function MesPacksList() {
       <div className="rounded-2xl border border-dashed border-[var(--color-gray-200)] bg-white p-10 text-center">
         <p className="text-[19px] font-bold text-[var(--color-gray-900)]">Vous n&apos;avez pas encore de Pack</p>
         <p className="mt-2 text-[16px] text-[var(--text-secondary)]">Découvrez nos Packs pour en acheter un.</p>
-        <Button href="/tarifs" className="mt-6">
+        <Button href="/abonnement#packs" className="mt-6">
           Voir les Packs
         </Button>
       </div>
