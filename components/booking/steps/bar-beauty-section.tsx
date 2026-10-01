@@ -9,11 +9,8 @@ type BarBeautySectionProps = {
 
 export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautySectionProps) {
   return (
-    <div className="rounded-2xl border border-[var(--color-gray-100)] bg-white p-6">
-      <h3 className="font-[family-name:var(--font-prata)] text-[25px] font-bold text-[var(--brand-taupe-muted)]">
-        Le Bar Beauty
-      </h3>
-      <p className="mt-1 text-[17px] text-[var(--color-gray-500)]">
+    <div>
+      <p className="text-[17px] text-[var(--color-gray-500)]">
         Envie d&apos;une pause gourmande pendant votre soin ? Réservez votre boisson, elle vous sera
         servie sur place.
       </p>

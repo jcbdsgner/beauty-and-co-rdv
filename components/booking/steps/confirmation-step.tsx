@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, type ReactNode, useId, useState } from "react";
 import Image from "next/image";
 import { BarBeautySection } from "@/components/booking/steps/bar-beauty-section";
 import { BoutiquePreviewSection } from "@/components/booking/steps/boutique-preview-section";
@@ -54,7 +54,7 @@ function DetailRow({
       </span>
       <div className="min-w-0">
         <p className="text-[19px] font-bold text-[var(--color-gray-900)]">{label}</p>
-        <p className="truncate text-[19px] text-[var(--text-secondary)]">{value}</p>
+        <p className="break-words text-[19px] text-[var(--text-secondary)]">{value}</p>
       </div>
     </div>
   );
@@ -137,6 +137,56 @@ function CategoryGroup({ categoryId, categoryLabel, items }: { categoryId: strin
   );
 }
 
+/** One of the recap's secondary sections — closed by default so the essentials (date, time, place,
+ *  amount) stay readable at a glance; the summary line says what's inside without opening it. */
+function CollapsibleSection({
+  title,
+  summary,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  summary: string;
+  defaultOpen?: boolean;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  const contentId = useId();
+
+  return (
+    <div className="rounded-2xl border border-[var(--color-gray-100)] bg-white">
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-controls={contentId}
+        className="flex w-full items-center justify-between gap-4 p-4 text-left sm:px-6"
+      >
+        <span className="min-w-0">
+          <span className="block text-[19px] font-bold text-[var(--color-gray-900)]">{title}</span>
+          {!open && <span className="block truncate text-[16px] text-[var(--text-secondary)]">{summary}</span>}
+        </span>
+        <Image
+          src="/images/rdv/icon-chevron-down.svg"
+          alt=""
+          width={24}
+          height={24}
+          className={cn("size-6 shrink-0 transition-transform", open && "rotate-180")}
+        />
+      </button>
+      {open && (
+        <div id={contentId} className="border-t border-[var(--color-gray-100)] p-4 sm:p-6">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function pluralize(count: number, singular: string, plural = `${singular}s`) {
+  return `${count} ${count > 1 ? plural : singular}`;
+}
+
 export function ConfirmationStep({
   cartItems,
   note,
@@ -190,74 +240,82 @@ export function ConfirmationStep({
   };
   const hasCoiffure = cartItems.some((item) => item.categoryId === "coiffure");
 
+  const formattedDate = date
+    ? date.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+    : "—";
+  const reservedDrinksCount = reservedDrinkIds.size;
+  const productsCount = Object.values(productQuantities).reduce((sum, quantity) => sum + quantity, 0);
+  const primaryContact = adults[0] ? (contactInfoByPerson[adults[0].id] ?? emptyContactInfo) : emptyContactInfo;
+  const primaryName = `${primaryContact.firstName} ${primaryContact.lastName}`.trim();
+
   return (
     <div>
       <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Confirmer votre rendez-vous</h2>
-      <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">Confirmez tous les détails de votre rendez-vous.</p>
+      <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">Vérifiez l&apos;essentiel avant de confirmer.</p>
 
       <div className="mt-6 h-px bg-[var(--color-gray-200)]" />
 
-      <div className="mt-6 grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
-        <div className="flex flex-col gap-4">
-          <div className="rounded-2xl border border-[var(--color-gray-100)] bg-white p-6">
-            <h3 className="text-[21px] font-bold text-[var(--color-gray-900)]">Détails de votre rendez-vous</h3>
-            <div className="mt-4 flex flex-wrap gap-2.5">
-              <DetailRow
-                icon="/images/rdv/icon-calendar.svg"
-                label="Date"
-                value={date ? date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "—"}
-              />
-              <DetailRow
-                icon="/images/rdv/icon-clock.svg"
-                label="Heure"
-                value={time ? `${time}${totalMinutes > 0 ? ` — ${addMinutes(time, totalMinutes)}` : ""}` : "—"}
-              />
-              <DetailRow icon="/images/rdv/icon-location.svg" label="Lieu" value={locationLabel ?? "—"} />
-              {adults.map((adult, index) => {
-                const info = contactInfoByPerson[adult.id] ?? emptyContactInfo;
-                const suffix = adults.length > 1 ? ` — ${adult.label}${index === 0 ? " (contact principal)" : ""}` : "";
-                return (
-                  <Fragment key={adult.id}>
-                    <DetailRow
-                      icon="/images/rdv/icon-user.svg"
-                      label={`Prénom et nom${suffix}`}
-                      value={`${info.firstName} ${info.lastName}`.trim() || "—"}
-                    />
-                    <DetailRow
-                      icon="/images/rdv/icon-envelope.svg"
-                      label={`Email${suffix}`}
-                      value={info.email || "—"}
-                    />
-                  </Fragment>
-                );
-              })}
-            </div>
-          </div>
-
-          <div
-            className={cn(
-              "rounded-2xl border border-[var(--color-gray-100)] bg-white p-6",
-              !hasFocusedNote && "attention-shake",
-            )}
-          >
-            <p className="text-[19px] font-bold text-[var(--color-gray-900)]">
-              Note pour le salon <span className="text-[17px] text-[var(--color-gray-500)]">(optionnel)</span>
-            </p>
-            <textarea
-              value={note}
-              onChange={(event) => onNoteChange(event.target.value)}
-              onFocus={() => setHasFocusedNote(true)}
-              placeholder="Une précision, une demande particulière…"
-              rows={3}
-              className="mt-3 w-full rounded-xl border border-[var(--color-border-light)] p-4 text-[17px] text-[var(--color-gray-800)] outline-none focus:border-[var(--brand-taupe-muted)]"
-            />
-          </div>
+      <div className="mt-6 rounded-2xl border border-[var(--color-gray-100)] bg-white p-4 sm:p-6">
+        <h3 className="text-[21px] font-bold text-[var(--color-gray-900)]">Votre rendez-vous</h3>
+        <div className="mt-4 flex flex-wrap gap-2.5">
+          <DetailRow icon="/images/rdv/icon-calendar.svg" label="Date" value={formattedDate} />
+          <DetailRow
+            icon="/images/rdv/icon-clock.svg"
+            label="Heure"
+            value={time ? `${time}${totalMinutes > 0 ? ` — ${addMinutes(time, totalMinutes)}` : ""}` : "—"}
+          />
+          <DetailRow icon="/images/rdv/icon-location.svg" label="Lieu" value={locationLabel ?? "—"} />
         </div>
 
-        <div className="rounded-2xl border border-[var(--color-gray-100)] bg-white p-6">
-          <h3 className="text-[21px] font-bold text-[var(--color-gray-900)]">Les services que vous recevrez</h3>
+        <div className="mt-4 rounded-lg bg-gradient-to-r from-[var(--brand-taupe-muted)] to-[rgba(128,101,98,0.9)] p-4">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-[19px] font-bold whitespace-nowrap text-white">Montant total</span>
+            <span className="text-[23px] font-bold whitespace-nowrap text-white">{formatPrice(grandTotal)}</span>
+          </div>
+          <p className="mt-1 text-[15px] text-white/85">
+            {grandTotal <= 0
+              ? "Déjà réglé — rien à payer aujourd'hui."
+              : `Acompte de ${formatPrice(DEPOSIT_AMOUNT)} à régler maintenant, le reste au salon.`}
+          </p>
+          {(drinksTotal > 0 || productsTotal > 0) && (
+            <p className="mt-1 text-[15px] text-white/85">
+              {[
+                `Soins ${formatPrice(totalPrice)}`,
+                drinksTotal > 0 && `Bar Beauty ${formatPrice(drinksTotal)}`,
+                productsTotal > 0 && `Extensions ${formatPrice(productsTotal)}`,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+          )}
+        </div>
+      </div>
 
-          <div className="mt-4 flex flex-col gap-3">
+      <div
+        className={cn(
+          "mt-4 rounded-2xl border border-[var(--color-gray-100)] bg-white p-4 sm:p-6",
+          !hasFocusedNote && "attention-shake",
+        )}
+      >
+        <p className="text-[19px] font-bold text-[var(--color-gray-900)]">
+          Note pour le salon <span className="text-[17px] text-[var(--color-gray-500)]">(optionnel)</span>
+        </p>
+        <textarea
+          value={note}
+          onChange={(event) => onNoteChange(event.target.value)}
+          onFocus={() => setHasFocusedNote(true)}
+          placeholder="Une précision, une demande particulière…"
+          rows={3}
+          className="mt-3 w-full rounded-xl border border-[var(--color-border-light)] p-4 text-[17px] text-[var(--color-gray-800)] outline-none focus:border-[var(--brand-taupe-muted)]"
+        />
+      </div>
+
+      <div className="mt-4 flex flex-col gap-3">
+        <CollapsibleSection
+          title="Vos prestations"
+          summary={`${pluralize(cartItems.length, "prestation")} · ${formatDurationMinutes(totalMinutes)} · ${formatPrice(totalPrice)}`}
+        >
+          <div className="flex flex-col gap-3">
             {(showPersonGroups ? personLabels : [null]).map((personLabel) => {
               const personItems = personLabel
                 ? cartItems.filter((item) => item.personLabel === personLabel)
@@ -305,29 +363,61 @@ export function ConfirmationStep({
               </span>
             </div>
           </div>
-        </div>
-      </div>
+        </CollapsibleSection>
 
-      <div className="mt-6 flex flex-col gap-4">
-        <BarBeautySection
-          reservedDrinkIds={reservedDrinkIds}
-          onToggleDrink={(id) => setReservedDrinkIds((prev) => toggleInSet(prev, id))}
-        />
-        {hasCoiffure && (
-          <BoutiquePreviewSection
-            productQuantities={productQuantities}
-            onQuantityChange={handleProductQuantityChange}
-            selectedSizeByProductId={selectedSizeByProductId}
-            onSizeChange={handleProductSizeChange}
+        <CollapsibleSection
+          title="Vos coordonnées"
+          summary={adults.length > 1 ? `${pluralize(adults.length, "personne")} · ${primaryName || "—"} (contact principal)` : primaryName || "—"}
+        >
+          <div className="flex flex-wrap gap-2.5">
+            {adults.map((adult, index) => {
+              const info = contactInfoByPerson[adult.id] ?? emptyContactInfo;
+              const suffix = adults.length > 1 ? ` — ${adult.label}${index === 0 ? " (contact principal)" : ""}` : "";
+              return (
+                <Fragment key={adult.id}>
+                  <DetailRow
+                    icon="/images/rdv/icon-user.svg"
+                    label={`Prénom et nom${suffix}`}
+                    value={`${info.firstName} ${info.lastName}`.trim() || "—"}
+                  />
+                  <DetailRow icon="/images/rdv/icon-envelope.svg" label={`Email${suffix}`} value={info.email || "—"} />
+                </Fragment>
+              );
+            })}
+          </div>
+        </CollapsibleSection>
+
+        <CollapsibleSection
+          title="Le Bar Beauty"
+          summary={
+            reservedDrinksCount > 0
+              ? `${pluralize(reservedDrinksCount, "boisson réservée", "boissons réservées")} · ${formatPrice(drinksTotal)}`
+              : "Réservez une boisson pour votre soin"
+          }
+        >
+          <BarBeautySection
+            reservedDrinkIds={reservedDrinkIds}
+            onToggleDrink={(id) => setReservedDrinkIds((prev) => toggleInSet(prev, id))}
           />
-        )}
+        </CollapsibleSection>
 
-        <div className="flex items-center justify-between gap-4 rounded-lg bg-gradient-to-r from-[var(--brand-taupe-muted)] to-[rgba(128,101,98,0.9)] p-3">
-          <span className="text-[19px] font-bold whitespace-nowrap text-white">Total</span>
-          <span className="text-[21px] font-bold whitespace-nowrap text-white">
-            {formatPrice(grandTotal)}
-          </span>
-        </div>
+        {hasCoiffure && (
+          <CollapsibleSection
+            title="Extensions"
+            summary={
+              productsCount > 0
+                ? `${pluralize(productsCount, "article")} · ${formatPrice(productsTotal)}`
+                : "Ajoutez des extensions à votre prestation coiffure"
+            }
+          >
+            <BoutiquePreviewSection
+              productQuantities={productQuantities}
+              onQuantityChange={handleProductQuantityChange}
+              selectedSizeByProductId={selectedSizeByProductId}
+              onSizeChange={handleProductSizeChange}
+            />
+          </CollapsibleSection>
+        )}
       </div>
 
       <div className="mt-6 h-px bg-[var(--color-gray-200)]" />

@@ -16,11 +16,8 @@ export function BoutiquePreviewSection({
   onSizeChange,
 }: BoutiquePreviewSectionProps) {
   return (
-    <div className="rounded-2xl border border-[var(--color-gray-100)] bg-white p-6">
-      <h3 className="font-[family-name:var(--font-prata)] text-[25px] font-bold text-[var(--brand-taupe-muted)]">
-        En plus de la prestation coiffure, souhaitez-vous prendre des extensions ?
-      </h3>
-      <p className="mt-1 text-[17px] text-[var(--color-gray-500)]">
+    <div>
+      <p className="text-[17px] text-[var(--color-gray-500)]">
         Réservez les mêmes extensions que nos coiffeuses utilisent, à récupérer le jour de votre rendez-vous.
       </p>
 
