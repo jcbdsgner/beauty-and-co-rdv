@@ -11,6 +11,9 @@ export function PackCard({ pack }: { pack: Pack }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-[var(--color-border-light)] bg-white">
       <div className="relative aspect-[4/3] w-full shrink-0">
+        <span className="absolute top-3 left-3 z-10 rounded-full bg-white px-2.5 py-1 text-[13px] font-bold text-[var(--button-2-color)] shadow-sm">
+          −20&nbsp;%
+        </span>
         {pack.video ? (
           <video
             aria-hidden
@@ -51,7 +54,7 @@ export function PackCard({ pack }: { pack: Pack }) {
         <div className="mt-5 flex flex-1 flex-col items-start justify-end gap-3">
           <p className="flex items-baseline gap-2">
             <span className="text-[21px] font-bold text-[var(--color-gray-800)]">{formatPrice(price)}</span>
-            <span className="text-[14px] text-[var(--color-gray-400)] line-through">{formatPrice(individualTotal)}</span>
+            <span className="text-[15px] text-[var(--color-gray-500)] line-through">{formatPrice(individualTotal)}</span>
           </p>
           <PackBuyButton pack={pack} />
         </div>

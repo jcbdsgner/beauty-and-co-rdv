@@ -1,17 +1,16 @@
-import Link from "next/link";
 import { ForfaitCarousel } from "@/components/abonnement/forfait-carousel";
 import { PackCard } from "@/components/packs/pack-card";
+import { Button } from "@/components/ui/button";
 import { forfaits } from "@/lib/data/forfaits";
 import { packs } from "@/lib/data/packs";
 
 type SectionHeadingProps = {
   eyebrow: string;
   title: string;
-  accountLink: { href: string; label: string };
   children: React.ReactNode;
 };
 
-function SectionHeading({ eyebrow, title, accountLink, children }: SectionHeadingProps) {
+function SectionHeading({ eyebrow, title, children }: SectionHeadingProps) {
   return (
     <div className="mx-auto flex max-w-2xl flex-col items-center gap-3 px-6 text-center">
       <p className="text-[13px] font-[500] tracking-[0.28em] text-[var(--button-2-color)] uppercase">{eyebrow}</p>
@@ -19,12 +18,6 @@ function SectionHeading({ eyebrow, title, accountLink, children }: SectionHeadin
         {title}
       </h2>
       <p className="text-[16px] leading-[1.5] text-[var(--text-secondary)]">{children}</p>
-      <Link
-        href={accountLink.href}
-        className="text-[15px] font-[500] text-[var(--button-2-color)] underline underline-offset-4 hover:opacity-80"
-      >
-        {accountLink.label}
-      </Link>
     </div>
   );
 }
@@ -32,7 +25,7 @@ function SectionHeading({ eyebrow, title, accountLink, children }: SectionHeadin
 export default function AbonnementPage() {
   return (
     <>
-      <section className="px-6 pt-16 pb-10 sm:pt-24 sm:pb-14">
+      <section className="px-6 pt-14 pb-8 sm:pt-20 sm:pb-10">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center">
           <p className="text-[13px] font-[500] tracking-[0.28em] text-[var(--button-2-color)] uppercase">
             Abonnements & Packs
@@ -41,8 +34,7 @@ export default function AbonnementPage() {
             Vos rituels beauté et bien-être
           </h1>
           <p className="max-w-xl text-[17px] leading-[1.5] text-[var(--text-secondary)]">
-            Deux façons de profiter de vos prestations préférées à meilleur prix&nbsp;: l&apos;Abonnement, qui se
-            renouvelle à chaque cycle, ou le Pack, payé une seule fois et utilisé à votre rythme.
+            Deux façons de profiter de vos prestations préférées à meilleur prix&nbsp;: l&apos;Abonnement ou le Pack.
           </p>
           <a
             href="#packs"
@@ -54,25 +46,22 @@ export default function AbonnementPage() {
       </section>
 
       <section id="abonnements" className="scroll-mt-24 px-0 pb-16 sm:pb-24">
-        <SectionHeading
-          eyebrow="Abonnements"
-          title="Vos prestations, chaque cycle"
-          accountLink={{ href: "/compte?panel=abonnements", label: "Mes abonnements →" }}
-        >
+        <SectionHeading eyebrow="Abonnements" title="Vos prestations, chaque cycle">
           Un ensemble de prestations à prix fixe, renouvelé automatiquement à chaque cycle. Idéal pour vos soins
           réguliers.
         </SectionHeading>
         <div className="mt-10">
           <ForfaitCarousel forfaits={forfaits} />
         </div>
+        <div className="mt-8 flex justify-center">
+          <Button href="/compte?panel=abonnements" variant="outline">
+            Voir mes abonnements
+          </Button>
+        </div>
       </section>
 
       <section id="packs" className="scroll-mt-24 bg-[rgba(237,220,218,0.25)] px-4 py-16 sm:py-24">
-        <SectionHeading
-          eyebrow="Packs"
-          title="À votre rythme"
-          accountLink={{ href: "/compte?panel=packs", label: "Mes packs →" }}
-        >
+        <SectionHeading eyebrow="Packs" title="À votre rythme">
           Envie d&apos;essayer sans vous abonner&nbsp;? Le Pack regroupe plusieurs prestations, 20&nbsp;% moins cher qu&apos;à
           l&apos;unité. Vous payez une fois et réservez chaque prestation quand vous le souhaitez.
         </SectionHeading>
@@ -80,6 +69,11 @@ export default function AbonnementPage() {
           {packs.map((pack) => (
             <PackCard key={pack.id} pack={pack} />
           ))}
+        </div>
+        <div className="mt-10 flex justify-center">
+          <Button href="/compte?panel=packs" variant="outline">
+            Voir mes packs
+          </Button>
         </div>
       </section>
     </>

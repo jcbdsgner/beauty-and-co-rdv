@@ -32,13 +32,9 @@ export function PackBuyButton({ pack }: { pack: Pack }) {
   return (
     <>
       <div className="flex w-full flex-col gap-2">
-        <button
-          type="button"
-          onClick={() => setPaymentOpen(true)}
-          className="w-full rounded-full border border-[var(--brand-color-1,rgba(216,184,180,0.5))] bg-white py-2 text-[15px] font-[450] text-[var(--button-2-color,#a27576)] transition hover:bg-[#f5f5f5]"
-        >
+        <Button onClick={() => setPaymentOpen(true)} className="w-full py-2 text-[15px]">
           Acheter pour moi
-        </button>
+        </Button>
         <Button
           href={`https://offrir.beautyandco.example/packs/${pack.id}`}
           external
