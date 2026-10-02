@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { PhoneInput } from "@/components/booking/phone-input";
 import { StepFooter } from "@/components/booking/steps/step-footer";
@@ -227,32 +226,6 @@ function PersonInfoBlock({
   );
 }
 
-/** A person already filled in, collapsed to one line above the current card. */
-function CompletedPersonLine({ person, info, onEdit }: { person: ContactPerson; info: ContactInfo; onEdit: () => void }) {
-  const name = `${info.firstName} ${info.lastName}`.trim();
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--color-gray-100)] bg-white px-4 py-3">
-      <p className="flex min-w-0 items-center gap-3 text-[17px] text-[var(--color-gray-800)]">
-        <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[var(--brand-taupe-muted)]">
-          <Image src="/images/rdv/icon-check.svg" alt="" width={16} height={16} className="size-4" />
-        </span>
-        <span className="truncate">
-          <span className="font-bold">{person.label}</span>
-          {name && <span className="text-[var(--text-secondary)]"> — {name}</span>}
-        </span>
-      </p>
-      <button
-        type="button"
-        onClick={onEdit}
-        aria-label={`Modifier — ${person.label}`}
-        className="shrink-0 text-[16px] font-[450] text-[var(--button-2-color)] underline underline-offset-2 hover:opacity-80"
-      >
-        Modifier
-      </button>
-    </div>
-  );
-}
-
 function firstIncompleteIndex(contacts: ContactPerson[], contactInfoByPerson: Record<string, ContactInfo>) {
   const index = contacts.findIndex(
     (person) => !isContactInfoComplete(contactInfoByPerson[person.id] ?? emptyContactInfo, person.contactLevel),
@@ -280,7 +253,6 @@ export function InformationsStep({
 
   const safeIndex = Math.min(activeIndex, contacts.length - 1);
   const person = contacts[safeIndex];
-  const isMultiPerson = contacts.length > 1;
   const isLast = safeIndex === contacts.length - 1;
   const infoFor = (target: ContactPerson) => contactInfoByPerson[target.id] ?? emptyContactInfo;
 
@@ -359,15 +331,6 @@ export function InformationsStep({
       )}
 
       <div ref={containerRef} className={cn("flex scroll-mt-6 flex-col gap-4", !connected && "mt-6")}>
-
-        {isMultiPerson && safeIndex > 0 && (
-          <div className="flex flex-col gap-2">
-            {contacts.slice(0, safeIndex).map((done, index) => (
-              <CompletedPersonLine key={done.id} person={done} info={infoFor(done)} onEdit={() => goTo(index, "back")} />
-            ))}
-          </div>
-        )}
-
         <div className="relative overflow-hidden">
           <div
             key={person.id}
