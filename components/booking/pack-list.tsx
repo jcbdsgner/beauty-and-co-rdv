@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { formatDurationMinutes, formatPrice } from "@/lib/booking/format";
 import { getPackIndividualTotal, getPackPrestations, getPackPrice, packs, type Pack } from "@/lib/data/packs";
+import { ExpandChevron } from "@/components/booking/expand-chevron";
 import { cn } from "@/lib/utils";
 
 type PackListProps = {
@@ -66,23 +67,7 @@ export function PackList({ selectedSubServiceIds, onTogglePack }: PackListProps)
                       {prestations.length} prestations · {formatDurationMinutes(totalMinutes)}
                     </span>
                   </span>
-                  <span
-                    className={cn(
-                      "flex size-9 shrink-0 items-center justify-center rounded-full text-[var(--brand-taupe-muted)] transition-colors",
-                      open ? "bg-[var(--brand-taupe-muted)]/20" : "bg-[var(--brand-taupe-muted)]/10",
-                    )}
-                  >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      aria-hidden="true"
-                      className={cn("transition-transform", open && "rotate-180")}
-                    >
-                      <path d="m6 9 6 6 6-6" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
+                  <ExpandChevron open={open} />
                 </button>
 
                 <div className="flex items-center justify-between gap-3 pl-[60px] @xl:shrink-0 @xl:pl-0">

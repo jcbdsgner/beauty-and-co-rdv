@@ -2,6 +2,7 @@ import { useState, type RefObject } from "react";
 import Image from "next/image";
 import { cn, toSentenceCase } from "@/lib/utils";
 import { CategoryQuestions } from "@/components/booking/category-questions";
+import { ExpandChevron } from "@/components/booking/expand-chevron";
 import { formatPrice } from "@/lib/booking/format";
 import type { BookingService, BookingSubService } from "@/lib/data/booking-services";
 
@@ -147,15 +148,7 @@ export function CategoryPrestationList({
                     {checked && <Image src="/images/rdv/icon-check.svg" alt="" width={12} height={12} />}
                   </span>
                   <span className="flex-1 text-[20px] font-bold text-[var(--color-gray-800)]">{group.name}</span>
-                  <span className="flex size-8 shrink-0 items-center justify-center">
-                    <Image
-                      src="/images/rdv/icon-chevron-down.svg"
-                      alt=""
-                      width={16}
-                      height={16}
-                      className={cn("transition-transform", expanded && "rotate-180")}
-                    />
-                  </span>
+                  <ExpandChevron open={expanded} />
                 </button>
                 {expanded && (
                   <ul className="flex flex-col border-t border-[var(--color-gray-200)] px-6">
