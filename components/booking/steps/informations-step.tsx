@@ -26,6 +26,8 @@ type InformationsStepProps = {
   onBack: () => void;
   /** Compte déjà connecté : le contact principal est prérempli, donc plus besoin de proposer de se connecter ici. */
   connected: boolean;
+  /** Opens on this person's card — set when coming back from the recap's « Modifier ». */
+  initialPersonId?: string | null;
 };
 
 type SlideDirection = "forward" | "back";
@@ -241,10 +243,15 @@ export function InformationsStep({
   onContinue,
   onBack,
   connected,
+  initialPersonId,
 }: InformationsStepProps) {
   // One person at a time: resume on the first one still missing something (e.g. the primary
-  // contact prefilled from the account lands straight on the next person).
-  const [activeIndex, setActiveIndex] = useState(() => firstIncompleteIndex(contacts, contactInfoByPerson));
+  // contact prefilled from the account lands straight on the next person), unless a specific
+  // person was asked for.
+  const [activeIndex, setActiveIndex] = useState(() => {
+    const requestedIndex = contacts.findIndex((contact) => contact.id === initialPersonId);
+    return requestedIndex === -1 ? firstIncompleteIndex(contacts, contactInfoByPerson) : requestedIndex;
+  });
   const [direction, setDirection] = useState<SlideDirection | null>(null);
   // The card being slid away, kept mounted on top of the incoming one until its exit animation ends.
   const [leaving, setLeaving] = useState<{ index: number; direction: SlideDirection } | null>(null);

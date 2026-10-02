@@ -33,6 +33,7 @@ export function BookingConfirmedDialog({ open, email, onClose, onGoHome }: Booki
           <p className="mt-1 text-[17px] text-[var(--color-gray-600)]">
             Merci d&apos;avoir choisi Beauty and Co. Un email de confirmation a été envoyé à {email}.
           </p>
+          <p className="mt-2 text-[17px] font-bold text-[var(--color-gray-900)]">Hâte de vous recevoir !</p>
         </div>
         <CloseButton onClick={onClose} />
       </div>

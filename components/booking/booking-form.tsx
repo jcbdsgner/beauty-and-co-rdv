@@ -54,6 +54,8 @@ export function BookingForm() {
   const connected = account?.connected ?? false;
   const [attendees, setAttendees] = useState<Attendees | null>(null);
   const [step, setStep] = useState<BookingStepId>("services");
+  // Person whose card the Informations step opens on, when reached from the recap's « Modifier ».
+  const [editContactId, setEditContactId] = useState<string | null>(null);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [pendingHref, setPendingHref] = useState<string | null>(null);
 
@@ -588,9 +590,16 @@ export function BookingForm() {
               contactInfoByPerson={contactInfoByPerson}
               onChange={updateContactInfo}
               canContinue={canContinueInformations}
-              onContinue={() => setStep("confirmation")}
-              onBack={() => setStep("creneau")}
+              onContinue={() => {
+                setEditContactId(null);
+                setStep("confirmation");
+              }}
+              onBack={() => {
+                setEditContactId(null);
+                setStep("creneau");
+              }}
               connected={connected}
+              initialPersonId={editContactId}
             />
           )}
 
@@ -608,6 +617,10 @@ export function BookingForm() {
               acceptedTerms={acceptedTerms}
               onAcceptedTermsChange={setAcceptedTerms}
               onBack={() => setStep(connected && soloAdultBooking ? "creneau" : "informations")}
+              onEditContact={(personId) => {
+                setEditContactId(personId);
+                setStep("informations");
+              }}
               onConfirm={(grandTotal) => {
                 // Nothing owed (every prestation taken today was already paid for via a Pack) —
                 // confirm straight away instead of asking for a deposit on a zero balance.

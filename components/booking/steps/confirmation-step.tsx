@@ -41,6 +41,8 @@ type ConfirmationStepProps = {
   acceptedTerms: boolean;
   onAcceptedTermsChange: (accepted: boolean) => void;
   onBack: () => void;
+  /** Returns to the Informations step on this person's card to correct their details. */
+  onEditContact: (personId: string) => void;
   onConfirm: (grandTotal: number) => void;
   canConfirm: boolean;
   /** Offer the salon's extensions — see needsSalonExtensions. */
@@ -221,6 +223,7 @@ export function ConfirmationStep({
   acceptedTerms,
   onAcceptedTermsChange,
   onBack,
+  onEditContact,
   onConfirm,
   canConfirm,
   showExtensions,
@@ -312,25 +315,6 @@ export function ConfirmationStep({
         </div>
       </div>
 
-      <div
-        className={cn(
-          "mt-4 rounded-2xl border border-[var(--color-gray-100)] bg-white p-4 sm:p-6",
-          !hasFocusedNote && "attention-shake",
-        )}
-      >
-        <p className="text-[19px] font-bold text-[var(--color-gray-900)]">
-          Note pour le salon <span className="text-[17px] text-[var(--color-gray-500)]">(optionnel)</span>
-        </p>
-        <textarea
-          value={note}
-          onChange={(event) => onNoteChange(event.target.value)}
-          onFocus={() => setHasFocusedNote(true)}
-          placeholder="Une précision, une demande particulière…"
-          rows={3}
-          className="mt-3 w-full rounded-xl border border-[var(--color-border-light)] p-4 text-[17px] text-[var(--color-gray-800)] outline-none focus:border-[var(--brand-taupe-muted)]"
-        />
-      </div>
-
       <div className="mt-4 flex flex-col gap-3">
         <CollapsibleSection
           title="Vos prestations"
@@ -397,12 +381,24 @@ export function ConfirmationStep({
               const country = findCountry(info.phoneCountry);
               return (
                 <div key={contact.id}>
-                  {contacts.length > 1 && (
-                    <p className="mb-2 text-[17px] font-bold text-[var(--brand-taupe-muted)]">
-                      {contact.label}
-                      {contact.contactLevel === "primary" && " (contact principal)"}
-                    </p>
-                  )}
+                  <div className="mb-2 flex items-center justify-between gap-4">
+                    {contacts.length > 1 ? (
+                      <p className="min-w-0 text-[17px] font-bold text-[var(--brand-taupe-muted)]">
+                        {contact.label}
+                        {contact.contactLevel === "primary" && " (contact principal)"}
+                      </p>
+                    ) : (
+                      <span />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => onEditContact(contact.id)}
+                      aria-label={contacts.length > 1 ? `Modifier — ${contact.label}` : "Modifier vos coordonnées"}
+                      className="shrink-0 text-[16px] font-[450] text-[var(--button-2-color)] underline underline-offset-2 hover:opacity-80"
+                    >
+                      Modifier
+                    </button>
+                  </div>
                   <div className="flex flex-wrap gap-2.5">
                     <DetailRow
                       icon="/images/rdv/icon-user.svg"
@@ -425,39 +421,65 @@ export function ConfirmationStep({
             })}
           </div>
         </CollapsibleSection>
+      </div>
 
-        <CollapsibleSection
-          title="Le Bar Beauty"
-          brandTitle
-          summary={
-            reservedDrinksCount > 0
-              ? `${pluralize(reservedDrinksCount, "boisson réservée", "boissons réservées")} · ${formatPrice(drinksTotal)}`
-              : "Réservez une boisson pour votre soin"
-          }
-        >
-          <BarBeautySection
-            reservedDrinkIds={reservedDrinkIds}
-            onToggleDrink={(id) => setReservedDrinkIds((prev) => toggleInSet(prev, id))}
-          />
-        </CollapsibleSection>
-
-        {showExtensions && (
+      {/* Optional extras, kept apart from the recap above: they add to the visit rather than describe it. */}
+      <section className="mt-6 rounded-2xl bg-[rgba(237,220,218,0.4)] p-4 sm:p-6">
+        <h3 className="text-[21px] font-bold text-[var(--color-gray-900)]">Pour compléter votre visite</h3>
+        <p className="mt-1 text-[17px] text-[var(--text-secondary)]">Optionnel — ajouté au montant total.</p>
+        <div className="mt-4 flex flex-col gap-3">
           <CollapsibleSection
-            title="Extensions"
+            title="Le Bar Beauty"
+            brandTitle
             summary={
-              productsCount > 0
-                ? `${pluralize(productsCount, "article")} · ${formatPrice(productsTotal)}`
-                : "Ajoutez des extensions à votre prestation coiffure"
+              reservedDrinksCount > 0
+                ? `${pluralize(reservedDrinksCount, "boisson réservée", "boissons réservées")} · ${formatPrice(drinksTotal)}`
+                : "Réservez une boisson pour votre soin"
             }
           >
-            <BoutiquePreviewSection
-              productQuantities={productQuantities}
-              onQuantityChange={handleProductQuantityChange}
-              selectedSizeByProductId={selectedSizeByProductId}
-              onSizeChange={handleProductSizeChange}
+            <BarBeautySection
+              reservedDrinkIds={reservedDrinkIds}
+              onToggleDrink={(id) => setReservedDrinkIds((prev) => toggleInSet(prev, id))}
             />
           </CollapsibleSection>
+
+          {showExtensions && (
+            <CollapsibleSection
+              title="Extensions"
+              summary={
+                productsCount > 0
+                  ? `${pluralize(productsCount, "article")} · ${formatPrice(productsTotal)}`
+                  : "Ajoutez des extensions à votre prestation coiffure"
+              }
+            >
+              <BoutiquePreviewSection
+                productQuantities={productQuantities}
+                onQuantityChange={handleProductQuantityChange}
+                selectedSizeByProductId={selectedSizeByProductId}
+                onSizeChange={handleProductSizeChange}
+              />
+            </CollapsibleSection>
+          )}
+        </div>
+      </section>
+
+      <div
+        className={cn(
+          "mt-6 rounded-2xl border border-[var(--color-gray-100)] bg-white p-4 sm:p-6",
+          !hasFocusedNote && "attention-shake",
         )}
+      >
+        <p className="text-[19px] font-bold text-[var(--color-gray-900)]">
+          Note pour le salon <span className="text-[17px] text-[var(--color-gray-500)]">(optionnel)</span>
+        </p>
+        <textarea
+          value={note}
+          onChange={(event) => onNoteChange(event.target.value)}
+          onFocus={() => setHasFocusedNote(true)}
+          placeholder="Une précision, une demande particulière…"
+          rows={3}
+          className="mt-3 w-full rounded-xl border border-[var(--color-border-light)] p-4 text-[17px] text-[var(--color-gray-800)] outline-none focus:border-[var(--brand-taupe-muted)]"
+        />
       </div>
 
       <div className="mt-6 h-px bg-[var(--color-gray-200)]" />
@@ -477,10 +499,7 @@ export function ConfirmationStep({
         </span>
       </label>
 
-      <div className="mt-8 flex flex-col items-center gap-1 pb-4 text-center">
-        <p className="text-[21px] font-bold text-[var(--color-gray-900)]">Hâte de vous recevoir !</p>
-        <p className="text-[17px] text-[var(--text-secondary)]">Veuillez arriver 10 min avant l&apos;heure de votre rendez-vous.</p>
-      </div>
+      <p className="mt-8 pb-4 text-center text-[17px] text-[var(--text-secondary)]">Pensez à arriver 10 min en avance.</p>
 
       <StepFooter
         onBack={onBack}
