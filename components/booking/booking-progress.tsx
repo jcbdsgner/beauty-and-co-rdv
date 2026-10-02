@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { BookingStepId } from "@/lib/booking/types";
 
@@ -31,11 +30,17 @@ export function BookingProgress({ currentStep }: BookingProgressProps) {
               <span
                 className={cn(
                   "relative flex size-6 items-center justify-center rounded-full",
-                  isDone || isActive ? "bg-[var(--core-brand-color)]" : "border border-[var(--color-gray-200)] bg-white",
+                  isDone
+                    ? "bg-[var(--brand-taupe-muted)]"
+                    : isActive
+                      ? "bg-[var(--core-brand-color)]"
+                      : "border border-[var(--color-gray-200)] bg-white",
                 )}
               >
                 {isDone ? (
-                  <Image src="/images/rdv/icon-check.svg" alt="" width={14} height={14} />
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-white">
+                    <path d="M5 12.5 10 17.5 19 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 ) : (
                   <span
                     className={cn("size-2 rounded-full", isActive ? "bg-white" : "bg-[var(--color-gray-200)]")}
