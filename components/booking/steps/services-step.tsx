@@ -266,6 +266,10 @@ export function ServicesStep({
     }
   }, [activePersonId, scrollTarget]);
 
+  // Who "Continuer" moves on to once the active person is done — named in the button, like the
+  // Coordonnées step does.
+  const nextPerson = people[activePersonIndex + 1];
+
   const handleContinue = () => {
     // Answering required questions for prestations already chosen takes priority over nudging
     // the user toward picking prestations for someone else — finish what's in front of you first.
@@ -291,7 +295,6 @@ export function ServicesStep({
     }
     // Done with this person: "Continuer" just moves on to the next one, no warning needed — the
     // person-switch effect above brings their "Services pour …" title into view.
-    const nextPerson = people[activePersonIndex + 1];
     if (nextPerson) {
       setShowMissingSelectionWarning(false);
       setHighlightPersonId(null);
@@ -511,7 +514,12 @@ export function ServicesStep({
                 } répondre aux informations complémentaires obligatoires pour continuer.`}
           </p>
         )}
-        <StepFooter onBack={onCancel} onContinue={handleContinue} backLabel="Annuler" />
+        <StepFooter
+          onBack={onCancel}
+          onContinue={handleContinue}
+          backLabel="Annuler"
+          continueLabel={nextPerson ? `Continuer — ${nextPerson.label}` : "Continuer"}
+        />
       </div>
     </div>
   );
