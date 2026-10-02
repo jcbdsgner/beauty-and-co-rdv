@@ -67,11 +67,10 @@ export function PackList({ selectedSubServiceIds, onTogglePack }: PackListProps)
                       {prestations.length} prestations · {formatDurationMinutes(totalMinutes)}
                     </span>
                   </span>
-                  <ExpandChevron open={open} />
                 </button>
 
-                <div className="flex items-center justify-between gap-3 pl-[60px] @xl:shrink-0 @xl:pl-0">
-                  <p className="flex flex-col whitespace-nowrap @xl:min-w-[7.5rem] @xl:items-end">
+                <div className="flex items-center gap-2 @xl:shrink-0 @xl:gap-3">
+                  <p className="mr-auto flex flex-col whitespace-nowrap @xl:mr-0 @xl:min-w-[7.5rem] @xl:items-end">
                     <span className="text-[17px] leading-tight font-bold text-[var(--color-gray-800)]">
                       {formatPrice(getPackPrice(pack))}
                     </span>
@@ -89,6 +88,16 @@ export function PackList({ selectedSubServiceIds, onTogglePack }: PackListProps)
                     )}
                   >
                     {selected ? "Sélectionné" : "Sélectionner"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => toggleOpen(pack.id)}
+                    aria-expanded={open}
+                    aria-controls={bodyId}
+                    aria-label={open ? "Masquer le détail" : "Voir le détail"}
+                    className="shrink-0"
+                  >
+                    <ExpandChevron open={open} />
                   </button>
                 </div>
               </div>
