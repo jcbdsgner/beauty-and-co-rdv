@@ -148,7 +148,7 @@ export function BookingSummarySidebar({
   const totalPrice = sumPrice(cartItems);
 
   return (
-    <aside className="h-fit rounded-2xl border border-[rgba(136,102,102,0.2)] bg-white p-6 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)] lg:sticky lg:top-10 lg:self-start">
+    <aside className="h-fit rounded-2xl border border-[rgba(136,102,102,0.2)] bg-white p-6 lg:p-5 xl:p-6 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05)] lg:sticky lg:top-10 lg:self-start">
       <div className="flex items-start justify-between gap-4">
         <h3 className="text-[21px] leading-snug font-bold text-[var(--brand-taupe-muted)]">
           Résumé de votre

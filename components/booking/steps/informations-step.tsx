@@ -227,35 +227,6 @@ function PersonInfoBlock({
   );
 }
 
-/** "Adulte 2 — 2/3" above a segmented bar, one segment per person, filled up to the current one. */
-function PeopleProgress({ current, total, label }: { current: number; total: number; label: string }) {
-  return (
-    <div>
-      <p className="text-[17px] font-bold text-[var(--color-gray-800)]" aria-live="polite">
-        {label} <span className="font-[450] text-[var(--color-gray-500)]">— {current + 1}/{total}</span>
-      </p>
-      <div
-        className="mt-2 flex gap-1.5"
-        role="progressbar"
-        aria-valuemin={1}
-        aria-valuemax={total}
-        aria-valuenow={current + 1}
-        aria-label="Progression des informations"
-      >
-        {Array.from({ length: total }, (_, index) => (
-          <span
-            key={index}
-            className={cn(
-              "h-1.5 flex-1 rounded-full transition-colors duration-300",
-              index <= current ? "bg-[var(--brand-taupe-muted)]" : "bg-[var(--color-gray-200)]",
-            )}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 /** A person already filled in, collapsed to one line above the current card. */
 function CompletedPersonLine({ person, info, onEdit }: { person: ContactPerson; info: ContactInfo; onEdit: () => void }) {
   const name = `${info.firstName} ${info.lastName}`.trim();
@@ -388,7 +359,6 @@ export function InformationsStep({
       )}
 
       <div ref={containerRef} className={cn("flex scroll-mt-6 flex-col gap-4", !connected && "mt-6")}>
-        {isMultiPerson && <PeopleProgress current={safeIndex} total={contacts.length} label={person.label} />}
 
         {isMultiPerson && safeIndex > 0 && (
           <div className="flex flex-col gap-2">

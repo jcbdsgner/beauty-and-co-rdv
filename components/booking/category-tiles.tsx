@@ -37,7 +37,7 @@ export function CategoryTiles({
             onClick={() => onSelectCategory(tile.id)}
             aria-pressed={isActive}
             className={cn(
-              "relative flex flex-col items-center gap-2 rounded-2xl border-2 bg-white px-3.5 py-[18px] text-center transition",
+              "relative flex flex-col items-center gap-2 rounded-2xl border-2 bg-white px-2 py-[18px] xl:px-3.5 text-center transition",
               isActive ? "border-[var(--brand-taupe-muted)]" : "border-[var(--color-gray-300)] hover:border-[var(--brand-taupe-muted)]/50",
             )}
           >
@@ -58,7 +58,7 @@ export function CategoryTiles({
                 className={tile.iconOnly ? undefined : "size-full object-cover"}
               />
             </span>
-            <span className="flex min-h-10 items-center justify-center text-[17px] font-bold text-[var(--color-gray-800)] [text-box-edge:cap_alphabetic] [text-box-trim:trim-both]">
+            <span className="flex min-h-10 items-center justify-center text-[15px] font-bold xl:text-[17px] text-[var(--color-gray-800)] [text-box-edge:cap_alphabetic] [text-box-trim:trim-both]">
               {tile.label}
             </span>
           </button>

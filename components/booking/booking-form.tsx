@@ -546,7 +546,7 @@ export function BookingForm() {
         <BookingProgress currentStep={step} />
       </div>
 
-      <div className={cn("mt-10 grid gap-10", step !== "confirmation" && "lg:grid-cols-[1fr_320px]")}>
+      <div className={cn("mt-10 grid gap-10", step !== "confirmation" && "lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px]")}>
         <div className="min-w-0">
           {step === "services" && (
             <ServicesStep
