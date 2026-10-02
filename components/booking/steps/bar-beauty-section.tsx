@@ -7,10 +7,14 @@ type BarBeautySectionProps = {
   onToggleDrink: (id: string) => void;
 };
 
+/** Always open below the recap — the whole menu with its photos, full width. */
 export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautySectionProps) {
   return (
-    <div>
-      <p className="text-[17px] text-[var(--color-gray-500)]">
+    <section>
+      <h3 className="font-[family-name:var(--font-prata)] text-[25px] font-bold text-[var(--brand-taupe-muted)]">
+        Le Bar Beauty
+      </h3>
+      <p className="mt-1 text-[17px] text-[var(--color-gray-500)]">
         Envie d&apos;une pause gourmande pendant votre soin ? Réservez votre boisson, elle vous sera
         servie sur place.
       </p>
@@ -26,7 +30,7 @@ export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautyS
               <div className="relative aspect-[24/31] w-full bg-[var(--brand-cream)]">
                 <Image
                   src={drink.image}
-                  alt={drink.name}
+                  alt=""
                   fill
                   sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
                   className="object-cover"
@@ -59,6 +63,6 @@ export function BarBeautySection({ reservedDrinkIds, onToggleDrink }: BarBeautyS
       </div>
 
       <p className="mt-3 text-[13px] text-[var(--color-gray-400)]">{barBeautyNote}</p>
-    </div>
+    </section>
   );
 }

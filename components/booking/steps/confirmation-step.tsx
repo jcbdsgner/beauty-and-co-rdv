@@ -279,207 +279,200 @@ export function ConfirmationStep({
 
       <div className="mt-6 h-px bg-[var(--color-gray-200)]" />
 
-      <div className="mt-6 rounded-2xl border border-[var(--color-gray-100)] bg-white p-4 sm:p-6">
-        <h3 className="text-[21px] font-bold text-[var(--color-gray-900)]">Votre rendez-vous</h3>
-        <div className="mt-4 flex flex-wrap gap-2.5">
-          <DetailRow icon="/images/rdv/icon-calendar.svg" label="Date" value={formattedDate} />
-          <DetailRow
-            icon="/images/rdv/icon-clock.svg"
-            label="Heure"
-            value={time ? `${time}${totalMinutes > 0 ? ` — ${addMinutes(time, totalMinutes)}` : ""}` : "—"}
-          />
-          <DetailRow icon="/images/rdv/icon-location.svg" label="Lieu" value={locationLabel ?? "—"} />
-        </div>
-
-        <div className="mt-4 rounded-lg bg-gradient-to-r from-[var(--brand-taupe-muted)] to-[rgba(128,101,98,0.9)] p-4">
-          <div className="flex items-center justify-between gap-4">
-            <span className="text-[19px] font-bold whitespace-nowrap text-white">Montant total</span>
-            <span className="text-[23px] font-bold whitespace-nowrap text-white">{formatPrice(grandTotal)}</span>
-          </div>
-          <p className="mt-1 text-[15px] text-white/85">
-            {grandTotal <= 0
-              ? "Déjà réglé — rien à payer aujourd'hui."
-              : `Acompte de ${formatPrice(DEPOSIT_AMOUNT)} à régler maintenant, le reste au salon.`}
-          </p>
-          {(drinksTotal > 0 || productsTotal > 0) && (
-            <p className="mt-1 text-[15px] text-white/85">
-              {[
-                `Soins ${formatPrice(totalPrice)}`,
-                drinksTotal > 0 && `Bar Beauty ${formatPrice(drinksTotal)}`,
-                productsTotal > 0 && `Extensions ${formatPrice(productsTotal)}`,
-              ]
-                .filter(Boolean)
-                .join(" · ")}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-3">
-        <CollapsibleSection
-          title="Vos prestations"
-          summary={`${pluralize(cartItems.length, "prestation")} · ${formatDurationMinutes(totalMinutes)} · ${formatPrice(totalPrice)}`}
-        >
-          <div className="flex flex-col gap-3">
-            {(showPersonGroups ? personLabels : [null]).map((personLabel) => {
-              const personItems = personLabel
-                ? cartItems.filter((item) => item.personLabel === personLabel)
-                : cartItems;
-              const { grouped, ungrouped } = groupCartItemsByPack(personItems);
-              const categories = Array.from(
-                new Map(ungrouped.map((item) => [item.categoryId, item.categoryLabel])),
-              );
-
-              return (
-                <div key={personLabel ?? "all"} className="flex flex-col gap-3">
-                  {personLabel && <p className="text-[17px] font-bold text-[var(--brand-taupe-muted)]">{personLabel}</p>}
-                  {categories.map(([categoryId, categoryLabel]) => (
-                    <CategoryGroup
-                      key={categoryId}
-                      categoryId={categoryId}
-                      categoryLabel={categoryLabel}
-                      items={ungrouped.filter((item) => item.categoryId === categoryId)}
-                    />
-                  ))}
-                  {grouped.map((group) => (
-                    <PackGroupCard key={group.key} group={group} />
-                  ))}
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="mt-3 flex flex-col gap-3 rounded-2xl bg-[rgba(216,184,180,0.5)] px-4 py-3">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-[17px] text-[var(--on-core-brand-color)]">
-                <Image src="/images/rdv/icon-clock.svg" alt="" width={20} height={20} />
-                Durée totale des soins
-              </span>
-              <span className="text-[19px] font-bold text-[var(--on-core-brand-color)]">{formatDurationMinutes(totalMinutes)}</span>
-            </div>
-            <div className="h-px bg-[rgba(45,45,45,0.1)]" />
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-[17px] text-[var(--on-core-brand-color)]">
-                <Image src="/images/rdv/icon-price-tag.svg" alt="" width={20} height={20} />
-                Prix total des soins
-              </span>
-              <span className="text-[19px] font-bold text-[var(--on-core-brand-color)]">
-                {formatPrice(totalPrice)}
-              </span>
+      <div className="mt-6 grid grid-cols-1 items-start gap-3 lg:grid-cols-2 lg:gap-6">
+        {/* When and who on the left; what and how much on the right — the total follows the
+            prestations it adds up. */}
+        <div className="flex flex-col gap-3">
+          <div className="rounded-2xl border border-[var(--color-gray-100)] bg-white p-4 sm:p-6">
+            <h3 className="text-[21px] font-bold text-[var(--color-gray-900)]">Votre rendez-vous</h3>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              <DetailRow icon="/images/rdv/icon-calendar.svg" label="Date" value={formattedDate} />
+              <DetailRow
+                icon="/images/rdv/icon-clock.svg"
+                label="Heure"
+                value={time ? `${time}${totalMinutes > 0 ? ` — ${addMinutes(time, totalMinutes)}` : ""}` : "—"}
+              />
+              <DetailRow icon="/images/rdv/icon-location.svg" label="Lieu" value={locationLabel ?? "—"} />
             </div>
           </div>
-        </CollapsibleSection>
 
-        <CollapsibleSection
-          title="Vos coordonnées"
-          summary={contacts.length > 1 ? `${pluralize(contacts.length, "personne")} · ${primaryName || "—"} (contact principal)` : primaryName || "—"}
-        >
-          <div className="flex flex-col gap-4">
-            {contacts.map((contact) => {
-              const info = contactInfoByPerson[contact.id] ?? emptyContactInfo;
-              const fields = new Set(contactFieldsFor(contact.contactLevel));
-              const country = findCountry(info.phoneCountry);
-              return (
-                <div key={contact.id}>
-                  <div className="mb-2 flex items-center justify-between gap-4">
-                    {contacts.length > 1 ? (
-                      <p className="min-w-0 text-[17px] font-bold text-[var(--brand-taupe-muted)]">
-                        {contact.label}
-                        {contact.contactLevel === "primary" && " (contact principal)"}
-                      </p>
-                    ) : (
-                      <span />
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => onEditContact(contact.id)}
-                      aria-label={contacts.length > 1 ? `Modifier — ${contact.label}` : "Modifier vos coordonnées"}
-                      className="shrink-0 text-[16px] font-[450] text-[var(--button-2-color)] underline underline-offset-2 hover:opacity-80"
-                    >
-                      Modifier
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    <DetailRow
-                      icon="/images/rdv/icon-user.svg"
-                      label="Prénom et nom"
-                      value={`${info.firstName} ${info.lastName}`.trim() || "—"}
-                    />
-                    {fields.has("email") && (
-                      <DetailRow icon="/images/rdv/icon-envelope.svg" label="Email" value={info.email || "—"} />
-                    )}
-                    {fields.has("phone") && (
-                      <DetailRow
-                        icon="/images/rdv/icon-phone.svg"
-                        label="Téléphone"
-                        value={info.phone ? `+${country.dialCode} ${info.phone}` : "—"}
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </CollapsibleSection>
-      </div>
-
-      {/* Optional extras, kept apart from the recap above: they add to the visit rather than describe it. */}
-      <section className="mt-6 rounded-2xl bg-[rgba(237,220,218,0.4)] p-4 sm:p-6">
-        <h3 className="text-[21px] font-bold text-[var(--color-gray-900)]">Pour compléter votre visite</h3>
-        <p className="mt-1 text-[17px] text-[var(--text-secondary)]">Optionnel — ajouté au montant total.</p>
-        <div className="mt-4 flex flex-col gap-3">
           <CollapsibleSection
-            title="Le Bar Beauty"
-            brandTitle
-            summary={
-              reservedDrinksCount > 0
-                ? `${pluralize(reservedDrinksCount, "boisson réservée", "boissons réservées")} · ${formatPrice(drinksTotal)}`
-                : "Réservez une boisson pour votre soin"
-            }
+            title="Vos coordonnées"
+            summary={contacts.length > 1 ? `${pluralize(contacts.length, "personne")} · ${primaryName || "—"} (contact principal)` : primaryName || "—"}
           >
-            <BarBeautySection
-              reservedDrinkIds={reservedDrinkIds}
-              onToggleDrink={(id) => setReservedDrinkIds((prev) => toggleInSet(prev, id))}
-            />
+            <div className="flex flex-col gap-4">
+              {contacts.map((contact) => {
+                const info = contactInfoByPerson[contact.id] ?? emptyContactInfo;
+                const fields = new Set(contactFieldsFor(contact.contactLevel));
+                const country = findCountry(info.phoneCountry);
+                return (
+                  <div key={contact.id}>
+                    <div className="mb-2 flex items-center justify-between gap-4">
+                      {contacts.length > 1 ? (
+                        <p className="min-w-0 text-[17px] font-bold text-[var(--brand-taupe-muted)]">
+                          {contact.label}
+                          {contact.contactLevel === "primary" && " (contact principal)"}
+                        </p>
+                      ) : (
+                        <span />
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => onEditContact(contact.id)}
+                        aria-label={contacts.length > 1 ? `Modifier — ${contact.label}` : "Modifier vos coordonnées"}
+                        className="shrink-0 text-[16px] font-[450] text-[var(--button-2-color)] underline underline-offset-2 hover:opacity-80"
+                      >
+                        Modifier
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2.5">
+                      <DetailRow
+                        icon="/images/rdv/icon-user.svg"
+                        label="Prénom et nom"
+                        value={`${info.firstName} ${info.lastName}`.trim() || "—"}
+                      />
+                      {fields.has("email") && (
+                        <DetailRow icon="/images/rdv/icon-envelope.svg" label="Email" value={info.email || "—"} />
+                      )}
+                      {fields.has("phone") && (
+                        <DetailRow
+                          icon="/images/rdv/icon-phone.svg"
+                          label="Téléphone"
+                          value={info.phone ? `+${country.dialCode} ${info.phone}` : "—"}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </CollapsibleSection>
 
-          {showExtensions && (
-            <CollapsibleSection
-              title="Extensions"
-              summary={
-                productsCount > 0
-                  ? `${pluralize(productsCount, "article")} · ${formatPrice(productsTotal)}`
-                  : "Ajoutez des extensions à votre prestation coiffure"
-              }
-            >
-              <BoutiquePreviewSection
-                productQuantities={productQuantities}
-                onQuantityChange={handleProductQuantityChange}
-                selectedSizeByProductId={selectedSizeByProductId}
-                onSizeChange={handleProductSizeChange}
-              />
-            </CollapsibleSection>
-          )}
         </div>
-      </section>
 
-      <div
-        className={cn(
-          "mt-6 rounded-2xl border border-[var(--color-gray-100)] bg-white p-4 sm:p-6",
-          !hasFocusedNote && "attention-shake",
-        )}
-      >
-        <p className="text-[19px] font-bold text-[var(--color-gray-900)]">
-          Note pour le salon <span className="text-[17px] text-[var(--color-gray-500)]">(optionnel)</span>
-        </p>
-        <textarea
-          value={note}
-          onChange={(event) => onNoteChange(event.target.value)}
-          onFocus={() => setHasFocusedNote(true)}
-          placeholder="Une précision, une demande particulière…"
-          rows={3}
-          className="mt-3 w-full rounded-xl border border-[var(--color-border-light)] p-4 text-[17px] text-[var(--color-gray-800)] outline-none focus:border-[var(--brand-taupe-muted)]"
+        <div className="flex flex-col gap-3">
+          <CollapsibleSection
+            title="Vos prestations"
+            summary={`${pluralize(cartItems.length, "prestation")} · ${formatDurationMinutes(totalMinutes)} · ${formatPrice(totalPrice)}`}
+          >
+            <div className="flex flex-col gap-3">
+              {(showPersonGroups ? personLabels : [null]).map((personLabel) => {
+                const personItems = personLabel
+                  ? cartItems.filter((item) => item.personLabel === personLabel)
+                  : cartItems;
+                const { grouped, ungrouped } = groupCartItemsByPack(personItems);
+                const categories = Array.from(
+                  new Map(ungrouped.map((item) => [item.categoryId, item.categoryLabel])),
+                );
+
+                return (
+                  <div key={personLabel ?? "all"} className="flex flex-col gap-3">
+                    {personLabel && <p className="text-[17px] font-bold text-[var(--brand-taupe-muted)]">{personLabel}</p>}
+                    {categories.map(([categoryId, categoryLabel]) => (
+                      <CategoryGroup
+                        key={categoryId}
+                        categoryId={categoryId}
+                        categoryLabel={categoryLabel}
+                        items={ungrouped.filter((item) => item.categoryId === categoryId)}
+                      />
+                    ))}
+                    {grouped.map((group) => (
+                      <PackGroupCard key={group.key} group={group} />
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-3 flex flex-col gap-3 rounded-2xl bg-[rgba(216,184,180,0.5)] px-4 py-3">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2 text-[17px] text-[var(--on-core-brand-color)]">
+                  <Image src="/images/rdv/icon-clock.svg" alt="" width={20} height={20} />
+                  Durée totale des soins
+                </span>
+                <span className="text-[19px] font-bold text-[var(--on-core-brand-color)]">{formatDurationMinutes(totalMinutes)}</span>
+              </div>
+              <div className="h-px bg-[rgba(45,45,45,0.1)]" />
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2 text-[17px] text-[var(--on-core-brand-color)]">
+                  <Image src="/images/rdv/icon-price-tag.svg" alt="" width={20} height={20} />
+                  Prix total des soins
+                </span>
+                <span className="text-[19px] font-bold text-[var(--on-core-brand-color)]">
+                  {formatPrice(totalPrice)}
+                </span>
+              </div>
+            </div>
+          </CollapsibleSection>
+
+          <div className="rounded-2xl bg-gradient-to-r from-[var(--brand-taupe-muted)] to-[rgba(128,101,98,0.9)] p-4">
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-[19px] font-bold whitespace-nowrap text-white">Montant total</span>
+              <span className="text-[23px] font-bold whitespace-nowrap text-white">{formatPrice(grandTotal)}</span>
+            </div>
+            <p className="mt-1 text-[15px] text-white/85">
+              {grandTotal <= 0
+                ? "Déjà réglé — rien à payer aujourd'hui."
+                : `Acompte de ${formatPrice(DEPOSIT_AMOUNT)} à régler maintenant, le reste au salon.`}
+            </p>
+            {(drinksTotal > 0 || productsTotal > 0) && (
+              <p className="mt-1 text-[15px] text-white/85">
+                {[
+                  `Soins ${formatPrice(totalPrice)}`,
+                  drinksTotal > 0 && `Bar Beauty ${formatPrice(drinksTotal)}`,
+                  productsTotal > 0 && `Extensions ${formatPrice(productsTotal)}`,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+            )}
+          </div>
+          <div
+            className={cn(
+              "rounded-2xl border border-[var(--color-gray-100)] bg-white p-4 sm:p-6",
+              !hasFocusedNote && "attention-shake",
+            )}
+          >
+            <p className="text-[19px] font-bold text-[var(--color-gray-900)]">
+              Note pour le salon <span className="text-[17px] text-[var(--color-gray-500)]">(optionnel)</span>
+            </p>
+            <textarea
+              value={note}
+              onChange={(event) => onNoteChange(event.target.value)}
+              onFocus={() => setHasFocusedNote(true)}
+              placeholder="Une précision, une demande particulière…"
+              rows={3}
+              className="mt-3 w-full rounded-xl border border-[var(--color-border-light)] p-4 text-[17px] text-[var(--color-gray-800)] outline-none focus:border-[var(--brand-taupe-muted)]"
+            />
+          </div>
+
+        </div>
+      </div>
+
+      {/* Optional extras, below the recap: they add to the visit rather than describe it. */}
+      <div className="mt-10 flex flex-col gap-6">
+        <BarBeautySection
+          reservedDrinkIds={reservedDrinkIds}
+          onToggleDrink={(id) => setReservedDrinkIds((prev) => toggleInSet(prev, id))}
         />
+
+        {showExtensions && (
+          <CollapsibleSection
+            title="Extensions"
+            summary={
+              productsCount > 0
+                ? `${pluralize(productsCount, "article")} · ${formatPrice(productsTotal)}`
+                : "Ajoutez des extensions à votre prestation coiffure"
+            }
+          >
+            <BoutiquePreviewSection
+              productQuantities={productQuantities}
+              onQuantityChange={handleProductQuantityChange}
+              selectedSizeByProductId={selectedSizeByProductId}
+              onSizeChange={handleProductSizeChange}
+            />
+          </CollapsibleSection>
+        )}
       </div>
 
       <div className="mt-6 h-px bg-[var(--color-gray-200)]" />
