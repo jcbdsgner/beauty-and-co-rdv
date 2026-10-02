@@ -60,7 +60,7 @@ export function CategoryTiles({
                   className={tile.iconOnly ? undefined : "size-full object-cover"}
                 />
               </span>
-              <span className="flex min-h-10 items-center justify-center text-[15px] font-bold xl:text-[17px] text-[var(--color-gray-800)] [text-box-edge:cap_alphabetic] [text-box-trim:trim-both]">
+              <span className="flex min-h-10 items-center justify-center text-[15px] font-bold xl:text-[16px] text-[var(--color-gray-800)] [text-box-edge:cap_alphabetic] [text-box-trim:trim-both]">
                 {tile.label}
               </span>
             </button>
