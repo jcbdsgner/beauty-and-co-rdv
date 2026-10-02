@@ -266,9 +266,20 @@ export function ServicesStep({
     }
   }, [activePersonId, scrollTarget]);
 
-  // Who "Continuer" moves on to once the active person is done — named in the button, like the
-  // Coordonnées step does.
+  // Like the Coordonnées step, the footer walks through people one by one: "Continuer" names who
+  // comes next once the active person is done, and "Précédent" steps back to the previous one.
   const nextPerson = people[activePersonIndex + 1];
+  const previousPerson = activePersonIndex > 0 ? people[activePersonIndex - 1] : undefined;
+
+  const handleBack = () => {
+    if (!previousPerson) {
+      onCancel();
+      return;
+    }
+    setShowMissingSelectionWarning(false);
+    setHighlightPersonId(null);
+    setSelectedPersonId(previousPerson.id);
+  };
 
   const handleContinue = () => {
     // Answering required questions for prestations already chosen takes priority over nudging
@@ -515,9 +526,9 @@ export function ServicesStep({
           </p>
         )}
         <StepFooter
-          onBack={onCancel}
+          onBack={handleBack}
           onContinue={handleContinue}
-          backLabel="Annuler"
+          backLabel={previousPerson ? "Précédent" : "Annuler"}
           continueLabel={nextPerson ? `Continuer — ${nextPerson.label}` : "Continuer"}
         />
       </div>
