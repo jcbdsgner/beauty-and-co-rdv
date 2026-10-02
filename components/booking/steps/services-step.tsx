@@ -284,16 +284,25 @@ export function ServicesStep({
       setScrollTarget("questions");
       return;
     }
+    if (peopleMissingSelection.some((person) => person.id === activePersonId)) {
+      setShowMissingSelectionWarning(true);
+      setScrollTarget("category");
+      return;
+    }
+    // Done with this person: "Continuer" just moves on to the next one, no warning needed — the
+    // person-switch effect above brings their "Services pour …" title into view.
+    const nextPerson = people[activePersonIndex + 1];
+    if (nextPerson) {
+      setShowMissingSelectionWarning(false);
+      setHighlightPersonId(null);
+      setSelectedPersonId(nextPerson.id);
+      return;
+    }
     const otherPersonMissingSelection = peopleMissingSelection.find((person) => person.id !== activePersonId);
     if (otherPersonMissingSelection) {
       setShowMissingSelectionWarning(true);
       setHighlightPersonId(otherPersonMissingSelection.id);
       setScrollTarget("person");
-      return;
-    }
-    if (peopleMissingSelection.length > 0) {
-      setShowMissingSelectionWarning(true);
-      setScrollTarget("category");
       return;
     }
     onContinue();
