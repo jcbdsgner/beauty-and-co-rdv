@@ -45,23 +45,23 @@ export function PackList({ selectedSubServiceIds, onTogglePack }: PackListProps)
             <li
               key={pack.id}
               className={cn(
-                "rounded-xl border-2 transition",
+                "@container rounded-xl border-2 transition",
                 selected ? "border-[var(--brand-taupe-muted)]" : "border-[var(--color-border-light)]",
               )}
             >
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-3 p-3 sm:flex-nowrap sm:p-4">
+              <div className="flex flex-col gap-3 p-3 @md:p-4 @xl:flex-row @xl:items-center @xl:gap-4">
                 <button
                   type="button"
                   onClick={() => toggleOpen(pack.id)}
                   aria-expanded={open}
                   aria-controls={bodyId}
-                  className="flex min-w-0 flex-1 basis-full items-center gap-3 text-left sm:basis-auto"
+                  className="flex min-w-0 flex-1 items-center gap-3 text-left"
                 >
                   <span className="relative size-12 shrink-0 overflow-hidden rounded-lg">
                     <Image src={pack.image} alt="" fill sizes="48px" className="object-cover" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[17px] leading-tight font-bold text-[var(--color-gray-800)]">{pack.label}</span>
+                    <span className="block truncate text-[17px] leading-tight font-bold text-[var(--color-gray-800)]">{pack.label}</span>
                     <span className="mt-0.5 block text-[14px] text-[var(--color-gray-400)]">
                       {prestations.length} prestations · {formatDurationMinutes(totalMinutes)}
                     </span>
@@ -77,8 +77,8 @@ export function PackList({ selectedSubServiceIds, onTogglePack }: PackListProps)
                   </span>
                 </button>
 
-                <div className="flex w-full items-center justify-between gap-3 pl-[60px] sm:w-auto sm:shrink-0 sm:pl-0">
-                  <p className="flex flex-col whitespace-nowrap sm:items-end">
+                <div className="flex items-center justify-between gap-3 pl-[60px] @xl:shrink-0 @xl:pl-0">
+                  <p className="flex flex-col whitespace-nowrap @xl:min-w-[7.5rem] @xl:items-end">
                     <span className="text-[17px] leading-tight font-bold text-[var(--color-gray-800)]">
                       {formatPrice(getPackPrice(pack))}
                     </span>
@@ -91,7 +91,7 @@ export function PackList({ selectedSubServiceIds, onTogglePack }: PackListProps)
                     onClick={() => onTogglePack(pack)}
                     aria-pressed={selected}
                     className={cn(
-                      "shrink-0 rounded-full border border-[var(--brand-taupe-muted)] px-[13px] py-[7px] text-[15px] font-[450] whitespace-nowrap transition",
+                      "min-w-[120px] shrink-0 rounded-full border border-[var(--brand-taupe-muted)] px-[13px] py-[7px] text-[15px] font-[450] whitespace-nowrap transition",
                       selected ? "bg-[var(--brand-taupe-muted)] text-white" : "bg-white text-[var(--brand-taupe-muted)] hover:bg-[var(--brand-taupe-muted)]/5",
                     )}
                   >
@@ -101,7 +101,7 @@ export function PackList({ selectedSubServiceIds, onTogglePack }: PackListProps)
               </div>
 
               {open && (
-                <div id={bodyId} className="border-t border-[var(--color-gray-200)] px-3 py-4 sm:px-4">
+                <div id={bodyId} className="border-t border-[var(--color-gray-200)] px-3 py-4 @md:px-4">
                   <p className="text-[15px] text-[var(--color-gray-500)]">{pack.description}</p>
                   <ul className="mt-3 flex flex-col gap-1.5">
                     {prestations.map((prestation) => (
