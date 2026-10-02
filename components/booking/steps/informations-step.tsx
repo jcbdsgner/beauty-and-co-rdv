@@ -331,7 +331,8 @@ export function InformationsStep({
       )}
 
       <div ref={containerRef} className={cn("flex scroll-mt-6 flex-col gap-4", !connected && "mt-6")}>
-        <div className="relative overflow-hidden">
+        {/* Not clipped: the leaving card is swept right off the screen (the page clips it at the edge). */}
+        <div className="relative">
           <div
             key={person.id}
             className={cn(
@@ -355,7 +356,7 @@ export function InformationsStep({
               inert
               onAnimationEnd={() => setLeaving(null)}
               className={cn(
-                "pointer-events-none absolute inset-x-0 top-0 rounded-2xl border border-[var(--color-gray-200)] bg-white p-[25px]",
+                "pointer-events-none absolute inset-x-0 top-0 z-10 rounded-2xl border border-[var(--color-gray-200)] bg-white p-[25px] shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
                 leaving.direction === "forward" ? "person-leave-forward" : "person-leave-back",
               )}
             >

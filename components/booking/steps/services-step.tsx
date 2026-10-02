@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { CategoryPrestationList } from "@/components/booking/category-prestation-list";
 import { CategoryTiles, type CategoryTile } from "@/components/booking/category-tiles";
@@ -23,6 +23,10 @@ import { cn, toSentenceCase } from "@/lib/utils";
 
 // Not a real BookingService: a pseudo-category listing the Packs, shown first to adults (every
 // Pack bundles adult-only prestations) — see PackList.
+function prefersReducedMotion() {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 const PACKS_CATEGORY_ID = "packs";
 const packsTile: CategoryTile = {
   id: PACKS_CATEGORY_ID,
@@ -166,6 +170,36 @@ export function ServicesStep({
   const prestationListRef = useRef<HTMLDivElement>(null);
   const questionsRef = useRef<HTMLDivElement>(null);
   const personContentRef = useRef<HTMLDivElement>(null);
+
+  // The previous person's content is swept off-screen while the next one lands (see the person
+  // card animations in globals.css). Their content is keyed by person, so a frozen copy of its DOM
+  // is taken just as it unmounts and replayed in an inert overlay until its exit animation ends.
+  const leavingHostRef = useRef<HTMLDivElement>(null);
+  const leavingSnapshotRef = useRef<HTMLElement | null>(null);
+  const setPersonContent = useCallback((node: HTMLDivElement | null) => {
+    personContentRef.current = node;
+    if (!node) return;
+    return () => {
+      leavingSnapshotRef.current = node.cloneNode(true) as HTMLElement;
+    };
+  }, []);
+  useLayoutEffect(() => {
+    const snapshot = leavingSnapshotRef.current;
+    leavingSnapshotRef.current = null;
+    const host = leavingHostRef.current;
+    if (!snapshot || !host || !slide.from || prefersReducedMotion()) return;
+    for (const element of [snapshot, ...snapshot.querySelectorAll("[id]")]) element.removeAttribute("id");
+    // Opaque, like a sheet lifted off the page — otherwise both people's content would show
+    // through each other while it's swept away.
+    snapshot.className = cn(
+      "rounded-2xl bg-[var(--color-bg-subtle)] shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
+      slide.from === "right" ? "person-leave-forward" : "person-leave-back",
+    );
+    snapshot.addEventListener("animationend", (event) => {
+      if (event.target === snapshot) snapshot.remove();
+    });
+    host.replaceChildren(snapshot);
+  }, [activePersonId, slide.from]);
 
   const activeCategory =
     availableServices.find((service) => service.id === activeCategoryId) ?? availableServices[0];
@@ -341,75 +375,80 @@ export function ServicesStep({
         </div>
       )}
 
-      {/* Keyed by person so switching remounts it and replays the slide-in — see `slide` above. */}
-      <div
-        key={activePersonId}
-        ref={personContentRef}
-        className={cn(
-          // Leaves room for the pinned person toggle above when scrolled back into view.
-          "scroll-mt-24",
-          slide.from === "right" && "person-slide-from-right",
-          slide.from === "left" && "person-slide-from-left",
-        )}
-      >
-        {people.length > 1 && activePerson ? (
-          <>
-            <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Services pour {activePerson.label}</h2>
-            <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">
-              Passez d&apos;une personne à l&apos;autre avec le sélecteur ci-dessus.
-            </p>
-          </>
-        ) : (
-          <>
-            <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Choisir vos services</h2>
-            <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">
-              Choisissez les services que vous souhaitez recevoir.
-            </p>
-          </>
-        )}
-
-        {(() => {
-          const activePersonFreeCount = coverage?.get(activePersonId)?.size ?? 0;
-          if (activePersonFreeCount === 0) return null;
-          return (
-            <div className="mt-4 flex items-center gap-3 rounded-xl bg-[rgba(237,220,218,0.35)] px-4 py-3">
-              <Image src="/images/rdv/icon-price-tag.svg" alt="" width={20} height={20} className="shrink-0" />
-              <p className="text-[15px] font-[450] text-[var(--brand-taupe-muted)]">
-                <span className="font-bold">Vos avantages</span> appliqués — {activePersonFreeCount} prestation
-                {activePersonFreeCount > 1 ? "s" : ""} déjà payée{activePersonFreeCount > 1 ? "s" : ""} pour{" "}
-                {people.find((person) => person.id === activePersonId)?.label ?? "vous"}.
-              </p>
-            </div>
-          );
-        })()}
-
-        <div className="mt-6">
-          <CategoryTiles
-            tiles={categoryTiles}
-            activeCategoryId={activeCategoryId}
-            onSelectCategory={setSelectedCategoryId}
-            categoriesWithSelection={categoriesWithSelection}
-          />
-        </div>
-
-        <div ref={prestationListRef} className="mt-6">
-          {activeCategoryId === PACKS_CATEGORY_ID ? (
-            <PackList selectedSubServiceIds={activeSelection} onTogglePack={togglePack} />
-          ) : (
-            <CategoryPrestationList
-              category={activeCategory}
-              selectedSubServiceIds={activeSelection}
-              onToggleSubService={(subServiceId) => onToggleSubService(activePersonId, subServiceId)}
-              questionAnswers={questionAnswers[answerKey(activePersonId, activeCategoryId)] ?? {}}
-              onAnswerQuestion={(questionId, value) =>
-                onAnswerQuestion(activePersonId, activeCategoryId, questionId, value)
-              }
-              showQuestionErrors={showMissingQuestionsWarning}
-              questionsRef={questionsRef}
-              coverageBySubServiceId={coverage?.get(activePersonId)}
-            />
+      {/* The content can be very tall, so the sweep pivots near its top (the part in view) rather
+          than low on the card like Coordonnées does. */}
+      <div className="relative [--person-sweep-origin:50%_320px]">
+        {/* Keyed by person so switching remounts it and replays the entrance — see `slide` above. */}
+        <div
+          key={activePersonId}
+          ref={setPersonContent}
+          className={cn(
+            // Leaves room for the pinned person toggle above when scrolled back into view.
+            "scroll-mt-24",
+            slide.from === "right" && "person-enter-forward",
+            slide.from === "left" && "person-enter-back",
           )}
+        >
+          {people.length > 1 && activePerson ? (
+            <>
+              <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Services pour {activePerson.label}</h2>
+              <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">
+                Passez d&apos;une personne à l&apos;autre avec le sélecteur ci-dessus.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-[21px] font-bold text-[var(--color-gray-800)]">Choisir vos services</h2>
+              <p className="mt-1 text-[19px] text-[var(--color-gray-500)]">
+                Choisissez les services que vous souhaitez recevoir.
+              </p>
+            </>
+          )}
+
+          {(() => {
+            const activePersonFreeCount = coverage?.get(activePersonId)?.size ?? 0;
+            if (activePersonFreeCount === 0) return null;
+            return (
+              <div className="mt-4 flex items-center gap-3 rounded-xl bg-[rgba(237,220,218,0.35)] px-4 py-3">
+                <Image src="/images/rdv/icon-price-tag.svg" alt="" width={20} height={20} className="shrink-0" />
+                <p className="text-[15px] font-[450] text-[var(--brand-taupe-muted)]">
+                  <span className="font-bold">Vos avantages</span> appliqués — {activePersonFreeCount} prestation
+                  {activePersonFreeCount > 1 ? "s" : ""} déjà payée{activePersonFreeCount > 1 ? "s" : ""} pour{" "}
+                  {people.find((person) => person.id === activePersonId)?.label ?? "vous"}.
+                </p>
+              </div>
+            );
+          })()}
+
+          <div className="mt-6">
+            <CategoryTiles
+              tiles={categoryTiles}
+              activeCategoryId={activeCategoryId}
+              onSelectCategory={setSelectedCategoryId}
+              categoriesWithSelection={categoriesWithSelection}
+            />
+          </div>
+
+          <div ref={prestationListRef} className="mt-6">
+            {activeCategoryId === PACKS_CATEGORY_ID ? (
+              <PackList selectedSubServiceIds={activeSelection} onTogglePack={togglePack} />
+            ) : (
+              <CategoryPrestationList
+                category={activeCategory}
+                selectedSubServiceIds={activeSelection}
+                onToggleSubService={(subServiceId) => onToggleSubService(activePersonId, subServiceId)}
+                questionAnswers={questionAnswers[answerKey(activePersonId, activeCategoryId)] ?? {}}
+                onAnswerQuestion={(questionId, value) =>
+                  onAnswerQuestion(activePersonId, activeCategoryId, questionId, value)
+                }
+                showQuestionErrors={showMissingQuestionsWarning}
+                questionsRef={questionsRef}
+                coverageBySubServiceId={coverage?.get(activePersonId)}
+              />
+            )}
+          </div>
         </div>
+        <div ref={leavingHostRef} aria-hidden inert className="pointer-events-none absolute inset-x-0 top-0 z-10" />
       </div>
 
       {showUpsell && (

@@ -192,68 +192,39 @@ input:-webkit-autofill:active {
   }
 }
 
-/* Services step: switching to another attendee slides their content in from the side matching
-   their position in the person toggle (next person → from the right, previous → from the left),
-   so the change of "who am I choosing for" is felt, not just read. */
-.person-slide-from-right {
-  animation: person-slide-from-right 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+/* Services and Coordonnées steps: switching person deals them like cards on a table. The current
+   one is swept off-screen with a flat tilt while the next one lands from the other side, slightly
+   tilted, and straightens out. Forward (next person) sweeps left; going back mirrors it. The
+   pivot sits low on the card, like a finger flicking it; `--person-sweep-origin` moves it up for
+   tall content (Services) so the visible part keeps the same feel. Reduced motion swaps instantly. */
+@keyframes person-sweep-in-from-right {
+  from { opacity: 0; transform: translateX(72px) rotate(5deg); }
+  to { opacity: 1; transform: translateX(0) rotate(0); }
 }
-
-.person-slide-from-left {
-  animation: person-slide-from-left 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+@keyframes person-sweep-in-from-left {
+  from { opacity: 0; transform: translateX(-72px) rotate(-5deg); }
+  to { opacity: 1; transform: translateX(0) rotate(0); }
 }
-
-@keyframes person-slide-from-right {
-  from {
-    opacity: 0;
-    transform: translateX(48px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+@keyframes person-sweep-out-to-left {
+  0% { opacity: 1; transform: translateX(0) rotate(0); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-130%) rotate(-16deg); }
 }
-
-@keyframes person-slide-from-left {
-  from {
-    opacity: 0;
-    transform: translateX(-48px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+@keyframes person-sweep-out-to-right {
+  0% { opacity: 1; transform: translateX(0) rotate(0); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(130%) rotate(16deg); }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .person-slide-from-right,
-  .person-slide-from-left {
-    animation: none;
-  }
+.person-enter-forward,
+.person-enter-back,
+.person-leave-forward,
+.person-leave-back {
+  transform-origin: var(--person-sweep-origin, 50% 85%);
 }
-
-/* Informations step: one person at a time — the current card slides out one way while the next
-   one slides in from the other (see InformationsStep). Reduced motion swaps them instantly. */
-@keyframes person-slide-in-from-right {
-  from { opacity: 0; transform: translateX(48px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes person-slide-in-from-left {
-  from { opacity: 0; transform: translateX(-48px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes person-slide-out-to-left {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(-48px); }
-}
-@keyframes person-slide-out-to-right {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(48px); }
-}
-.person-enter-forward { animation: person-slide-in-from-right 320ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both; }
-.person-enter-back { animation: person-slide-in-from-left 320ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both; }
-.person-leave-forward { animation: person-slide-out-to-left 220ms ease-in both; }
-.person-leave-back { animation: person-slide-out-to-right 220ms ease-in both; }
+.person-enter-forward { animation: person-sweep-in-from-right 440ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both; }
+.person-enter-back { animation: person-sweep-in-from-left 440ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both; }
+.person-leave-forward { animation: person-sweep-out-to-left 420ms cubic-bezier(0.55, 0, 0.75, 0.2) both; }
+.person-leave-back { animation: person-sweep-out-to-right 420ms cubic-bezier(0.55, 0, 0.75, 0.2) both; }
 
 @media (prefers-reduced-motion: reduce) {
   .person-enter-forward,
