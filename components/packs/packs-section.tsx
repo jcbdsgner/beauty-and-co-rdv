@@ -28,7 +28,7 @@ function SectionHeading({ title, size, children }: SectionHeadingProps) {
 }
 
 // Section partagée entre l'accueil (« md », à l'échelle des autres sections) et /abonnement (« lg », au niveau du titre Abonnements).
-export function PacksSection({ className = "py-16 sm:py-24", size = "md" }: { className?: string; size?: "md" | "lg" }) {
+export function PacksSection({ className = "py-12 sm:py-14", size = "md" }: { className?: string; size?: "md" | "lg" }) {
   return (
     <section id="packs" className={`scroll-mt-24 bg-[rgba(237,220,218,0.25)] px-4 ${className}`}>
       <SectionHeading title="Packs" size={size}>
