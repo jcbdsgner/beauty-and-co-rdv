@@ -11,9 +11,6 @@ export function PackCard({ pack }: { pack: Pack }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-[var(--color-border-light)] bg-white">
       <div className="relative aspect-[4/3] w-full shrink-0">
-        <span className="absolute top-3 left-3 z-10 rounded-full bg-white px-2.5 py-1 text-[13px] font-bold text-[var(--button-2-color)] shadow-sm">
-          −20&nbsp;%
-        </span>
         {pack.video ? (
           <video
             aria-hidden
