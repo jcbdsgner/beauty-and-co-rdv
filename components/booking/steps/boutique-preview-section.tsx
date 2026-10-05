@@ -9,6 +9,8 @@ type BoutiquePreviewSectionProps = {
   onSizeChange: (id: string, size: string) => void;
 };
 
+/** Always open below the Bar Beauty, like it — only offered when someone booking Coiffure won't
+ *  bring their own extensions (see needsSalonExtensions). */
 export function BoutiquePreviewSection({
   productQuantities,
   onQuantityChange,
@@ -16,8 +18,11 @@ export function BoutiquePreviewSection({
   onSizeChange,
 }: BoutiquePreviewSectionProps) {
   return (
-    <div>
-      <p className="text-[17px] text-[var(--color-gray-500)]">
+    <section>
+      <h3 className="font-[family-name:var(--font-prata)] text-[25px] font-bold text-[var(--brand-taupe-muted)]">
+        Les Extensions
+      </h3>
+      <p className="mt-1 text-[17px] text-[var(--color-gray-500)]">
         Réservez les mêmes extensions que nos coiffeuses utilisent, à récupérer le jour de votre rendez-vous.
       </p>
 
@@ -114,6 +119,6 @@ export function BoutiquePreviewSection({
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

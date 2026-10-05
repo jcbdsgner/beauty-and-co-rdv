@@ -71,6 +71,8 @@ export function BookingForm() {
 
   const [contactInfoByPerson, setContactInfoByPerson] = useState<Record<string, ContactInfo>>({});
   const [note, setNote] = useState("");
+  // Not part of the sessionStorage draft — see lib/booking/attachments.
+  const [noteAttachments, setNoteAttachments] = useState<File[]>([]);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [showConfirmedModal, setShowConfirmedModal] = useState(false);
@@ -608,6 +610,8 @@ export function BookingForm() {
               cartItems={cartItems}
               note={note}
               onNoteChange={setNote}
+              noteAttachments={noteAttachments}
+              onNoteAttachmentsChange={setNoteAttachments}
               locationLabel={locationLabel}
               date={selectedDate}
               time={selectedTime}

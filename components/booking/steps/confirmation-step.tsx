@@ -2,6 +2,7 @@ import { type ReactNode, useId, useState } from "react";
 import Image from "next/image";
 import { BarBeautySection } from "@/components/booking/steps/bar-beauty-section";
 import { BoutiquePreviewSection } from "@/components/booking/steps/boutique-preview-section";
+import { NoteAttachments } from "@/components/booking/note-attachments";
 import { StepFooter } from "@/components/booking/steps/step-footer";
 import { bookingServices } from "@/lib/data/booking-services";
 import { barBeautyDrinks } from "@/lib/data/bar-beauty";
@@ -32,6 +33,8 @@ type ConfirmationStepProps = {
   cartItems: CartItem[];
   note: string;
   onNoteChange: (note: string) => void;
+  noteAttachments: File[];
+  onNoteAttachmentsChange: (attachments: File[]) => void;
   locationLabel: string | null;
   date: Date | null;
   time: string | null;
@@ -214,6 +217,8 @@ export function ConfirmationStep({
   cartItems,
   note,
   onNoteChange,
+  noteAttachments,
+  onNoteAttachmentsChange,
   locationLabel,
   date,
   time,
@@ -268,7 +273,6 @@ export function ConfirmationStep({
     ? date.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
     : "—";
   const reservedDrinksCount = reservedDrinkIds.size;
-  const productsCount = Object.values(productQuantities).reduce((sum, quantity) => sum + quantity, 0);
   const primaryContact = contacts[0] ? (contactInfoByPerson[contacts[0].id] ?? emptyContactInfo) : emptyContactInfo;
   const primaryName = `${primaryContact.firstName} ${primaryContact.lastName}`.trim();
 
@@ -444,6 +448,7 @@ export function ConfirmationStep({
               rows={3}
               className="mt-3 w-full rounded-xl border border-[var(--color-border-light)] p-4 text-[17px] text-[var(--color-gray-800)] outline-none focus:border-[var(--brand-taupe-muted)]"
             />
+            <NoteAttachments attachments={noteAttachments} onAttachmentsChange={onNoteAttachmentsChange} />
           </div>
 
         </div>
@@ -457,21 +462,12 @@ export function ConfirmationStep({
         />
 
         {showExtensions && (
-          <CollapsibleSection
-            title="Extensions"
-            summary={
-              productsCount > 0
-                ? `${pluralize(productsCount, "article")} · ${formatPrice(productsTotal)}`
-                : "Ajoutez des extensions à votre prestation coiffure"
-            }
-          >
-            <BoutiquePreviewSection
-              productQuantities={productQuantities}
-              onQuantityChange={handleProductQuantityChange}
-              selectedSizeByProductId={selectedSizeByProductId}
-              onSizeChange={handleProductSizeChange}
-            />
-          </CollapsibleSection>
+          <BoutiquePreviewSection
+            productQuantities={productQuantities}
+            onQuantityChange={handleProductQuantityChange}
+            selectedSizeByProductId={selectedSizeByProductId}
+            onSizeChange={handleProductSizeChange}
+          />
         )}
       </div>
 

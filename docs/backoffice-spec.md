@@ -254,6 +254,7 @@ C'est le point que le client appelle « packs et abonnements temporaires ». Pen
 6. **Rappels au bénéficiaire** (email / WhatsApp — les champs WhatsApp sont déjà collectés).
 7. **Calendrier / créneaux / lieux** : Almadies vs Sea Plaza. Soin du visage, épilation, spa et head spa = **Almadies uniquement** (`lib/booking/cart.ts` → `requiresAlmadiesOnly`).
 8. **Reporting** : abonnements échus, revenu récurrent, « passif » de prestations de packs non consommées, taux de révocation.
+9. **Note + pièces jointes du RDV** : à la dernière étape, le client laisse une note libre pour le salon et peut y joindre **jusqu'à 3 fichiers** (images ou PDF, **10 Mo max** chacun — `lib/booking/attachments.ts`). Aujourd'hui tout reste côté navigateur (les fichiers ne sont même pas dans le brouillon `sessionStorage`) : le back‑office doit les téléverser vers un stockage, les rattacher au Booking et les rendre visibles par l'équipe avec la note.
 
 ---
 
