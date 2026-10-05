@@ -93,7 +93,7 @@ export function NoteAttachments({ attachments, onAttachmentsChange }: NoteAttach
           type="button"
           variant="outline"
           onClick={() => inputRef.current?.click()}
-          className="w-fit px-5 py-2.5 text-[16px]"
+          className="w-fit border-[rgba(162,117,118,0.6)] px-5 py-2.5 text-[16px] text-[#8a5f60]"
           icon={
             <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="size-5">
               <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
