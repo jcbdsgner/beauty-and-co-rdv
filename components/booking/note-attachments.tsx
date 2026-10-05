@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import {
   addNoteAttachments,
   attachmentKey,
@@ -88,17 +89,19 @@ export function NoteAttachments({ attachments, onAttachmentsChange }: NoteAttach
       )}
 
       {canAddMore && (
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={() => inputRef.current?.click()}
-          className="flex items-center gap-2 text-[16px] font-[450] text-[var(--button-2-color)] hover:opacity-80"
+          className="w-fit px-5 py-2.5 text-[16px]"
+          icon={
+            <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="size-5">
+              <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+            </svg>
+          }
         >
-          <Image src="/images/rdv/icon-plus.svg" alt="" width={20} height={20} />
           Joindre un fichier
-          <span className="text-[14px] font-normal text-[var(--color-gray-500)]">
-            (image ou PDF, 10 Mo max · {attachments.length}/{MAX_NOTE_ATTACHMENTS})
-          </span>
-        </button>
+        </Button>
       )}
       <input
         ref={inputRef}
