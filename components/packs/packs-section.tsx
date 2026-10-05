@@ -5,29 +5,35 @@ import { packs } from "@/lib/data/packs";
 // Plus contrasté que le variant outline par défaut, trop pâle sur le fond rosé de la section Packs.
 export const accountButtonClassName = "border-[rgba(162,117,118,0.6)] px-7 text-[#8a5f60]";
 
+// Le nom de l'offre est le titre ; l'accroche vient en dessous, en #8a5f60 (AA sur blanc comme sur le fond rosé).
+export const offerTitleClassName =
+  "text-balance font-[family-name:var(--font-prata)] leading-[1.15] text-[var(--on-core-brand-color)]";
+export const offerTaglineClassName = "font-[family-name:var(--font-prata)] text-[19px] leading-[1.3] text-[#8a5f60] sm:text-[22px]";
+
 type SectionHeadingProps = {
-  eyebrow: string;
   title: string;
+  tagline: string;
+  size: "md" | "lg";
   children: React.ReactNode;
 };
 
-function SectionHeading({ eyebrow, title, children }: SectionHeadingProps) {
+function SectionHeading({ title, tagline, size, children }: SectionHeadingProps) {
   return (
     <div className="mx-auto flex max-w-2xl flex-col items-center gap-3 px-6 text-center">
-      <p className="text-[13px] font-[500] tracking-[0.28em] text-[var(--button-2-color)] uppercase">{eyebrow}</p>
-      <h2 className="text-balance font-[family-name:var(--font-prata)] text-[28px] leading-[1.25] text-[var(--on-core-brand-color)] sm:text-[36px]">
+      <h2 className={`${offerTitleClassName} ${size === "lg" ? "text-[34px] sm:text-[46px]" : "text-[28px] sm:text-[36px]"}`}>
         {title}
       </h2>
-      <p className="text-[16px] leading-[1.5] text-[var(--text-secondary)]">{children}</p>
+      <p className={offerTaglineClassName}>{tagline}</p>
+      <p className="mt-1 text-[16px] leading-[1.5] text-[var(--text-secondary)]">{children}</p>
     </div>
   );
 }
 
-// Section partagée entre l'accueil et /abonnement.
-export function PacksSection({ className = "py-16 sm:py-24" }: { className?: string }) {
+// Section partagée entre l'accueil (« md », à l'échelle des autres sections) et /abonnement (« lg », au niveau du titre Abonnements).
+export function PacksSection({ className = "py-16 sm:py-24", size = "md" }: { className?: string; size?: "md" | "lg" }) {
   return (
     <section id="packs" className={`scroll-mt-24 bg-[rgba(237,220,218,0.25)] px-4 ${className}`}>
-      <SectionHeading eyebrow="Packs" title="À votre rythme">
+      <SectionHeading title="Packs" tagline="À votre rythme" size={size}>
         Le Pack regroupe plusieurs prestations, 20&nbsp;% moins cher qu&apos;à
         l&apos;unité. Vous payez une fois et réservez chaque prestation quand vous le souhaitez.
       </SectionHeading>
