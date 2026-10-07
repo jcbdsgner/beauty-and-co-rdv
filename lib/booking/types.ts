@@ -32,6 +32,8 @@ export type CartItem = {
   coverageSource: "pack" | "abonnement" | null;
   /** Set when this person has selected every prestation of this Pack — they're billed together at the Pack's discounted price instead of individually. Removing any one of them (unchecking it on the services step) drops the whole group back to individual pricing. */
   packGroup: PackGroupInfo | null;
+  /** Answers picked for this prestation's photo-choice questions (« Box braids »), in order. */
+  choiceLabels: string[];
 };
 
 export type Sex = "femme" | "homme";

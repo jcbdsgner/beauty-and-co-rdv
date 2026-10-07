@@ -1,5 +1,6 @@
 import { bookingServices } from "@/lib/data/booking-services";
 import { getPackPrice, packs } from "@/lib/data/packs";
+import { answerKey, choiceLabelsFor, type QuestionAnswers } from "@/lib/booking/questions";
 import type { CartItem, PackGroupInfo, PersonTab } from "@/lib/booking/types";
 import { toSentenceCase } from "@/lib/utils";
 
@@ -15,6 +16,7 @@ export function buildCartItems(
   people: PersonTab[],
   selections: Selections,
   coverage: PrestationCoverage = noCoverage,
+  questionAnswers: QuestionAnswers = {},
 ): CartItem[] {
   const items: CartItem[] = [];
 
@@ -66,6 +68,7 @@ export function buildCartItems(
           twoPractitionersEligible: sub.twoPractitionersEligible,
           coverageSource,
           packGroup,
+          choiceLabels: choiceLabelsFor(sub, questionAnswers[answerKey(person.id, service.id)]),
         });
       }
     }

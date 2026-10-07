@@ -50,7 +50,12 @@ function CartLines({ items }: { items: CartItem[] }) {
     <ul className="flex flex-col gap-1">
       {ungrouped.map((item) => (
         <li key={item.id} className="flex items-center justify-between gap-2 text-[15px]">
-          <span className="text-[var(--color-gray-600)]">{item.label}</span>
+          <span className="text-[var(--color-gray-600)]">
+            {item.label}
+            {item.choiceLabels.length > 0 && (
+              <span className="block text-[13px] text-[var(--color-gray-400)]">{item.choiceLabels.join(" · ")}</span>
+            )}
+          </span>
           <span
             className={cn(
               "shrink-0 font-[450]",

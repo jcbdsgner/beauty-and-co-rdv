@@ -10,7 +10,14 @@ export type BookingSubService = {
   price: number;
   /** Groups this prestation under a collapsible sub-category header in the prestation list. */
   subcategory?: string;
+  /** Mandatory single-choice questions shown right under this prestation once it's selected
+   *  (e.g. which braids for the child), each answer with its photo — defined in the back-office
+   *  (`Prestation.questions`). */
+  choiceQuestions?: PrestationChoiceQuestion[];
 };
+
+export type PrestationChoiceOption = { id: string; label: string; image?: string };
+export type PrestationChoiceQuestion = { id: string; label: string; options: PrestationChoiceOption[] };
 
 export type CategoryQuestion =
   | { id: string; type: "yesno"; label: string }
@@ -308,6 +315,17 @@ export const bookingServices: BookingService[] = [
         duration: "180 min",
         durationMinutes: 180,
         price: 79000,
+        choiceQuestions: [
+          {
+            id: "pq-boucles",
+            label: "Quelles boucles souhaitez-vous ?",
+            options: [
+              { id: "pqo-boucles-serrees", label: "Boucles serrées", image: "/images/rdv/choix/boucles-serrees.jpg" },
+              { id: "pqo-boucles-souples", label: "Boucles souples", image: "/images/rdv/choix/boucles-souples.jpg" },
+              { id: "pqo-boucles-wavy", label: "Ondulations (wavy)", image: "/images/rdv/choix/boucles-wavy.jpg" },
+            ],
+          },
+        ],
       },
       {
         id: "coiffure-extensions-anneaux-haute-couture-2-paquets",
@@ -1000,6 +1018,17 @@ export const bookingServices: BookingService[] = [
         duration: "180 min",
         durationMinutes: 180,
         price: 46000,
+        choiceQuestions: [
+          {
+            id: "pq-tresses-enfant",
+            label: "Quel type de tresses souhaitez-vous pour votre enfant ?",
+            options: [
+              { id: "pqo-nattes-collees", label: "Nattes collées", image: "/images/rdv/choix/tresses-nattes-collees.jpg" },
+              { id: "pqo-box-braids", label: "Box braids", image: "/images/rdv/choix/tresses-box-braids.jpg" },
+              { id: "pqo-couettes-tressees", label: "Couettes tressées", image: "/images/rdv/choix/tresses-couettes.jpg" },
+            ],
+          },
+        ],
       },
       {
         id: "mini-co-supplement-coiffure-enfant",

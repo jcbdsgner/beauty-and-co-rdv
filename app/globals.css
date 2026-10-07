@@ -246,3 +246,19 @@ input:-webkit-autofill:active {
 @media (prefers-reduced-motion: reduce) {
   .packs-ping { animation: none; }
 }
+
+/* A prestation's photo choice (braids, curls…) slides in under it once selected. */
+.prestation-choice-reveal {
+  animation: prestation-choice-reveal 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes prestation-choice-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .prestation-choice-reveal {
+    animation: none;
+  }
+}

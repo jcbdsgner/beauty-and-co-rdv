@@ -78,6 +78,9 @@ function PrestationOption({ item }: { item: CartItem }) {
   return (
     <div className="rounded-2xl bg-[#fafafa] px-4 py-3">
       <p className="text-[17px] font-bold text-[var(--color-gray-900)]">{item.label}</p>
+      {item.choiceLabels.length > 0 && (
+        <p className="text-[15px] text-[var(--color-gray-500)]">{item.choiceLabels.join(" · ")}</p>
+      )}
       <div className="mt-2 flex items-center gap-3 text-[16px] text-[var(--text-secondary)]">
         <span
           className={cn(

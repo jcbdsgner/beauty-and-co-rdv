@@ -279,7 +279,10 @@ export function ServicesStep({
     } else if (scrollTarget === "questions") {
       // "start" (not "center") so the required-questions block actually reaches the top of the
       // viewport — centering the whole (sometimes long) prestation list could leave it off-screen.
-      questionsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      // The first unanswered item — a category question or a prestation's photo choice further
+      // down the list — falls back to the questions block.
+      const firstMissing = prestationListRef.current?.querySelector("[data-missing]");
+      (firstMissing ?? questionsRef.current)?.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
       prestationListRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
@@ -324,7 +327,11 @@ export function ServicesStep({
         peopleMissingQuestions.find((person) => person.id === activePersonId) ?? peopleMissingQuestions[0];
       const incompleteCategoryId = [...selectedCategoryIds(selections[incompletePerson.id] ?? new Set())].find(
         (categoryId) =>
-          !isCategoryQuestionsComplete(categoryId, questionAnswers[answerKey(incompletePerson.id, categoryId)]),
+          !isCategoryQuestionsComplete(
+            categoryId,
+            questionAnswers[answerKey(incompletePerson.id, categoryId)],
+            selections[incompletePerson.id],
+          ),
       );
       if (incompletePerson.id !== activePersonId) setSelectedPersonId(incompletePerson.id);
       if (incompleteCategoryId && incompleteCategoryId !== activeCategoryId) {

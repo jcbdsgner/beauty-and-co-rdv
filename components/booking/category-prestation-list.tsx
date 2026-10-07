@@ -3,6 +3,8 @@ import Image from "next/image";
 import { cn, toSentenceCase } from "@/lib/utils";
 import { CategoryQuestions } from "@/components/booking/category-questions";
 import { ExpandChevron } from "@/components/booking/expand-chevron";
+import { PrestationChoice } from "@/components/booking/prestation-choice";
+import { choiceAnswerId, missingChoices } from "@/lib/booking/questions";
 import { formatPrice } from "@/lib/booking/format";
 import type { BookingService, BookingSubService } from "@/lib/data/booking-services";
 
@@ -30,59 +32,77 @@ function groupBySubcategory(subServices: BookingSubService[]) {
   return groups;
 }
 
+type ChoiceProps = {
+  answers: Record<string, string>;
+  onAnswer: (questionId: string, value: string) => void;
+  showErrors: boolean;
+};
+
 function FlatSubServiceRow({
   sub,
   selected,
   onToggle,
   coverageSource,
+  choice,
 }: {
   sub: BookingSubService;
   selected: boolean;
   onToggle: () => void;
   coverageSource?: "pack" | "abonnement";
+  choice: ChoiceProps;
 }) {
   return (
-    <li className="flex items-center gap-3 border-b border-[var(--color-gray-200)] py-4 last:border-b-0">
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-[19px] font-bold text-[var(--color-gray-800)]">{toSentenceCase(sub.label)}</p>
-        {sub.description && <p className="mt-1 text-[15px] text-[var(--color-gray-500)]">{sub.description}</p>}
-        <div className="mt-2 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-gray-200)] px-[13px] py-[7px] text-[15px] font-[500] text-[var(--color-gray-800)]">
-            <Image src="/images/rdv/icon-clock-dark.svg" alt="" width={16} height={16} />
-            {sub.duration}
-          </span>
-          {coverageSource ? (
-            <span className="text-[15px] font-bold text-[var(--brand-taupe-muted)]">
-              · Déjà payé avec votre {coverageSource === "pack" ? "pack" : "abonnement"}
+    <li className="border-b border-[var(--color-gray-200)] py-4 last:border-b-0">
+      <div className="flex items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[19px] font-bold text-[var(--color-gray-800)]">{toSentenceCase(sub.label)}</p>
+          {sub.description && <p className="mt-1 text-[15px] text-[var(--color-gray-500)]">{sub.description}</p>}
+          <div className="mt-2 flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-gray-200)] px-[13px] py-[7px] text-[15px] font-[500] text-[var(--color-gray-800)]">
+              <Image src="/images/rdv/icon-clock-dark.svg" alt="" width={16} height={16} />
+              {sub.duration}
             </span>
-          ) : (
-            <span className="text-[17px] font-[500] text-[var(--color-gray-800)]">· {formatPrice(sub.price)}</span>
-          )}
+            {coverageSource ? (
+              <span className="text-[15px] font-bold text-[var(--brand-taupe-muted)]">
+                · Déjà payé avec votre {coverageSource === "pack" ? "pack" : "abonnement"}
+              </span>
+            ) : (
+              <span className="text-[17px] font-[500] text-[var(--color-gray-800)]">· {formatPrice(sub.price)}</span>
+            )}
+          </div>
         </div>
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-pressed={selected}
+          aria-label={selected ? `${sub.label} — sélectionné` : `${sub.label} — sélectionner`}
+          className={cn(
+            "flex size-6 shrink-0 items-center justify-center rounded border transition sm:hidden",
+            selected ? "border-[var(--brand-taupe-muted)] bg-[var(--brand-taupe-muted)]" : "border-[var(--color-slate-900)] bg-white",
+          )}
+        >
+          {selected && <Image src="/images/rdv/icon-check.svg" alt="" width={14} height={14} />}
+        </button>
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-pressed={selected}
+          className={cn(
+            "hidden shrink-0 rounded-full border border-[var(--brand-taupe-muted)] px-[13px] py-[7px] text-[15px] font-[450] whitespace-nowrap transition sm:block",
+            selected ? "bg-[var(--brand-taupe-muted)] text-white" : "bg-white text-[var(--brand-taupe-muted)] hover:bg-[var(--brand-taupe-muted)]/5",
+          )}
+        >
+          {selected ? "Sélectionné" : "Sélectionner"}
+        </button>
       </div>
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-pressed={selected}
-        aria-label={selected ? `${sub.label} — sélectionné` : `${sub.label} — sélectionner`}
-        className={cn(
-          "flex size-6 shrink-0 items-center justify-center rounded border transition sm:hidden",
-          selected ? "border-[var(--brand-taupe-muted)] bg-[var(--brand-taupe-muted)]" : "border-[var(--color-slate-900)] bg-white",
-        )}
-      >
-        {selected && <Image src="/images/rdv/icon-check.svg" alt="" width={14} height={14} />}
-      </button>
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-pressed={selected}
-        className={cn(
-          "hidden shrink-0 rounded-full border border-[var(--brand-taupe-muted)] px-[13px] py-[7px] text-[15px] font-[450] whitespace-nowrap transition sm:block",
-          selected ? "bg-[var(--brand-taupe-muted)] text-white" : "bg-white text-[var(--brand-taupe-muted)] hover:bg-[var(--brand-taupe-muted)]/5",
-        )}
-      >
-        {selected ? "Sélectionné" : "Sélectionner"}
-      </button>
+      {selected && sub.choiceQuestions && sub.choiceQuestions.length > 0 && (
+        <PrestationChoice
+          questions={sub.choiceQuestions}
+          value={(questionId) => choice.answers[choiceAnswerId(sub.id, questionId)]}
+          onChoose={(questionId, optionId) => choice.onAnswer(choiceAnswerId(sub.id, questionId), optionId)}
+          showErrors={choice.showErrors}
+        />
+      )}
     </li>
   );
 }
@@ -106,6 +126,12 @@ export function CategoryPrestationList({
   };
 
   const groups = groupBySubcategory(category.subServices);
+  const choice: ChoiceProps = { answers: questionAnswers, onAnswer: onAnswerQuestion, showErrors: showQuestionErrors };
+  // After a "Continuer" warning, a sub-category hiding a prestation whose photo choice is still
+  // missing opens by itself — otherwise the warning would point at nothing visible.
+  const missingSubIds = showQuestionErrors
+    ? new Set(missingChoices(category.id, questionAnswers, selectedSubServiceIds).map(({ sub }) => sub.id))
+    : new Set<string>();
   const hasSubcategories = groups.length > 0;
 
   return (
@@ -122,7 +148,8 @@ export function CategoryPrestationList({
       {hasSubcategories ? (
         <div className="flex flex-col gap-4">
           {groups.map((group) => {
-            const expanded = expandedSubcategory === group.name;
+            const expanded =
+              expandedSubcategory === group.name || group.subs.some((sub) => missingSubIds.has(sub.id));
             const hasSelection = group.subs.some((sub) => selectedSubServiceIds.has(sub.id));
             const checked = expanded || hasSelection;
             return (
@@ -159,6 +186,7 @@ export function CategoryPrestationList({
                         selected={selectedSubServiceIds.has(sub.id)}
                         onToggle={() => onToggleSubService(sub.id)}
                         coverageSource={coverageBySubServiceId?.get(sub.id)}
+                        choice={choice}
                       />
                     ))}
                   </ul>
@@ -176,6 +204,7 @@ export function CategoryPrestationList({
               selected={selectedSubServiceIds.has(sub.id)}
               onToggle={() => onToggleSubService(sub.id)}
               coverageSource={coverageBySubServiceId?.get(sub.id)}
+              choice={choice}
             />
           ))}
         </ul>

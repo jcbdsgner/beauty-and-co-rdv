@@ -256,7 +256,7 @@ export function BookingForm() {
       }
     }
   }
-  const cartItems = buildCartItems(people, selections, coverage);
+  const cartItems = buildCartItems(people, selections, coverage, questionAnswers);
   // Soin du visage, épilation, spa and head spa are only performed at Almadies — narrow the
   // location choice on the créneau step down to it alone whenever the booking includes one.
   const almadiesOnly = requiresAlmadiesOnly(cartItems);

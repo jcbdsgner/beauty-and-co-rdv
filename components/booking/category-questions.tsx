@@ -24,7 +24,7 @@ export function CategoryQuestions({ questions, answers, onAnswer, showErrors }: 
           const isMissing = showErrors && value.trim() === "";
 
           return (
-            <div key={question.id}>
+            <div key={question.id} data-missing={isMissing || undefined} className="scroll-mt-28">
               <p className="text-[15px] font-[450] text-[var(--color-gray-800)]">
                 {question.label} <span className="text-[var(--color-error)]">*</span>
               </p>
